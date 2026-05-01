@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Trophy, ThumbsUp, Dumbbell, GraduationCap } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Trophy, ThumbsUp, Dumbbell, GraduationCap, Check, X } from "lucide-react";
 
 export interface DrillQuestion {
   id: string;
@@ -52,6 +52,26 @@ export function PageDrill({ questions }: PageDrillProps) {
     setResults([]);
     setFinished(false);
   }
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (submitted) return;
+      const key = e.key.toUpperCase();
+      const labelMap: Record<string, number> = { A: 0, B: 1, C: 2, D: 3 };
+      if (key in labelMap) {
+        const index = labelMap[key];
+        if (index < current.choices.length) {
+          setSelectedIndex(index);
+        }
+        return;
+      }
+      if (e.key === "Enter") {
+        handleSubmit();
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [submitted, current, selectedIndex]);
 
   if (finished) {
     const score = results.filter(Boolean).length;
@@ -158,20 +178,25 @@ export function PageDrill({ questions }: PageDrillProps) {
         </div>
 
         {!submitted && (
-          <button
-            onClick={handleSubmit}
-            disabled={selectedIndex === null}
-            className="w-full py-2 rounded-lg text-sm font-medium transition-colors mb-3"
-            style={{
-              backgroundColor: selectedIndex !== null ? "#10b981" : "#1a1d2a",
-              color: selectedIndex !== null ? "#0f1117" : "#4b5563",
-              border: "1px solid",
-              borderColor: selectedIndex !== null ? "#10b981" : "#2d3048",
-              cursor: selectedIndex !== null ? "pointer" : "not-allowed",
-            }}
-          >
-            回答する
-          </button>
+          <>
+            <button
+              onClick={handleSubmit}
+              disabled={selectedIndex === null}
+              className="w-full py-2 rounded-lg text-sm font-medium transition-colors mb-1"
+              style={{
+                backgroundColor: selectedIndex !== null ? "#10b981" : "#1a1d2a",
+                color: selectedIndex !== null ? "#0f1117" : "#9ca3af",
+                border: "1px solid",
+                borderColor: selectedIndex !== null ? "#10b981" : "#2d3048",
+                cursor: selectedIndex !== null ? "pointer" : "not-allowed",
+              }}
+            >
+              回答する
+            </button>
+            {selectedIndex === null && (
+              <p className="text-xs text-gray-500 text-center mt-1.5">選択肢を選んでから回答してください</p>
+            )}
+          </>
         )}
 
         {submitted && (
@@ -184,7 +209,15 @@ export function PageDrill({ questions }: PageDrillProps) {
           >
             <p className="text-xs font-semibold mb-1"
               style={{ color: selectedIndex === current.correctIndex ? "#10b981" : "#ef4444" }}>
-              {selectedIndex === current.correctIndex ? "✓ 正解！" : "✗ 不正解"}
+              {selectedIndex === current.correctIndex ? (
+                <span className="flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5" /> 正解！
+                </span>
+              ) : (
+                <span className="flex items-center gap-1.5">
+                  <X className="w-3.5 h-3.5" /> 不正解
+                </span>
+              )}
             </p>
             <p className="text-xs font-semibold text-amber-400 mb-1 flex items-center gap-1">
               <GraduationCap className="w-3.5 h-3.5" />

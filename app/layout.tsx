@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" className={`${notoSansJP.variable} h-full`}>
-      <body className="min-h-full flex flex-col" style={{ backgroundColor: "#0f1117", color: "#e5e7eb" }}>
+      <body className="min-h-full flex flex-col text-base leading-relaxed" style={{ backgroundColor: "#0f1117", color: "#e5e7eb" }}>
         <SiteHeader />
         <main className="flex-1 pt-14">{children}</main>
       </body>

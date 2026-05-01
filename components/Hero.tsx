@@ -76,7 +76,7 @@ export function Hero({ category, title, subtitle, body, accentColor = "emerald" 
       </span>
       <h1 className="text-3xl font-bold text-white mb-2">{title}</h1>
       <p className={`text-lg font-medium mb-2 ${colors.text}`}>{subtitle}</p>
-      {body && <p className="text-sm text-gray-400">{body}</p>}
+      {body && <p className="text-base text-gray-400">{body}</p>}
     </section>
   );
 }

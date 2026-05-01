@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Trophy, ThumbsUp, Dumbbell, GraduationCap, Check, X } from "lucide-react";
 
 export interface DrillQuestion {
@@ -29,11 +29,11 @@ export function PageDrill({ questions }: PageDrillProps) {
     setSelectedIndex(i);
   }
 
-  function handleSubmit() {
+  const handleSubmit = useCallback(() => {
     if (selectedIndex === null) return;
     setResults((prev) => [...prev, selectedIndex === current.correctIndex]);
     setSubmitted(true);
-  }
+  }, [selectedIndex, current.correctIndex]);
 
   function handleNext() {
     if (currentIndex < questions.length - 1) {
@@ -72,7 +72,7 @@ export function PageDrill({ questions }: PageDrillProps) {
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [submitted, current, selectedIndex]);
+  }, [submitted, current, selectedIndex, handleSubmit]);
 
   if (finished) {
     const score = results.filter(Boolean).length;

@@ -25,7 +25,7 @@ export function OnePageSummary({ keyMessage, metaphorTitle, metaphorPoints, defi
         className="rounded-xl border p-5 mb-4"
         style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
       >
-        <p className="text-sm text-gray-300 leading-relaxed">{keyMessage}</p>
+        <p className="text-base text-gray-300 leading-relaxed">{keyMessage}</p>
       </div>
 
       {/* Metaphor */}
@@ -39,7 +39,7 @@ export function OnePageSummary({ keyMessage, metaphorTitle, metaphorPoints, defi
         </div>
         <div className="space-y-0 divide-y" style={{ borderColor: "#2d3048" }}>
           {metaphorPoints.map((point, i) => (
-            <div key={i} className="py-2 text-xs">
+            <div key={i} className="py-2">
               {/* mobile: stacked */}
               <div className="flex items-start gap-2 sm:hidden">
                 <span className="text-gray-600 font-mono font-bold w-4 flex-shrink-0 pt-0.5">{i + 1}</span>
@@ -66,7 +66,7 @@ export function OnePageSummary({ keyMessage, metaphorTitle, metaphorPoints, defi
           <Lightbulb className="w-4 h-4 text-emerald-400" />
           <p className="text-xs font-semibold text-emerald-400">一言定義</p>
         </div>
-        <p className="text-sm font-medium text-white leading-relaxed">{definition}</p>
+        <p className="text-base font-medium text-white leading-relaxed">{definition}</p>
       </div>
     </section>
   );

@@ -66,6 +66,7 @@ export function PageDrill({ questions }: PageDrillProps) {
         return;
       }
       if (e.key === "Enter") {
+        e.preventDefault();
         handleSubmit();
       }
     }
@@ -137,6 +138,16 @@ export function PageDrill({ questions }: PageDrillProps) {
         </div>
 
         <p className="text-sm font-medium text-white mb-4 leading-relaxed">{current.question}</p>
+
+        <p className="hidden sm:flex items-center gap-1.5 text-xs text-gray-600 mb-3">
+          <kbd className="px-1 py-0.5 rounded text-[10px] font-mono" style={{ backgroundColor: "#0f1117", border: "1px solid #2d3048" }}>A</kbd>
+          <kbd className="px-1 py-0.5 rounded text-[10px] font-mono" style={{ backgroundColor: "#0f1117", border: "1px solid #2d3048" }}>B</kbd>
+          <kbd className="px-1 py-0.5 rounded text-[10px] font-mono" style={{ backgroundColor: "#0f1117", border: "1px solid #2d3048" }}>C</kbd>
+          <kbd className="px-1 py-0.5 rounded text-[10px] font-mono" style={{ backgroundColor: "#0f1117", border: "1px solid #2d3048" }}>D</kbd>
+          <span>で選択 /</span>
+          <kbd className="px-1 py-0.5 rounded text-[10px] font-mono" style={{ backgroundColor: "#0f1117", border: "1px solid #2d3048" }}>Enter</kbd>
+          <span>で回答</span>
+        </p>
 
         <div className="space-y-2 mb-4">
           {current.choices.map((choice, i) => {

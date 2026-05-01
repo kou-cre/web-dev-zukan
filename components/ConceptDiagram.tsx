@@ -1,6 +1,20 @@
 import { ReactNode, ElementType } from "react";
 import { ArrowRight, ArrowDown, ArrowLeft, LucideProps } from "lucide-react";
 
+const accentMap: Record<string, { border: string; bg: string; titleColor: string; iconColor: string }> = {
+  emerald: { border: "rgba(16,185,129,0.6)",  bg: "rgba(16,185,129,0.06)",  titleColor: "#6ee7b7", iconColor: "#34d399" },
+  blue:    { border: "rgba(59,130,246,0.6)",  bg: "rgba(59,130,246,0.06)",  titleColor: "#93c5fd", iconColor: "#60a5fa" },
+  violet:  { border: "rgba(139,92,246,0.6)",  bg: "rgba(139,92,246,0.06)",  titleColor: "#c4b5fd", iconColor: "#a78bfa" },
+  sky:     { border: "rgba(14,165,233,0.6)",  bg: "rgba(14,165,233,0.06)",  titleColor: "#7dd3fc", iconColor: "#38bdf8" },
+  rose:    { border: "rgba(244,63,94,0.6)",   bg: "rgba(244,63,94,0.06)",   titleColor: "#fda4af", iconColor: "#fb7185" },
+  yellow:  { border: "rgba(234,179,8,0.6)",   bg: "rgba(234,179,8,0.06)",   titleColor: "#fde047", iconColor: "#facc15" },
+  amber:   { border: "rgba(245,158,11,0.6)",  bg: "rgba(245,158,11,0.06)",  titleColor: "#fcd34d", iconColor: "#fbbf24" },
+  lime:    { border: "rgba(132,204,22,0.6)",  bg: "rgba(132,204,22,0.06)",  titleColor: "#bef264", iconColor: "#a3e635" },
+  cyan:    { border: "rgba(6,182,212,0.6)",   bg: "rgba(6,182,212,0.06)",   titleColor: "#67e8f9", iconColor: "#22d3ee" },
+  orange:  { border: "rgba(249,115,22,0.6)",  bg: "rgba(249,115,22,0.06)",  titleColor: "#fdba74", iconColor: "#fb923c" },
+  red:     { border: "rgba(239,68,68,0.6)",   bg: "rgba(239,68,68,0.06)",   titleColor: "#fca5a5", iconColor: "#f87171" },
+};
+
 interface ConceptDiagramProps {
   title: string;
   description?: string;
@@ -31,26 +45,27 @@ interface FlowCardProps {
 }
 
 export function FlowCard({ Icon, title, subtitle, highlight, muted, accentColor = "emerald" }: FlowCardProps) {
+  const accent = accentMap[accentColor] ?? accentMap.emerald;
   return (
     <div
-      className={`rounded-xl border px-4 py-3 flex flex-col items-center text-center min-w-[120px] max-w-[160px] transition-all ${
-        highlight
-          ? `border-${accentColor}-500/60 bg-${accentColor}-500/8`
-          : muted
-          ? "opacity-60"
-          : ""
-      }`}
+      className={`rounded-xl border px-4 py-3 flex flex-col items-center text-center min-w-[120px] max-w-[160px] transition-all ${muted && !highlight ? "opacity-60" : ""}`}
       style={
         highlight
-          ? { borderColor: `var(--color-${accentColor}-500, #10b981)`, backgroundColor: "rgba(16,185,129,0.06)" }
+          ? { borderColor: accent.border, backgroundColor: accent.bg }
           : { backgroundColor: "#0f1117", borderColor: "#2d3048" }
       }
     >
       <Icon
-        className={`w-6 h-6 mb-2 ${highlight ? "text-emerald-400" : "text-gray-400"}`}
+        className="w-6 h-6 mb-2"
+        style={highlight ? { color: accent.iconColor } : { color: "#9ca3af" }}
       />
-      <p className={`text-xs font-bold mb-0.5 ${highlight ? "text-emerald-300" : "text-white"}`}>{title}</p>
-      <p className="text-xs text-gray-500 leading-tight">{subtitle}</p>
+      <p
+        className="text-xs font-bold mb-0.5"
+        style={highlight ? { color: accent.titleColor } : { color: "#ffffff" }}
+      >
+        {title}
+      </p>
+      <p className="text-xs text-gray-400 leading-tight">{subtitle}</p>
     </div>
   );
 }
@@ -106,12 +121,12 @@ export function StackLayer({ Icon, title, subtitle, iconColor = "text-emerald-40
         <Icon className={`w-5 h-5 flex-shrink-0 mt-0.5 ${iconColor}`} />
         <div>
           <p className="text-xs font-semibold text-white">{title}</p>
-          <p className="text-xs text-gray-500 leading-tight mt-0.5">{subtitle}</p>
+          <p className="text-xs text-gray-400 leading-tight mt-0.5">{subtitle}</p>
         </div>
       </div>
       {showArrow && (
         <div className="flex justify-center py-1">
-          <ArrowDown className="w-3.5 h-3.5 text-gray-700" />
+          <ArrowDown className="w-3.5 h-3.5 text-gray-500" />
         </div>
       )}
     </div>
@@ -147,7 +162,7 @@ export function ContrastBar({ rows }: ContrastBarProps) {
               {row.label}
             </span>
             {row.sublabel && (
-              <span className="text-xs text-gray-600">{row.sublabel}</span>
+              <span className="text-xs text-gray-500">{row.sublabel}</span>
             )}
             {row.highlight && (
               <span className="ml-auto text-xs px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">

@@ -98,6 +98,7 @@ export default function BaasPage() {
                 title="BaaS"
                 subtitle="Auth / DB / Storage / Functions"
                 highlight
+                accentColor="blue"
               />
               <FlowArrow label="内部で接続" direction="down" />
               <FlowCard

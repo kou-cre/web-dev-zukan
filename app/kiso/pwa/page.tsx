@@ -200,6 +200,7 @@ export default function PwaPage() {
               title="Service Worker"
               subtitle="キャッシュを確認"
               highlight
+              accentColor="rose"
             />
           </div>
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">

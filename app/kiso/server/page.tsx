@@ -69,7 +69,7 @@ export default function ServerPage() {
             <FlowCard Icon={Monitor} title="ブラウザ（あなた）" subtitle="URLを入力してEnterを押す" />
             <FlowArrow label="リクエスト" sublabel="GET /about" direction="right" />
             <div className="flex flex-col items-center gap-1">
-              <FlowCard Icon={Server} title="サーバー" subtitle="何を返すか決める頭脳" highlight />
+              <FlowCard Icon={Server} title="サーバー" subtitle="何を返すか決める頭脳" highlight accentColor="emerald" />
               <FlowArrow label="SQLクエリ" direction="down" />
               <FlowCard Icon={Database} title="データベース" subtitle="保存データの置き場" muted />
             </div>

@@ -210,6 +210,7 @@ export default function ErrorPage() {
               title="try/catch を持つ関数"
               subtitle="ここで初めて捕まえる"
               highlight
+              accentColor="red"
             />
             <FlowArrow label="catch 内で処理" direction="down" />
             <FlowCard

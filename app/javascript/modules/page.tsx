@@ -98,6 +98,7 @@ export default function ModulesPage() {
               title="モジュール境界"
               subtitle="他ファイルから取り寄せ可"
               highlight
+              accentColor="orange"
             />
             <FlowArrow
               label="取り寄せ"

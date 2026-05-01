@@ -103,6 +103,7 @@ export default function VercelPage() {
               title="Vercel"
               subtitle="自動でビルド実行"
               highlight
+              accentColor="sky"
             />
             <FlowArrow label="配置" sublabel="エッジへ配信" direction="right" />
             <FlowCard

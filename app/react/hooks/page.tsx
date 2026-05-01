@@ -93,6 +93,7 @@ export default function HooksPage() {
               title="useXxx() 関数"
               subtitle="ロジックをuse始まりの関数にまとめる"
               highlight
+              accentColor="emerald"
             />
             <FlowArrow label="呼び出す" direction="right" />
             <FlowCard

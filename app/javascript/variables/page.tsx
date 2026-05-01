@@ -204,6 +204,7 @@ export default function VariablesPage() {
               title="宣言を巻き上げ"
               subtitle="先頭に集める"
               highlight
+              accentColor="yellow"
             />
             <FlowArrow label="実行開始" direction="right" />
             <div className="flex flex-col gap-2">

@@ -97,6 +97,7 @@ export default function DomPage() {
               title="DOMツリー"
               subtitle="オブジェクトとして展開"
               highlight
+              accentColor="lime"
             />
             <FlowArrow label="アクセス" sublabel="document" direction="right" />
             <FlowCard

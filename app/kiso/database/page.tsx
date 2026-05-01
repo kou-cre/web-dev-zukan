@@ -69,7 +69,7 @@ export default function DatabasePage() {
             <FlowArrow label="リクエスト" sublabel="GET /posts" direction="right" />
             <FlowCard Icon={Cloud} title="BaaS / サーバー" subtitle="DBから取り出す指示を出す" />
             <FlowArrow label="クエリ" sublabel="getDocs(...)" direction="right" />
-            <FlowCard Icon={Database} title="データベース" subtitle="保存データの本体" highlight />
+            <FlowCard Icon={Database} title="データベース" subtitle="保存データの本体" highlight accentColor="violet" />
           </div>
           <p className="text-xs text-gray-600 text-center mt-4">
             ブラウザはDBに直接話しかけない。必ずサーバー（またはBaaS）が間に入って取り次ぐ。

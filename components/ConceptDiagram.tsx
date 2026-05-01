@@ -66,19 +66,19 @@ export function FlowArrow({ label, sublabel, direction = "right" }: FlowArrowPro
 
   return (
     <div className="flex flex-col items-center gap-0.5 px-1 py-1">
-      <span className="text-xs text-gray-500 text-center leading-tight whitespace-nowrap">{label}</span>
+      <span className="text-xs text-gray-400 text-center leading-tight whitespace-nowrap">{label}</span>
       {sublabel && (
-        <span className="text-xs font-mono text-gray-600 text-center">{sublabel}</span>
+        <span className="text-xs font-mono text-gray-500 text-center">{sublabel}</span>
       )}
       {isVertical ? (
-        <ArrowDown className="w-4 h-4 text-gray-600" />
+        <ArrowDown className="w-4 h-4 text-gray-500" />
       ) : (
         <>
-          <ArrowDown className="w-4 h-4 text-gray-600 sm:hidden" />
+          <ArrowDown className="w-4 h-4 text-gray-500 sm:hidden" />
           {direction === "right" ? (
-            <ArrowRight className="w-4 h-4 text-gray-600 hidden sm:block" />
+            <ArrowRight className="w-4 h-4 text-gray-500 hidden sm:block" />
           ) : (
-            <ArrowLeft className="w-4 h-4 text-gray-600 hidden sm:block" />
+            <ArrowLeft className="w-4 h-4 text-gray-500 hidden sm:block" />
           )}
         </>
       )}
@@ -134,7 +134,7 @@ interface ContrastBarProps {
 export function ContrastBar({ rows }: ContrastBarProps) {
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between text-xs text-gray-600 mb-1 px-1">
+      <div className="flex items-center justify-between text-xs text-gray-400 mb-1 px-1">
         <span>あなたが管理</span>
         <span>クラウドが管理</span>
       </div>
@@ -171,7 +171,7 @@ export function ContrastBar({ rows }: ContrastBarProps) {
               }}
             />
           </div>
-          <div className="flex justify-between text-xs text-gray-700 mt-1 px-0.5">
+          <div className="flex justify-between text-xs text-gray-400 mt-1 px-0.5">
             <span>{row.yourPct}%</span>
             <span>{row.cloudPct}%</span>
           </div>

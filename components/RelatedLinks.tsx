@@ -44,7 +44,7 @@ export function RelatedLinks({ items }: RelatedLinksProps) {
               <p className="text-sm font-semibold text-white mb-1 group-hover:text-emerald-400 transition-colors">
                 {item.title}
               </p>
-              <p className="text-xs text-gray-500 leading-tight">{item.description}</p>
+              <p className="text-xs text-gray-400 leading-tight">{item.description}</p>
             </Link>
           );
         })}

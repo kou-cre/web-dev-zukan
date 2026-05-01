@@ -16,7 +16,7 @@ const pages: {
     iconColor: "#60a5fa",
     title: "コンポーネント",
     description: "UIを部品に分ける考え方とJSXの基本",
-    status: "未作成",
+    status: "完成",
   },
   {
     href: "/react/props",
@@ -24,7 +24,7 @@ const pages: {
     iconColor: "#38bdf8",
     title: "Props",
     description: "親から子へデータを渡す仕組み",
-    status: "未作成",
+    status: "完成",
   },
   {
     href: "/react/state",
@@ -32,7 +32,7 @@ const pages: {
     iconColor: "#a78bfa",
     title: "State と useState",
     description: "コンポーネントが持つ「変わる値」の管理",
-    status: "未作成",
+    status: "完成",
   },
   {
     href: "/react/useeffect",
@@ -40,7 +40,7 @@ const pages: {
     iconColor: "#22d3ee",
     title: "useEffect",
     description: "レンダリングの外側で起きる処理を制御する",
-    status: "未作成",
+    status: "完成",
   },
   {
     href: "/react/context",
@@ -48,7 +48,7 @@ const pages: {
     iconColor: "#fb7185",
     title: "Context と useContext",
     description: "Props を使わずに値をツリー全体で共有する",
-    status: "未作成",
+    status: "完成",
   },
   {
     href: "/react/hooks",
@@ -56,7 +56,7 @@ const pages: {
     iconColor: "#34d399",
     title: "カスタムHooks",
     description: "ロジックを再利用可能な関数に切り出す技術",
-    status: "未作成",
+    status: "完成",
   },
 ];
 

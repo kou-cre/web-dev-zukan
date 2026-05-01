@@ -172,6 +172,23 @@ npm_config_cache=/tmp/npm-cache npm run dev
 
 ---
 
+## 新規ページ作成チェックリスト
+
+ページを作成・修正したら以下を確認すること（詳細は `STYLE_GUIDE.md` 参照）。
+
+```
+□ Hero の accentColor がページカラーと一致している
+□ FlowCard highlight に accentColor を渡している
+□ 本文テキストが text-base（16px）になっている
+□ gray-500以下のテキストが本文・補助文に使われていない
+□ yellow/amber/lime の背景が 0.10/ボーダー 0.7 になっている
+□ DetailBlock 本文が text-base leading-relaxed になっている
+□ PageDrill 選択肢が text-base になっている
+□ 矢印・ラベルが text-gray-400 以上になっている
+```
+
+---
+
 ## 注意事項
 
 - JSXの文字列属性内に `"` `"` を直接書くと Turbopack のパーサーエラーになる → `{...}` で括るか `「」` に置き換える

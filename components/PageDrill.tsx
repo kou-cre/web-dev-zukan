@@ -178,7 +178,7 @@ export function PageDrill({ questions }: PageDrillProps) {
                 key={i}
                 onClick={() => handleSelect(i)}
                 disabled={submitted}
-                className="w-full text-left rounded-lg border px-3 py-2.5 text-sm transition-colors flex items-start gap-2"
+                className="w-full text-left rounded-lg border px-3 py-2.5 text-base transition-colors flex items-start gap-2"
                 style={{ borderColor, backgroundColor: bgColor, color: textColor }}
               >
                 <span className="font-mono font-bold text-xs w-4 flex-shrink-0 mt-0.5">{label}</span>

@@ -12,7 +12,7 @@ export function DetailSection({ title, children }: DetailSectionProps) {
       <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
         DETAIL
       </h2>
-      <div className="space-y-4">{children}</div>
+      <div className="space-y-5">{children}</div>
     </section>
   );
 }
@@ -29,7 +29,7 @@ export function DetailBlock({ heading, children }: DetailBlockProps) {
       style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
     >
       <h3 className="text-base font-semibold text-white mb-3">{heading}</h3>
-      <div className="text-base text-gray-300 leading-relaxed space-y-2">{children}</div>
+      <div className="text-base text-gray-300 leading-relaxed space-y-3">{children}</div>
     </div>
   );
 }

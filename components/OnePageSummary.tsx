@@ -39,7 +39,7 @@ export function OnePageSummary({ keyMessage, metaphorTitle, metaphorPoints, defi
         </div>
         <div className="space-y-0 divide-y" style={{ borderColor: "#2d3048" }}>
           {metaphorPoints.map((point, i) => (
-            <div key={i} className="py-2">
+            <div key={i} className="py-3">
               {/* mobile: stacked */}
               <div className="flex items-start gap-2 sm:hidden">
                 <span className="text-gray-600 font-mono font-bold w-4 flex-shrink-0 pt-0.5">{i + 1}</span>

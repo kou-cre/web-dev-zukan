@@ -45,7 +45,7 @@ export function MajiDialogue({ turns }: MajiDialogueProps) {
       <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-6">
         DIALOGUE
       </h2>
-      <div className="space-y-4">
+      <div className="space-y-5">
         {turns.map((turn, i) => {
           const isMaji = turn.speaker === "maji";
           const imgSrc = getImageSrc(turn.speaker, turn.emotion);

@@ -16,7 +16,7 @@ const pages: {
     iconColor: "#facc15",
     title: "変数とスコープ",
     description: "var / let / const とスコープの違い",
-    status: "未作成",
+    status: "完成",
   },
   {
     href: "/javascript/async",
@@ -24,7 +24,7 @@ const pages: {
     iconColor: "#f59e0b",
     title: "非同期処理",
     description: "Promise / async-await の流れと書き方",
-    status: "未作成",
+    status: "完成",
   },
   {
     href: "/javascript/dom",
@@ -32,7 +32,7 @@ const pages: {
     iconColor: "#84cc16",
     title: "DOM操作",
     description: "JavaScriptからHTMLを動かす仕組み",
-    status: "未作成",
+    status: "完成",
   },
   {
     href: "/javascript/fetch",
@@ -40,7 +40,7 @@ const pages: {
     iconColor: "#22d3ee",
     title: "fetch API",
     description: "サーバーとデータをやり取りする基本",
-    status: "未作成",
+    status: "完成",
   },
   {
     href: "/javascript/modules",
@@ -48,7 +48,7 @@ const pages: {
     iconColor: "#fb923c",
     title: "ESモジュール",
     description: "import / export とモジュール分割",
-    status: "未作成",
+    status: "完成",
   },
   {
     href: "/javascript/error",
@@ -56,7 +56,7 @@ const pages: {
     iconColor: "#f87171",
     title: "エラーハンドリング",
     description: "try/catch と例外処理の考え方",
-    status: "未作成",
+    status: "完成",
   },
 ];
 

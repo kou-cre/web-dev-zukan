@@ -43,10 +43,10 @@ export function OnePageSummary({ keyMessage, metaphorTitle, metaphorPoints, defi
             <Fragment key={i}>
               <div
                 className="flex-1 rounded-lg border p-3 flex flex-col gap-2 min-w-0"
-                style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+                style={{ backgroundColor: "#0f1117", borderColor: "#3b3f5c" }}
               >
                 <span className="text-[10px] font-mono font-bold text-gray-500">{i + 1}</span>
-                <p className="text-xs text-gray-300 leading-relaxed flex-1">{point.real}</p>
+                <p className="text-sm sm:text-xs text-gray-300 leading-relaxed flex-1">{point.real}</p>
                 <span
                   className="self-start text-[11px] font-bold px-2 py-0.5 rounded-full border"
                   style={{
@@ -60,8 +60,8 @@ export function OnePageSummary({ keyMessage, metaphorTitle, metaphorPoints, defi
               </div>
               {i < metaphorPoints.length - 1 && (
                 <div className="flex items-center justify-center py-2 sm:py-0 sm:px-1.5 flex-shrink-0">
-                  <ArrowDown className="w-3.5 h-3.5 text-gray-500 sm:hidden" />
-                  <ArrowRight className="w-3.5 h-3.5 text-gray-500 hidden sm:block" />
+                  <ArrowDown className="w-3.5 h-3.5 text-gray-400 sm:hidden" />
+                  <ArrowRight className="w-3.5 h-3.5 text-gray-400 hidden sm:block" />
                 </div>
               )}
             </Fragment>

@@ -23,6 +23,16 @@ export function Hero({ category, title, subtitle, body, accentColor = "emerald" 
       text: "text-violet-400",
       badge: "bg-violet-500/10 text-violet-400 border-violet-500/30",
     },
+    sky: {
+      border: "border-sky-500",
+      text: "text-sky-400",
+      badge: "bg-sky-500/10 text-sky-400 border-sky-500/30",
+    },
+    rose: {
+      border: "border-rose-500",
+      text: "text-rose-400",
+      badge: "bg-rose-500/10 text-rose-400 border-rose-500/30",
+    },
   };
 
   const colors = accentMap[accentColor] ?? accentMap.emerald;

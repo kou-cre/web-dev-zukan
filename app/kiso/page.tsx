@@ -40,15 +40,15 @@ const pages: {
     iconColor: "#e2e8f0",
     title: "Vercelって何？",
     description: "デプロイ先としての Vercel の位置づけ",
-    status: "未作成",
+    status: "完成",
   },
   {
     href: "/kiso/pwa",
     icon: Smartphone,
     iconColor: "#fb923c",
     title: "PWAって何？",
-    description: "PWA が何をするものか",
-    status: "未作成",
+    description: "manifest.json と Service Worker でWebサイトをアプリ化する仕組み",
+    status: "完成",
   },
 ];
 

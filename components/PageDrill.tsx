@@ -18,22 +18,28 @@ interface PageDrillProps {
 export function PageDrill({ questions }: PageDrillProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [submitted, setSubmitted] = useState(false);
   const [results, setResults] = useState<boolean[]>([]);
   const [finished, setFinished] = useState(false);
 
   const current = questions[currentIndex];
-  const isAnswered = selectedIndex !== null;
 
   function handleSelect(i: number) {
-    if (isAnswered) return;
+    if (submitted) return;
     setSelectedIndex(i);
-    setResults((prev) => [...prev, i === current.correctIndex]);
+  }
+
+  function handleSubmit() {
+    if (selectedIndex === null) return;
+    setResults((prev) => [...prev, selectedIndex === current.correctIndex]);
+    setSubmitted(true);
   }
 
   function handleNext() {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex((prev) => prev + 1);
       setSelectedIndex(null);
+      setSubmitted(false);
     } else {
       setFinished(true);
     }
@@ -42,6 +48,7 @@ export function PageDrill({ questions }: PageDrillProps) {
   function handleReset() {
     setCurrentIndex(0);
     setSelectedIndex(null);
+    setSubmitted(false);
     setResults([]);
     setFinished(false);
   }
@@ -118,7 +125,7 @@ export function PageDrill({ questions }: PageDrillProps) {
             let bgColor = "#0f1117";
             let textColor = "#e5e7eb";
 
-            if (isAnswered) {
+            if (submitted) {
               if (i === current.correctIndex) {
                 borderColor = "#10b981";
                 bgColor = "#052e16";
@@ -131,14 +138,15 @@ export function PageDrill({ questions }: PageDrillProps) {
                 textColor = "#6b7280";
               }
             } else if (selectedIndex === i) {
-              borderColor = "#6b7280";
+              borderColor = "#e5e7eb";
+              bgColor = "#1e2130";
             }
 
             return (
               <button
                 key={i}
                 onClick={() => handleSelect(i)}
-                disabled={isAnswered}
+                disabled={submitted}
                 className="w-full text-left rounded-lg border px-3 py-2.5 text-sm transition-colors flex items-start gap-2"
                 style={{ borderColor, backgroundColor: bgColor, color: textColor }}
               >
@@ -149,7 +157,24 @@ export function PageDrill({ questions }: PageDrillProps) {
           })}
         </div>
 
-        {isAnswered && (
+        {!submitted && (
+          <button
+            onClick={handleSubmit}
+            disabled={selectedIndex === null}
+            className="w-full py-2 rounded-lg text-sm font-medium transition-colors mb-3"
+            style={{
+              backgroundColor: selectedIndex !== null ? "#10b981" : "#1a1d2a",
+              color: selectedIndex !== null ? "#0f1117" : "#4b5563",
+              border: "1px solid",
+              borderColor: selectedIndex !== null ? "#10b981" : "#2d3048",
+              cursor: selectedIndex !== null ? "pointer" : "not-allowed",
+            }}
+          >
+            回答する
+          </button>
+        )}
+
+        {submitted && (
           <div
             className="rounded-lg p-4 mb-4 border"
             style={{
@@ -169,7 +194,7 @@ export function PageDrill({ questions }: PageDrillProps) {
           </div>
         )}
 
-        {isAnswered && (
+        {submitted && (
           <button
             onClick={handleNext}
             className="w-full py-2 rounded-lg text-sm font-medium transition-colors"

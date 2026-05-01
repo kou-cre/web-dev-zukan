@@ -140,12 +140,12 @@ export function PageDrill({ questions }: PageDrillProps) {
         <p className="text-sm font-medium text-white mb-4 leading-relaxed">{current.question}</p>
 
         <p className="hidden sm:flex items-center gap-1.5 text-xs text-gray-400 mb-3">
-          <kbd className="px-1 py-0.5 rounded text-[10px] font-mono" style={{ backgroundColor: "#0f1117", border: "1px solid #2d3048" }}>A</kbd>
-          <kbd className="px-1 py-0.5 rounded text-[10px] font-mono" style={{ backgroundColor: "#0f1117", border: "1px solid #2d3048" }}>B</kbd>
-          <kbd className="px-1 py-0.5 rounded text-[10px] font-mono" style={{ backgroundColor: "#0f1117", border: "1px solid #2d3048" }}>C</kbd>
-          <kbd className="px-1 py-0.5 rounded text-[10px] font-mono" style={{ backgroundColor: "#0f1117", border: "1px solid #2d3048" }}>D</kbd>
+          <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>A</kbd>
+          <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>B</kbd>
+          <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>C</kbd>
+          <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>D</kbd>
           <span>で選択 /</span>
-          <kbd className="px-1 py-0.5 rounded text-[10px] font-mono" style={{ backgroundColor: "#0f1117", border: "1px solid #2d3048" }}>Enter</kbd>
+          <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>Enter</kbd>
           <span>で回答</span>
         </p>
 

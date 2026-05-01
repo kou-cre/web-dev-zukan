@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Trophy, ThumbsUp, Dumbbell, GraduationCap } from "lucide-react";
 
 export interface DrillQuestion {
   id: string;
@@ -51,8 +52,12 @@ export function PageDrill({ questions }: PageDrillProps) {
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">DRILL</h2>
         <div className="rounded-xl border p-6 text-center" style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}>
-          <div className="text-4xl mb-3">
-            {score === questions.length ? "🎉" : score >= questions.length / 2 ? "👍" : "💪"}
+          <div className="flex justify-center mb-3">
+            {score === questions.length
+              ? <Trophy className="w-10 h-10 text-yellow-400" />
+              : score >= questions.length / 2
+              ? <ThumbsUp className="w-10 h-10 text-blue-400" />
+              : <Dumbbell className="w-10 h-10 text-orange-400" />}
           </div>
           <p className="text-xl font-bold text-white mb-1">
             {score} / {questions.length} 正解
@@ -156,7 +161,10 @@ export function PageDrill({ questions }: PageDrillProps) {
               style={{ color: selectedIndex === current.correctIndex ? "#10b981" : "#ef4444" }}>
               {selectedIndex === current.correctIndex ? "✓ 正解！" : "✗ 不正解"}
             </p>
-            <p className="text-xs font-semibold text-amber-400 mb-1">🧙 マスターのワンポイント</p>
+            <p className="text-xs font-semibold text-amber-400 mb-1 flex items-center gap-1">
+              <GraduationCap className="w-3.5 h-3.5" />
+              マスターのワンポイント
+            </p>
             <p className="text-xs text-gray-300 leading-relaxed">{current.explanation}</p>
           </div>
         )}

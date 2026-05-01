@@ -329,7 +329,7 @@ export default function AsyncPage() {
             speaker: "maji",
             emotion: "doubt",
             text:
-              "マスター、「非同期処理」って言葉自体がよくわからないんですよ……。「同期」と何が違うんですか？ 同じ時刻に動くか動かないか、みたいな話ですか？",
+              "マスター、「非同期処理」って言葉自体がよくわからないんですよ……。ボク、「同期」と何が違うんですか？ 同じ時刻に動くか動かないか、みたいな話ですか？",
           },
           {
             speaker: "master",
@@ -353,7 +353,7 @@ export default function AsyncPage() {
             speaker: "maji",
             emotion: "surprised",
             text:
-              "えっ、`try / catch` で非同期のエラーが捕まえられるんですか！？ 通信エラーって、なんとなく `.catch()` でしか拾えない別世界の存在だと思っていました。それはありがたすぎます！",
+              "えっ、`try / catch` で非同期のエラーが捕まえられるんですか！？ ボク、通信エラーってなんとなく `.catch()` でしか拾えない別世界の存在だと思っていました。それはありがたすぎます！",
           },
           {
             speaker: "master",

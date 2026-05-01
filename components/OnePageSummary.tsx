@@ -1,0 +1,62 @@
+import { Lightbulb, Quote } from "lucide-react";
+
+interface MetaphorPoint {
+  label: string;
+  real: string;
+  metaphor: string;
+}
+
+interface OnePageSummaryProps {
+  keyMessage: string;
+  metaphorTitle: string;
+  metaphorPoints: MetaphorPoint[];
+  definition: string;
+}
+
+export function OnePageSummary({ keyMessage, metaphorTitle, metaphorPoints, definition }: OnePageSummaryProps) {
+  return (
+    <section className="mb-10">
+      <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        ONE PAGE SUMMARY
+      </h2>
+
+      {/* Key message */}
+      <div
+        className="rounded-xl border p-5 mb-4"
+        style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+      >
+        <p className="text-sm text-gray-300 leading-relaxed">{keyMessage}</p>
+      </div>
+
+      {/* Metaphor */}
+      <div
+        className="rounded-xl border p-5 mb-4"
+        style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <Quote className="w-4 h-4 text-amber-400" />
+          <p className="text-xs font-semibold text-amber-400">{metaphorTitle}</p>
+        </div>
+        <div className="space-y-2">
+          {metaphorPoints.map((point, i) => (
+            <div key={i} className="grid grid-cols-[1.5rem_1fr_auto_1fr] items-center gap-2 text-xs">
+              <span className="text-center text-gray-600 font-mono font-bold">{i + 1}</span>
+              <span className="text-gray-300">{point.real}</span>
+              <span className="text-gray-600 text-xs">=</span>
+              <span className="text-amber-300 font-medium">{point.metaphor}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* One-line definition */}
+      <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5">
+        <div className="flex items-center gap-2 mb-2">
+          <Lightbulb className="w-4 h-4 text-emerald-400" />
+          <p className="text-xs font-semibold text-emerald-400">一言定義</p>
+        </div>
+        <p className="text-sm font-medium text-white leading-relaxed">{definition}</p>
+      </div>
+    </section>
+  );
+}

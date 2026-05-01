@@ -13,14 +13,14 @@ const pages = [
     emoji: "🗄️",
     title: "データベースって何？",
     description: "DBの役割と、Firebase / Supabase の違い",
-    status: "未作成",
+    status: "完成",
   },
   {
     href: "/kiso/baas",
     emoji: "☁️",
     title: "BaaSって何？",
     description: "Backend as a Service の概念をフロントエンド視点から",
-    status: "未作成",
+    status: "完成",
   },
   {
     href: "/kiso/vercel",

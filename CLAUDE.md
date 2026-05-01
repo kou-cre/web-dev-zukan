@@ -4,7 +4,10 @@
 
 Web開発の概念を図解・比喩・対話形式で解説する自学用サイト。
 Next.js 15（App Router）+ TypeScript + Tailwind CSS + lucide-react で構築。
-Vercel へのデプロイを予定（未デプロイ）。
+
+- **本番URL:** https://web-dev-zukan.vercel.app
+- **GitHubリポジトリ:** https://github.com/kou-cre/web-dev-zukan
+- **デプロイ:** Vercel（mainブランチへのpushで自動デプロイ）
 
 ---
 
@@ -15,6 +18,7 @@ Vercel へのデプロイを予定（未デプロイ）。
 | トップ（ハブ） | `/` | ✅ 完成 |
 | 基礎概念ハブ | `/kiso` | ✅ 完成 |
 | サーバーって何？ | `/kiso/server` | ✅ 完成 |
+| BaaSって何？ | `/kiso/baas` | ✅ 完成 |
 | その他全ページ | — | 未作成 |
 
 ---
@@ -138,7 +142,7 @@ npm_config_cache=/tmp/npm-cache npm run dev
 
 ## 次にやること（優先度順）
 
-1. **Vercel デプロイ** — GitHub リポジトリを作って push し Vercel と連携する
+1. ~~**Vercel デプロイ**~~ — ✅ 完了（2026-05-01）
 2. **次ページ「BaaSって何？」** — コンテンツ案（`コンテンツ案/BaaSって何？.md`）を作ってから実装
 3. **次ページ「Vercelって何？」** — 同上
 4. **次ページ「データベースって何？」** — 同上

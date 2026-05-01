@@ -375,7 +375,7 @@ export default function VariablesPage() {
           </WarningPoint>
         </DetailBlock>
 
-        <DetailBlock heading="6.4 このプロジェクトでの使い方">
+        <DetailBlock heading="6.4 実践的な変数宣言のルール">
           <p>
             <strong className="text-white">原則：const ファースト</strong>。すべての変数宣言は const から始める。
           </p>

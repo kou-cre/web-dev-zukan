@@ -289,16 +289,16 @@ export default function BaasPage() {
               highlightCol: 1,
             },
             {
-              label: "このプロジェクト",
+              label: "個人開発での選択例",
               cells: [
-                "ステージ2以降（必要が出たら）",
-                "ステージ1のメイン土台",
-                "ステージ1の代替候補（SQL派の場合）",
+                "要件が複雑になったとき・チーム開発・既存システム連携",
+                "リアルタイム同期が必要・SQLに慣れていない",
+                "SQLに慣れている・RDB設計に慣れている",
               ],
               highlightCol: 1,
             },
           ]}
-          note="このプロジェクトでは Firebase からスタートする方針。SQLに慣れている方は Supabase に置き換えても話は通じる。重要なのは「BaaSという選択肢」を理解しておくこと。"
+          note="SQLに慣れていない・最短で動かしたいなら Firebase から入るのが一般的。SQL経験者は Supabase に置き換えても話は通じる。重要なのは「BaaSという選択肢」を理解しておくこと。"
         />
       </section>
 
@@ -332,7 +332,7 @@ export default function BaasPage() {
           {
             speaker: "master",
             emotion: "explain",
-            text: "大袈裟ですよ、マジさん。最初は Firebase からで構いません。Google製で資料も多く、ステージ1の道具としては十分です。SQL を書いたご経験があるなら Supabase（PostgreSQLベース）も自然な選択肢になります。ですが、今は道具を選ぶことより、選んだ道具を使いこなすことに集中するのが先です。",
+            text: "大袈裟ですよ、マジさん。最初は Firebase からで構いません。Google製で資料も多く、個人開発の最初のステップとして十分な選択肢です。SQL を書いたご経験があるなら Supabase（PostgreSQLベース）も自然な選択肢になります。ですが、今は道具を選ぶことより、選んだ道具を使いこなすことに集中するのが先です。",
           },
           {
             speaker: "maji",
@@ -393,15 +393,15 @@ export default function BaasPage() {
           </KeyPoint>
         </DetailBlock>
 
-        <DetailBlock heading="7.4 このプロジェクトでの方針">
+        <DetailBlock heading="7.4 BaaSの学習ロードマップ — どこから始めるか">
           <p>
-            <strong className="text-white">ステージ1</strong>：Firebase（または Supabase）+ Vercel で進める。認証・DB・ストレージは BaaS で済ませ、フロントエンド（Next.js）と BaaS の組み合わせに集中する。
+            <strong className="text-white">最初のステップ</strong>：Firebase（または Supabase）+ Vercel の組み合わせから入るのが一般的。認証・DB・ストレージは BaaS で済ませ、フロントエンド（Next.js）と BaaS の組み合わせに集中する。
           </p>
           <p>
-            <strong className="text-white">ステージ2</strong>：BaaS の制約にぶつかったとき、または案件で「自前で作ってほしい」と要請されたときに、Express / Hono / Next.js API Routes に踏み込む。
+            <strong className="text-white">次のステップ</strong>：BaaS の制約にぶつかったとき、または案件で「自前で作ってほしい」と要請されたときに、Express / Hono / Next.js API Routes に踏み込む。
           </p>
           <KeyPoint>
-            ゴールは「BaaS を使いこなしつつ、その裏で何が動いているか想像できる」状態。Firestore のクエリも、Supabase の Row Level Security も、概念図Bの「Auth・DB・Storage・Functions」の組み合わせがクラウド側で動いているだけ。構造を理解しておけば、後でステージ2に進んだ時の地続き感が違う。
+            ゴールは「BaaS を使いこなしつつ、その裏で何が動いているか想像できる」状態。Firestore のクエリも、Supabase の Row Level Security も、概念図Bの「Auth・DB・Storage・Functions」の組み合わせがクラウド側で動いているだけ。構造を理解しておけば、自前バックエンドを学ぶときの地続き感が違う。
           </KeyPoint>
         </DetailBlock>
       </DetailSection>

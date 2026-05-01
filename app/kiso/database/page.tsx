@@ -148,7 +148,7 @@ export default function DatabasePage() {
             </div>
           </div>
           <p className="text-xs text-gray-600 text-center mt-4">
-            このプロジェクトのステージ1では、Firebase（NoSQL / Firestore）を主役として進める。
+            個人開発でNoSQLを選ぶ場合、Firestore（Firebase）がよく使われる選択肢のひとつ。
           </p>
         </ConceptDiagram>
 
@@ -230,10 +230,10 @@ export default function DatabasePage() {
               highlightCol: 1,
             },
             {
-              label: "このプロジェクト",
+              label: "よく選ばれる場面",
               cells: [
-                "Supabase を選んだ場合に使う",
-                "Firebase を選んだ場合に使う（推奨）",
+                "スキーマを厳密に管理したい・SQL経験がある場合",
+                "最短で動かしたい・リアルタイム同期が必要な場合",
               ],
               highlightCol: 1,
             },
@@ -262,7 +262,7 @@ export default function DatabasePage() {
           {
             speaker: "master",
             emotion: "standard",
-            text: "その通りです。Firestoreはマジさんが選ぼうとしているステージ1の主役のひとつで、NoSQL型のデータベースです。構造は「引き出しの中に、さらに引き出しが入っている」イメージで、`users` というコレクション（大きな引き出し）の中に、ユーザー1人ずつのドキュメント（小さな引き出し）が並んでいる、と覚えていただければ十分です。",
+            text: "その通りです。FirestoreはBaaSを使う構成の主役のひとつで、NoSQL型のデータベースです。構造は「引き出しの中に、さらに引き出しが入っている」イメージで、`users` というコレクション（大きな引き出し）の中に、ユーザー1人ずつのドキュメント（小さな引き出し）が並んでいる、と覚えていただければ十分です。",
           },
           {
             speaker: "maji",
@@ -272,7 +272,7 @@ export default function DatabasePage() {
           {
             speaker: "master",
             emotion: "thinking",
-            text: "落ち着いてください、マジさん。少なくともステージ1で Firestore を使うなら、SQLは1行も書きません。Firestore には独自のAPI（`addDoc` / `getDocs` / `updateDoc` / `deleteDoc`）が用意されていて、これがSQLの `INSERT` / `SELECT` / `UPDATE` / `DELETE` に1対1で対応しています。「概念だけ知っておく」レベルで今は十分です。",
+            text: "落ち着いてください、マジさん。Firestore を使うなら、SQLは1行も書きません。Firestore には独自のAPI（`addDoc` / `getDocs` / `updateDoc` / `deleteDoc`）が用意されていて、これがSQLの `INSERT` / `SELECT` / `UPDATE` / `DELETE` に1対1で対応しています。「概念だけ知っておく」レベルで今は十分です。",
           },
           {
             speaker: "maji",
@@ -330,15 +330,15 @@ export default function DatabasePage() {
           </p>
         </DetailBlock>
 
-        <DetailBlock heading="6.4 このプロジェクトでのDBの位置づけ">
+        <DetailBlock heading="6.4 DBの選び方 — 学習ステップの考え方">
           <p>
-            <strong className="text-white">ステージ1</strong>：Firebase（Firestore）を採用予定。理由は3つ — 無料枠が広い、リアルタイム同期が標準、フロントエンドから直接叩ける感覚で書ける。
+            <strong className="text-white">最初の選択</strong>：学習コストを最小にしたいなら Firestore（Firebase）が入りやすい。無料枠が広く、リアルタイム同期が標準で、フロントエンドから直接叩ける感覚で書けるため、DBの全体像を掴むのに向いている。
           </p>
           <p>
-            <strong className="text-white">ステージ2</strong>：データの関係性が複雑になったり、集計が増えてきたら Supabase（PostgreSQL）への移行を検討する。SQLを学ぶのはこの段階で十分。
+            <strong className="text-white">次のステップ</strong>：データの関係性が複雑になったり、集計処理が増えてきたら Supabase（PostgreSQL）も検討する。SQLを深く学ぶのはこの段階からでも十分間に合う。
           </p>
           <KeyPoint>
-            「DBを選ぶ」のは「アプリの土台を選ぶ」と同じくらい重い決断。ただし、ステージ1で完璧を求めない。動かしながら必要になったら学ぶ、で問題ない。
+            「DBを選ぶ」のは「アプリの土台を選ぶ」と同じくらい重い決断。ただし最初から完璧を求める必要はない。動かしながら必要になったら学ぶ、で問題ない。
           </KeyPoint>
         </DetailBlock>
 
@@ -372,7 +372,7 @@ export default function DatabasePage() {
           {
             href: "/kiso/vercel",
             title: "Vercelって何？",
-            description: "このプロジェクトでデプロイ先に選ぶ理由",
+            description: "Next.jsアプリのデプロイ先として広く使われるサービス",
             icon: "Triangle",
           },
         ]}

@@ -218,16 +218,16 @@ export default function ServerPage() {
               highlightCol: 2,
             },
             {
-              label: "このプロジェクト",
+              label: "個人開発での典型的な使い方",
               cells: [
-                "ステージ2（後回し）",
-                "ステージ1〜2（Vercel採用なので自然と触ることになる）",
-                "ステージ1のメイン土台（ここから始める）",
+                "複雑なビジネスロジックが必要になったとき",
+                "フロントエンドと組み合わせて構成するとき",
+                "学習コストを最小にして最短で動かしたいとき",
               ],
               highlightCol: 2,
             },
           ]}
-          note="このプロジェクトでは BaaS（Firebase / Supabase）でステージ1を進める方針。自前サーバーはあとから知っても困らないものとして、ステージ2に置いている。"
+          note="個人開発の初期段階では BaaS（Firebase / Supabase）から入るのが一般的。自前サーバーの知識は後から身につけても間に合うため、まずはBaaSで全体の流れを掴む方が効率が良い。"
         />
       </section>
 
@@ -261,7 +261,7 @@ export default function ServerPage() {
           {
             speaker: "master",
             emotion: "thinking",
-            text: "鋭いご指摘です。マジさんの今のステージ1では、それで十分です。BaaSはフロント係付きの居抜き物件のようなもので、開業初日から営業できます。ただ、いずれクライアントから「社内システムを作ってほしい」とご依頼を受けた時、先方の事情で自前のサーバーが必要になるケースがあります。完全に避け続けるのではなく、「今は使わないが、構造は理解している」という状態を目指していただくのが理想です。",
+            text: "鋭いご指摘です。フロントエンド学習の初期段階では、それで十分です。BaaSはフロント係付きの居抜き物件のようなもので、開業初日から営業できます。ただ、いずれクライアントから「社内システムを作ってほしい」とご依頼を受けた時、先方の事情で自前のサーバーが必要になるケースがあります。完全に避け続けるのではなく、「今は使わないが、構造は理解している」という状態を目指していただくのが理想です。",
           },
           {
             speaker: "maji",
@@ -318,14 +318,14 @@ export default function ServerPage() {
           <p>このページでいう「サーバー」は、ほぼバックエンドの実行場所のこと。フロントエンドの世界しか知らなかった人は、ここで初めて「裏側」を意識する。</p>
         </DetailBlock>
 
-        <DetailBlock heading="6.5 このプロジェクトで自前サーバーをどう扱うか">
+        <DetailBlock heading="6.5 自前サーバーをいつ学ぶか">
           <p>
-            <strong className="text-white">ステージ1</strong>：BaaS（Firebase または Supabase）+ Vercel で進める。自前サーバーの構築は学ばない。
+            <strong className="text-white">最初のステップ</strong>：BaaS（Firebase または Supabase）+ Vercel の組み合わせで始めるのが一般的。自前サーバーの構築は不要で、フロントエンドと組み合わせるだけでアプリが動く。
           </p>
           <p>
-            <strong className="text-white">ステージ2</strong>：必要が出てきた段階で、Express / Hono / Next.js API Routes / コンテナ・VPS のいずれかに踏み込む。
+            <strong className="text-white">次のステップ</strong>：BaaSの制約にぶつかったとき、または案件で自前実装が必要になったタイミングで、Express / Hono / Next.js API Routes / コンテナ・VPS に踏み込む。
           </p>
-          <KeyPoint>重要なのは「BaaSの裏で何が起きているか」を想像できるレベルにしておくこと。Firestoreのクエリも、SupabaseのRow Level Securityも、概念図Bで描いた「HTTPサーバー＋処理ロジック＋DB接続」の組み合わせがクラウド側で動いているだけだと理解しておけば、後でステージ2に進んだ時の地続き感が違う。</KeyPoint>
+          <KeyPoint>重要なのは「BaaSの裏で何が起きているか」を想像できるレベルにしておくこと。Firestoreのクエリも、SupabaseのRow Level Securityも、概念図Bで描いた「HTTPサーバー＋処理ロジック＋DB接続」の組み合わせがクラウド側で動いているだけだと理解しておけば、後で自前サーバーを学ぶときの地続き感が違う。</KeyPoint>
         </DetailBlock>
       </DetailSection>
 
@@ -340,7 +340,7 @@ export default function ServerPage() {
           {
             href: "/kiso/vercel",
             title: "Vercelって何？",
-            description: "このプロジェクトでデプロイ先に選ぶ理由",
+            description: "Next.jsアプリのデプロイ先として広く使われるサービス",
             icon: "Triangle",
           },
           {

@@ -272,11 +272,11 @@ export default function VercelPage() {
               highlightCol: 0,
             },
             {
-              label: "このプロジェクト",
+              label: "Next.jsとの相性",
               cells: [
-                "採用（このサイト自体がVercel）",
-                "代替候補",
-                "Next.jsアプリは動かせないので不採用",
+                "最優先（同社製のため最も深く対応）",
+                "対応しているが挙動差が出ることがある",
+                "静的サイトのみ・サーバー機能は不可",
               ],
               highlightCol: 0,
             },
@@ -325,7 +325,7 @@ export default function VercelPage() {
           {
             speaker: "master",
             emotion: "explain",
-            text: "良い言い表しです、マジさん。実を申しますと、いま開いていただいているこのサイト（web-dev-zukan.vercel.app）も Vercel でデプロイされています。私が main に push するたび、数分で世界中の方が新しいページを見られるようになる。これが Vercel の正体です。",
+            text: "良い言い表しです、マジさん。実を申しますと、Vercel を使った Next.js サイトはこの仕組みで動いています。main に push するたびに、数分で世界中の方が新しいページを見られるようになる。これが Vercel の正体です。",
           },
         ]}
       />
@@ -415,15 +415,15 @@ export default function VercelPage() {
           </KeyPoint>
         </DetailBlock>
 
-        <DetailBlock heading="8.5 このプロジェクトでの方針">
+        <DetailBlock heading="8.5 Vercelを使う構成のまとめ">
           <p>
-            <strong className="text-white">採用構成</strong>：GitHub（kou-cre/web-dev-zukan）+ Vercel の自動デプロイ。
+            <strong className="text-white">典型的な構成</strong>：GitHub リポジトリ + Vercel の自動デプロイ。リポジトリを連携するだけでセットアップは完了し、以降は push するだけでビルド〜配信が全自動になる。
           </p>
           <p>
-            このサイト自体（web-dev-zukan.vercel.app）も Vercel でデプロイされている。main ブランチに push するたびに、Vercel が自動でビルド・CDN配信を行い、数分で本番URLに反映される。手動デプロイの作業は一切ない。
+            main ブランチへの push をトリガーに、Vercel が自動でビルド・CDN配信を行い、数分で本番URLに反映される。手動デプロイの作業は一切ない。
           </p>
           <KeyPoint>
-            このページを今あなたが読んでいる、その状態こそが Vercel が動いている実例。GitHub への push がトリガーになり、世界100以上のエッジ拠点経由でこのHTMLがブラウザに届いている。
+            「push したら世界中に届く」この仕組みこそが Vercel の本質。GitHub への push がトリガーになり、世界100以上のエッジ拠点経由でHTMLがブラウザに届く。
           </KeyPoint>
         </DetailBlock>
       </DetailSection>

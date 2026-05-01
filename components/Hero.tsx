@@ -33,6 +33,36 @@ export function Hero({ category, title, subtitle, body, accentColor = "emerald" 
       text: "text-rose-400",
       badge: "bg-rose-500/10 text-rose-400 border-rose-500/30",
     },
+    yellow: {
+      border: "border-yellow-500",
+      text: "text-yellow-400",
+      badge: "bg-yellow-500/10 text-yellow-400 border-yellow-500/30",
+    },
+    amber: {
+      border: "border-amber-500",
+      text: "text-amber-400",
+      badge: "bg-amber-500/10 text-amber-400 border-amber-500/30",
+    },
+    lime: {
+      border: "border-lime-500",
+      text: "text-lime-400",
+      badge: "bg-lime-500/10 text-lime-400 border-lime-500/30",
+    },
+    cyan: {
+      border: "border-cyan-500",
+      text: "text-cyan-400",
+      badge: "bg-cyan-500/10 text-cyan-400 border-cyan-500/30",
+    },
+    orange: {
+      border: "border-orange-500",
+      text: "text-orange-400",
+      badge: "bg-orange-500/10 text-orange-400 border-orange-500/30",
+    },
+    red: {
+      border: "border-red-500",
+      text: "text-red-400",
+      badge: "bg-red-500/10 text-red-400 border-red-500/30",
+    },
   };
 
   const colors = accentMap[accentColor] ?? accentMap.emerald;

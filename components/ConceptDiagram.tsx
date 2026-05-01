@@ -83,7 +83,7 @@ export function FlowArrow({ label, sublabel, direction = "right" }: FlowArrowPro
     <div className="flex flex-col items-center gap-0.5 px-1 py-1">
       <span className="text-xs text-gray-400 text-center leading-tight whitespace-nowrap">{label}</span>
       {sublabel && (
-        <span className="text-xs font-mono text-gray-500 text-center">{sublabel}</span>
+        <span className="text-xs font-mono text-gray-400 text-center">{sublabel}</span>
       )}
       {isVertical ? (
         <ArrowDown className="w-4 h-4 text-gray-500" />

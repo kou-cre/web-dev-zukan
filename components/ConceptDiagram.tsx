@@ -63,16 +63,26 @@ interface FlowArrowProps {
 }
 
 export function FlowArrow({ label, sublabel, direction = "right" }: FlowArrowProps) {
-  const ArrowIcon = direction === "right" ? ArrowRight : direction === "left" ? ArrowLeft : ArrowDown;
   const isVertical = direction === "down";
 
   return (
-    <div className={`flex ${isVertical ? "flex-col" : "flex-col"} items-center gap-0.5 px-1 py-1`}>
+    <div className="flex flex-col items-center gap-0.5 px-1 py-1">
       <span className="text-xs text-gray-500 text-center leading-tight whitespace-nowrap">{label}</span>
       {sublabel && (
         <span className="text-xs font-mono text-gray-600 text-center">{sublabel}</span>
       )}
-      <ArrowIcon className={`text-gray-600 ${isVertical ? "w-4 h-4" : "w-4 h-4"}`} />
+      {isVertical ? (
+        <ArrowDown className="w-4 h-4 text-gray-600" />
+      ) : (
+        <>
+          <ArrowDown className="w-4 h-4 text-gray-600 sm:hidden" />
+          {direction === "right" ? (
+            <ArrowRight className="w-4 h-4 text-gray-600 hidden sm:block" />
+          ) : (
+            <ArrowLeft className="w-4 h-4 text-gray-600 hidden sm:block" />
+          )}
+        </>
+      )}
     </div>
   );
 }
@@ -142,7 +152,7 @@ export function ContrastBar({ rows }: ContrastBarProps) {
             )}
             {row.highlight && (
               <span className="ml-auto text-xs px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                このプロジェクト
+                推奨
               </span>
             )}
           </div>

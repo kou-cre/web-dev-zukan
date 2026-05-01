@@ -86,14 +86,14 @@ export function FlowArrow({ label, sublabel, direction = "right" }: FlowArrowPro
         <span className="text-xs font-mono text-gray-400 text-center">{sublabel}</span>
       )}
       {isVertical ? (
-        <ArrowDown className="w-4 h-4 text-gray-500" />
+        <ArrowDown className="w-4 h-4 text-gray-400" />
       ) : (
         <>
-          <ArrowDown className="w-4 h-4 text-gray-500 sm:hidden" />
+          <ArrowDown className="w-4 h-4 text-gray-400 sm:hidden" />
           {direction === "right" ? (
-            <ArrowRight className="w-4 h-4 text-gray-500 hidden sm:block" />
+            <ArrowRight className="w-4 h-4 text-gray-400 hidden sm:block" />
           ) : (
-            <ArrowLeft className="w-4 h-4 text-gray-500 hidden sm:block" />
+            <ArrowLeft className="w-4 h-4 text-gray-400 hidden sm:block" />
           )}
         </>
       )}
@@ -126,7 +126,7 @@ export function StackLayer({ Icon, title, subtitle, iconColor = "text-emerald-40
       </div>
       {showArrow && (
         <div className="flex justify-center py-1">
-          <ArrowDown className="w-3.5 h-3.5 text-gray-500" />
+          <ArrowDown className="w-3.5 h-3.5 text-gray-400" />
         </div>
       )}
     </div>

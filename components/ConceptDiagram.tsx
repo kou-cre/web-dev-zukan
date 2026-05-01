@@ -13,7 +13,6 @@ export function ConceptDiagram({ title, description, children }: ConceptDiagramP
       className="rounded-xl border p-5 mb-6"
       style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
     >
-      <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1">{title}</p>
       {description && <p className="text-sm text-gray-400 mb-5">{description}</p>}
       {children}
     </div>

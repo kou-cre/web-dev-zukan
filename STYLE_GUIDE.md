@@ -118,6 +118,37 @@
 - [ ] モバイル: `details/summary` アコーディオン表示
 - [ ] `highlightCol` prop でデフォルト開閉制御
 
+### NestedDiagram（入れ子構造）
+- [ ] コンポーネントツリー・スコープ階層・コンテナ構造の図解に使う
+- [ ] `accentColor` = 外枠のカラー、各 `group.accentColor` = 内枠カラー（別色にすると見やすい）
+- [ ] `caption` でダイアグラム下に説明テキストを追加できる
+
+### UseCaseGrid（ビジュアル埋め込みパターン）
+- [ ] `visual` prop（ReactNode）に JSX を渡すとカード上部にミニ図解を表示できる
+- [ ] `BrowserMock` / `TerminalBlock` / インライン JSX を `visual` に渡してカードを多様化する
+- [ ] 全カード同じ見た目にならないよう、ビジュアルありとなしを混在させてよい
+
+---
+
+## 図解レイアウト多様化の原則
+
+**固定パターンを繰り返さない。** 1ページの中でレイアウトが単調にならないよう、以下を意識する。
+
+| 情報の種類 | 推奨コンポーネント |
+|-----------|-----------------|
+| 役割の対比（A vs B） | `UseCaseGrid` (cols=2) |
+| 複数の選択肢・機能一覧 | `UseCaseGrid` (cols=3) |
+| ミニUI・コード実例付きカード | `UseCaseGrid` + `visual` prop |
+| 入れ子・階層・ツリー構造 | `NestedDiagram` |
+| 段階的な進化・学習ステップ | `Timeline` |
+| よくある誤解の訂正 | `CorrectionCard` |
+| コードそのもの | `CodeBlock` |
+| コマンドライン操作 | `TerminalBlock` |
+| ブラウザUIの再現 | `BrowserMock` |
+| 重要な数値・指標 | `StatCards` |
+
+同じコンポーネントを連続して3回以上使わない。
+
 ---
 
 ## スペーシング規則

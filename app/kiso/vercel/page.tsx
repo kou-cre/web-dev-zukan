@@ -10,6 +10,10 @@ import {
   KeyRound,
   Rocket,
   GitPullRequest,
+  FileCode,
+  Server,
+  Cloud,
+  MapPin,
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
@@ -25,6 +29,11 @@ import { MajiDialogue } from "@/components/MajiDialogue";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { DetailSection, DetailBlock, KeyPoint } from "@/components/DetailSection";
+import { CorrectionCard } from "@/components/CorrectionCard";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { Timeline } from "@/components/Timeline";
+import { StatCards } from "@/components/StatCards";
+import { BrowserMock } from "@/components/BrowserMock";
 import { vercelQuestions } from "@/content/questions/kiso/vercel";
 
 export const metadata = {
@@ -339,12 +348,27 @@ export default function VercelPage() {
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>npm run dev</code>{" "}
             して動かしているだけでは、自分のPCの中でしか見られない。デプロイ先（サーバー or ホスティング）に置いて初めて、世界中からアクセス可能になる。
           </p>
-          <p>
-            <strong className="text-white">ローカル環境</strong>：自分のPCの中。`localhost:3000` で見える状態。
-          </p>
-          <p>
-            <strong className="text-white">本番環境</strong>：インターネットに公開されている状態。固定URL（例：web-dev-zukan.vercel.app）で誰でも見られる。
-          </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: Laptop,
+              title: "ローカル環境",
+              subtitle: "localhost:3000",
+              description: "自分のPCの中だけで動く。npm run dev で起動中だけ見られる状態。他の人からはアクセス不可。",
+              accentColor: "amber",
+            },
+            {
+              Icon: Globe2,
+              title: "本番環境",
+              subtitle: "web-dev-zukan.vercel.app",
+              description: "インターネットに公開された状態。固定URLで誰でも・どこからでもアクセス可能。",
+              accentColor: "sky",
+            },
+          ]} />
+          <CorrectionCard
+            misconception="デプロイ = FTPソフトでファイルをアップロードする手作業"
+            correction="Vercel を使えば git push するだけで自動デプロイが完了する"
+            reason="FTPアップロードはかつての手作業デプロイの方法。現代のホスティングサービスはGitHubと連携し、pushを検知して自動でビルド・配信まで完結させる。"
+          />
           <KeyPoint>
             「デプロイした」＝「ローカルから本番環境へ、書いたコードの『動く版』を引っ越しさせた」と理解しておけばOK。Vercel はこの引っ越し作業を自動でやってくれる業者と言える。
           </KeyPoint>
@@ -354,25 +378,38 @@ export default function VercelPage() {
           <p>
             GitHub の main に push されると、Vercel は次の順で処理を進める。
           </p>
-          <p>
-            <strong className="text-white">1. ソース取得</strong>：GitHub から最新のコードを clone する。
-          </p>
-          <p>
-            <strong className="text-white">2. 依存解決</strong>：{" "}
-            <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>npm install</code>{" "}
-            を実行して node_modules を構築する。
-          </p>
-          <p>
-            <strong className="text-white">3. ビルド</strong>：{" "}
-            <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>npm run build</code>{" "}
-            を実行して、Next.js が静的ファイル＋サーバーコードを生成する。
-          </p>
-          <p>
-            <strong className="text-white">4. 配置</strong>：生成された成果物を世界各地のエッジ拠点に配置する。
-          </p>
-          <p>
-            <strong className="text-white">5. 切り替え</strong>：本番URLが新しい成果物を指すように切り替える（古い版から新しい版へ瞬時に置き換わる）。
-          </p>
+          <Timeline items={[
+            {
+              year: "Step 1",
+              label: "ソース取得",
+              description: "Vercel が GitHub から最新のコードを clone する。pushのタイミングでWebhook通知が届き、自動的に開始される。",
+              accentColor: "sky",
+            },
+            {
+              year: "Step 2",
+              label: "依存解決（npm install）",
+              description: "package.json をもとに node_modules を構築する。キャッシュが効くため2回目以降は高速。",
+              accentColor: "sky",
+            },
+            {
+              year: "Step 3",
+              label: "ビルド（npm run build）",
+              description: "Next.js が静的ファイル＋サーバーコードを生成する。ここで型エラーやビルドエラーがあると失敗する。",
+              accentColor: "amber",
+            },
+            {
+              year: "Step 4",
+              label: "エッジへ配置",
+              description: "生成された成果物を世界100以上のエッジ拠点に配置する。ユーザーに最も近い拠点から配信される状態になる。",
+              accentColor: "sky",
+            },
+            {
+              year: "Step 5",
+              label: "本番URL切り替え",
+              description: "本番URLが新しい成果物を指すように瞬時に置き換わる。ダウンタイムなしで新バージョンが公開される。",
+              accentColor: "emerald",
+            },
+          ]} />
           <KeyPoint>
             ローカルで{" "}
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>npm run build</code>{" "}
@@ -384,12 +421,42 @@ export default function VercelPage() {
           <p>
             <strong className="text-white">CDN（Content Delivery Network）</strong>：世界中の拠点に同じファイルを配置し、ユーザーから最も近い拠点が応答する仕組み。日本のユーザーには東京拠点、ヨーロッパのユーザーにはフランクフルト拠点が応答する。
           </p>
-          <p>
-            東京から東京のサーバーへ通信するのと、東京からアメリカのサーバーへ通信するのとでは、物理的な距離だけで200ms以上の差が出ることがある。CDNはこの距離をゼロに近づける。
-          </p>
-          <p>
-            <strong className="text-white">エッジ（Edge）</strong>：CDNを構成する個々の拠点のこと。Vercel は世界100以上のエッジ拠点を持っている。
-          </p>
+          <StatCards cols={3} items={[
+            {
+              value: "100+",
+              label: "エッジ拠点数",
+              sublabel: "Vercel のグローバル拠点",
+              accentColor: "sky",
+            },
+            {
+              value: "200ms+",
+              label: "距離による遅延差",
+              sublabel: "東京→米国サーバーの往復",
+              accentColor: "amber",
+            },
+            {
+              value: "~0ms",
+              label: "CDN使用時の距離差",
+              sublabel: "最寄り拠点が応答するため",
+              accentColor: "emerald",
+            },
+          ]} />
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: Server,
+              title: "CDNなし（単一サーバー）",
+              subtitle: "オリジンサーバーのみ",
+              description: "すべてのユーザーが同じ1台のサーバーへアクセスする。物理的に遠いユーザーには通信遅延が発生する。",
+              accentColor: "orange",
+            },
+            {
+              Icon: MapPin,
+              title: "CDNあり（Vercel）",
+              subtitle: "世界100以上のエッジ拠点",
+              description: "ユーザーに最も近いエッジ拠点が応答する。日本・欧州・米国それぞれで高速表示される。",
+              accentColor: "sky",
+            },
+          ]} />
           <KeyPoint>
             CDNの本質は「物理距離の問題」を「拠点を増やす」ことで解決すること。Vercelは標準でCDN付きなので、何も設定しなくても世界中で速く表示される。
           </KeyPoint>
@@ -399,14 +466,46 @@ export default function VercelPage() {
           <p>
             <strong className="text-white">環境変数</strong>：APIキー・DB接続文字列・各種シークレットなど、コードに直書きしてはいけない値。
           </p>
-          <p>
-            <strong className="text-white">ローカル</strong>：プロジェクトルートの{" "}
-            <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>.env.local</code>{" "}
-            に書く（Gitで追跡しない）。
-          </p>
-          <p>
-            <strong className="text-white">本番</strong>：Vercel ダッシュボードの「Settings → Environment Variables」で設定する。デプロイ時に Vercel が自動で読み込む。
-          </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: FileCode,
+              title: "ローカル（.env.local）",
+              subtitle: "Git管理外のファイルに記述",
+              description: "プロジェクトルートの .env.local に書く。.gitignore に入れてGitに含めないのが絶対ルール。",
+              accentColor: "amber",
+            },
+            {
+              Icon: Cloud,
+              title: "本番（Vercelダッシュボード）",
+              subtitle: "Settings → Environment Variables",
+              description: "Vercel管理画面でキーと値を設定する。デプロイ時に Vercel が自動で読み込むため、コードには書かなくてよい。",
+              accentColor: "sky",
+            },
+          ]} />
+          <BrowserMock url="vercel.com/dashboard/settings/environment-variables">
+            <div className="p-4 space-y-2">
+              <p className="text-xs text-gray-500 mb-3">Environment Variables — Production</p>
+              {[
+                { key: "NEXT_PUBLIC_FIREBASE_API_KEY", value: "AIzaSy••••••••••••••" },
+                { key: "DATABASE_URL", value: "postgresql://user:••••@host/db" },
+                { key: "STRIPE_SECRET_KEY", value: "sk_live_••••••••••••••••••" },
+              ].map(({ key, value }) => (
+                <div
+                  key={key}
+                  className="flex items-center justify-between gap-4 px-3 py-2 rounded-lg text-xs font-mono"
+                  style={{ backgroundColor: "#1a1d2a", border: "1px solid #2d3048" }}
+                >
+                  <span className="text-sky-400">{key}</span>
+                  <span className="text-gray-500">{value}</span>
+                </div>
+              ))}
+            </div>
+          </BrowserMock>
+          <CorrectionCard
+            misconception=".env ファイルを GitHub にコミットすれば本番でも使える"
+            correction=".env は絶対に Git にコミットしてはいけない。本番の環境変数は Vercel ダッシュボードで管理する"
+            reason=".env をリポジトリに含めると APIキーやDBパスワードが公開状態になる。流出すると不正利用・課金被害に直結するため、シークレットはコードから切り離して管理する。"
+          />
           <KeyPoint>
             .env をうっかり Git にcommitしないこと。{" "}
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>.gitignore</code>{" "}
@@ -420,6 +519,38 @@ export default function VercelPage() {
           <p>
             <strong className="text-white">典型的な構成</strong>：GitHub リポジトリ + Vercel の自動デプロイ。リポジトリを連携するだけでセットアップは完了し、以降は push するだけでビルド〜配信が全自動になる。
           </p>
+          <Timeline items={[
+            {
+              year: "① コード変更",
+              label: "ローカルで開発・コミット",
+              description: "新機能・バグ修正などをローカルで開発し、git commit でまとめる。npm run build でビルドが通ることを確認する。",
+              accentColor: "sky",
+            },
+            {
+              year: "② git push",
+              label: "GitHubのmainブランチへpush",
+              description: "git push origin main を実行するだけ。この瞬間が「デプロイの依頼」になる。",
+              accentColor: "sky",
+            },
+            {
+              year: "③ 自動ビルド",
+              label: "Vercel がビルドを自動実行",
+              description: "Webhook を受けた Vercel が clone → npm install → npm run build を自動で行う。ダッシュボードで進捗を確認できる。",
+              accentColor: "amber",
+            },
+            {
+              year: "④ CDN配信",
+              label: "世界100以上の拠点に配置",
+              description: "ビルド成果物が世界各地のエッジ拠点にデプロイされる。ダウンタイムなしで旧版から新版へ切り替わる。",
+              accentColor: "sky",
+            },
+            {
+              year: "⑤ 本番反映",
+              label: "ユーザーが新バージョンを参照",
+              description: "固定URLにアクセスすると最新版が表示される。Preview URLには PR ごとの確認版が残る。",
+              accentColor: "emerald",
+            },
+          ]} />
           <p>
             main ブランチへの push をトリガーに、Vercel が自動でビルド・CDN配信を行い、数分で本番URLに反映される。手動デプロイの作業は一切ない。
           </p>

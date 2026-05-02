@@ -9,6 +9,12 @@ import {
   Search,
   Pencil,
   Trash2,
+  MemoryStick,
+  HardDrive,
+  ShieldAlert,
+  ShieldCheck,
+  BookOpen,
+  Layers,
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
@@ -24,6 +30,10 @@ import { MajiDialogue } from "@/components/MajiDialogue";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { DetailSection, DetailBlock, KeyPoint } from "@/components/DetailSection";
+import { CorrectionCard } from "@/components/CorrectionCard";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { Timeline } from "@/components/Timeline";
+import { CodeBlock } from "@/components/CodeBlock";
 import { databaseQuestions } from "@/content/questions/kiso/database";
 
 export const metadata = {
@@ -289,6 +299,22 @@ export default function DatabasePage() {
 
       <DetailSection title="詳細解説">
         <DetailBlock heading="6.1 なぜDBが必要か — 「変数」では足りない理由">
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: MemoryStick,
+              title: "変数・useState",
+              subtitle: "揮発性メモリ（一時的な記憶）",
+              description: "ページをリロードすれば消える。ブラウザのタブを閉じても消える。複数ユーザーには共有されない。",
+              accentColor: "rose",
+            },
+            {
+              Icon: HardDrive,
+              title: "データベース",
+              subtitle: "永続化された記憶領域",
+              description: "電源を切っても残る。別の端末・別のユーザーからアクセスしても同じ値が返ってくる。",
+              accentColor: "violet",
+            },
+          ]} />
           <p>
             JavaScriptの変数や React の useState に値を入れても、ページをリロードすれば一瞬で消える。これは「揮発性のメモリ」に置いているから。
           </p>
@@ -301,12 +327,27 @@ export default function DatabasePage() {
         </DetailBlock>
 
         <DetailBlock heading="6.2 RDBとNoSQLの使い分け指針">
-          <p>
-            <strong className="text-white">RDB（Supabase / PostgreSQL）</strong>：データの関係性を厳密に表したいとき、表計算的に集計したいときに強い。「この投稿は誰のもので、コメントは誰が書いたか」を JOIN でつなげるのが得意。
-          </p>
-          <p>
-            <strong className="text-white">NoSQL（Firestore / MongoDB）</strong>：データ構造が柔軟で、まず動かしてから育てたいとき・リアルタイム同期が欲しいときに強い。Firestore の `onSnapshot` を使えば、DBの変更が即座にブラウザに反映される。
-          </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: Table,
+              title: "RDB（Supabase / PostgreSQL）",
+              subtitle: "テーブル型・関係性重視",
+              description: "「この投稿は誰のもので、コメントは誰が書いたか」を JOIN でつなげるのが得意。データの整合性を厳密に守りたいときに強い。",
+              accentColor: "blue",
+            },
+            {
+              Icon: FileJson,
+              title: "NoSQL（Firestore / MongoDB）",
+              subtitle: "ドキュメント型・柔軟性重視",
+              description: "まず動かしてから育てたいとき・リアルタイム同期が欲しいときに強い。onSnapshot でDBの変更が即座にブラウザに反映される。",
+              accentColor: "violet",
+            },
+          ]} />
+          <CorrectionCard
+            misconception="NoSQLはRDBより「新しくて優れている」から、NoSQLを選んでおけば間違いない"
+            correction="どちらが優れているわけではなく、データの形と要求次第で使い分ける"
+            reason="リアルタイム同期・スキーマの柔軟性が必要ならNoSQL、関係性の厳密な管理・複雑な集計が必要ならRDBが適している。初学者の個人開発では、学習コストの低いFirestoreから入るのが現実的。"
+          />
           <KeyPoint>
             初学者が個人開発でアプリを最短で動かすなら、Firestore（NoSQL）から入るのがおすすめ。SQLを書かずに済み、リアルタイム同期も標準でついてくる。
           </KeyPoint>
@@ -316,21 +357,82 @@ export default function DatabasePage() {
           <p>
             Firestore は「コレクション ＞ ドキュメント ＞ フィールド」の3階層で考える。
           </p>
+          <UseCaseGrid cols={3} items={[
+            {
+              Icon: Layers,
+              title: "コレクション",
+              subtitle: "同じ種類のデータの入れ物",
+              description: "例: users、posts、comments。フォルダのイメージ。",
+              accentColor: "violet",
+            },
+            {
+              Icon: FileJson,
+              title: "ドキュメント",
+              subtitle: "コレクション内の1件1件",
+              description: "ユニークなIDを持つ。JSON のような構造で値を格納する。",
+              accentColor: "blue",
+            },
+            {
+              Icon: BookOpen,
+              title: "フィールド",
+              subtitle: "ドキュメントの中身",
+              description: "name: \"maji\" のようなキーと値のペア。型はstring / number / boolean など。",
+              accentColor: "cyan",
+            },
+          ]} />
+          <CodeBlock
+            title="Firestore — CRUD の基本操作（TypeScript）"
+            language="typescript"
+            code={`import { collection, doc, addDoc, getDoc, getDocs, updateDoc, deleteDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
+// C — Create: ドキュメントを追加（IDは自動発行）
+const docRef = await addDoc(collection(db, "posts"), {
+  title: "初めての投稿",
+  author: "maji",
+  createdAt: new Date(),
+});
+
+// R — Read: 1件取得
+const snap = await getDoc(doc(db, "posts", docRef.id));
+if (snap.exists()) console.log(snap.data());
+
+// R — Read: 一覧取得
+const querySnap = await getDocs(collection(db, "posts"));
+querySnap.forEach((d) => console.log(d.id, d.data()));
+
+// U — Update: フィールドを部分更新
+await updateDoc(doc(db, "posts", docRef.id), { title: "タイトル変更後" });
+
+// D — Delete: ドキュメントを削除
+await deleteDoc(doc(db, "posts", docRef.id));`}
+          />
           <p>
-            <strong className="text-white">コレクション</strong>：同じ種類のデータをまとめる入れ物。例: `users`、`posts`。
-          </p>
-          <p>
-            <strong className="text-white">ドキュメント</strong>：コレクションの中の1件1件。ユニークなIDを持ち、JSON のような構造で値を持つ。
-          </p>
-          <p>
-            <strong className="text-white">フィールド</strong>：ドキュメントの中身。`name: "maji"` のようなキーと値のペア。
-          </p>
-          <p>
-            CRUDはそれぞれ `addDoc`（追加）/ `getDoc`・`getDocs`・`onSnapshot`（取得）/ `updateDoc`（更新）/ `deleteDoc`（削除）で操作する。最初はこの4セットだけ覚えればOK。
+            CRUDはそれぞれ <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>addDoc</code>（追加）/ <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>getDoc</code>・<code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>getDocs</code>・<code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>onSnapshot</code>（取得）/ <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>updateDoc</code>（更新）/ <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>deleteDoc</code>（削除）で操作する。最初はこの4セットだけ覚えればOK。
           </p>
         </DetailBlock>
 
         <DetailBlock heading="6.4 DBの選び方 — 学習ステップの考え方">
+          <Timeline items={[
+            {
+              year: "Stage 1",
+              label: "Firestore で始める",
+              description: "Firebase + Vercel の組み合わせ。SQLを書かずにDBを扱える。無料枠が広く、リアルタイム同期が標準でついてくる。フロントエンドから直接叩く感覚でDBの全体像を掴む。",
+              accentColor: "violet",
+            },
+            {
+              year: "Stage 2",
+              label: "Firestoreの制約にぶつかる",
+              description: "複雑なクエリ・集計処理・複数コレクションをまたいだ結合など、NoSQLでは対応しにくい要件が出てくる。この段階でRDBの必要性を実感する。",
+              accentColor: "amber",
+            },
+            {
+              year: "Stage 3",
+              label: "Supabase（PostgreSQL）へ踏み込む",
+              description: "テーブル設計・外部キー・JOIN・SQLの基礎を学ぶ段階。関係性の複雑なデータ・厳密な整合性が必要なプロジェクトで本領を発揮する。",
+              accentColor: "blue",
+            },
+          ]} />
           <p>
             <strong className="text-white">最初の選択</strong>：学習コストを最小にしたいなら Firestore（Firebase）が入りやすい。無料枠が広く、リアルタイム同期が標準で、フロントエンドから直接叩ける感覚で書けるため、DBの全体像を掴むのに向いている。
           </p>
@@ -343,11 +445,29 @@ export default function DatabasePage() {
         </DetailBlock>
 
         <DetailBlock heading="6.5 セキュリティの最低ライン — 認証とルール">
+          <CorrectionCard
+            misconception="開発中はテストモード（誰でも読み書き可能）でOK。本番前に直せばいい"
+            correction="テストモードのまま本番デプロイすると、世界中の誰でもDBを覗ける・書き換えられる状態になる"
+            reason="実際にFirestoreのセキュリティルールを「誰でも書き込み可能」のまま放置したプロジェクトで、第三者にデータを書き換えられたり削除された事例がある。デプロイ前に必ず塞ぐこと。"
+          />
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: ShieldAlert,
+              title: "テストモード（危険）",
+              subtitle: "allow read, write: if true;",
+              description: "誰でも読み書きできる。開発中しか使ってはいけない。本番環境には絶対に持ち込まない。",
+              accentColor: "rose",
+            },
+            {
+              Icon: ShieldCheck,
+              title: "認証済みユーザーのみ（最低ライン）",
+              subtitle: "allow read, write: if request.auth != null;",
+              description: "ログインしているユーザーだけがアクセスできる。さらに「自分のデータのみ」に絞るのが理想。",
+              accentColor: "emerald",
+            },
+          ]} />
           <p>
             DBは「誰でも読み書きできる状態」にしてはいけない。Firestore には「セキュリティルール」、Supabase には「Row Level Security（RLS）」という仕組みがあり、「ログインしているユーザーだけが自分のデータを読み書きできる」というルールを書ける。
-          </p>
-          <p>
-            開発初期に「テストモード（誰でも読み書き可能）」のまま本番デプロイしてしまうと、世界中の誰でもDBを覗ける・書き換えられる状態になる。これは事故になる前に必ず塞ぐ。
           </p>
           <KeyPoint>
             DBを公開する前に、必ずアクセスルールを設定する。「自分のデータは自分しか触れない」を最低ラインとする。

@@ -7,6 +7,8 @@ import {
   Boxes,
   Hammer,
   Rocket,
+  FolderOpen,
+  ArrowRight,
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
@@ -22,6 +24,10 @@ import { MajiDialogue } from "@/components/MajiDialogue";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { DetailSection, DetailBlock, KeyPoint } from "@/components/DetailSection";
+import { CorrectionCard } from "@/components/CorrectionCard";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { Timeline } from "@/components/Timeline";
+import { CodeBlock } from "@/components/CodeBlock";
 import { modulesQuestions } from "@/content/questions/javascript/modules";
 
 export const metadata = {
@@ -354,6 +360,44 @@ export default function ModulesPage() {
             </code>{" "}
             が言語仕様に組み込まれた。これが ESModules。
           </p>
+          <Timeline items={[
+            {
+              year: "〜2009",
+              label: "モジュールなし時代",
+              description: "JavaScriptはブラウザ専用。全コードを1ファイルか <script> タグで読み込むだけで、ファイル分割の公式手段がなかった。",
+              accentColor: "sky",
+            },
+            {
+              year: "2009",
+              label: "CommonJS 登場",
+              description: "Node.js がサーバーサイド向けに require / module.exports を導入。「ファイルを分けて require で読み込む」が Node.js の標準になった。",
+              accentColor: "amber",
+            },
+            {
+              year: "2015",
+              label: "ESModules（ES6）標準化",
+              description: "ECMAScript 2015 で import / export が言語仕様に組み込まれた。ブラウザとNode.js の両方で動く「公式モジュール」が誕生。",
+              accentColor: "orange",
+            },
+            {
+              year: "現在",
+              label: "ESModules が主流",
+              description: "モダンブラウザ・Vite・Webpack・Next.js はすべて ESModules ベース。CommonJS は古いNode.jsコードで見かける程度になった。",
+              accentColor: "emerald",
+            },
+          ]} />
+          <CodeBlock
+            title="CommonJS（古）vs ESModules（現在）"
+            language="javascript"
+            code={`// CommonJS（Node.js 旧来の書き方）
+const path = require('path');
+module.exports = { greet };
+
+// ESModules（現在の標準）
+import path from 'path';
+export function greet(name) { return \`Hello, \${name}\`; }
+export default greet;`}
+          />
           <KeyPoint>
             Node.js 由来の CommonJS と、ブラウザを含む言語仕様としての ESModules ——歴史的経緯で2種類が並走している。新規コードは ESModules、古いNode.jsコードを読むときに CommonJS を見かける、という認識で困らない。
           </KeyPoint>
@@ -370,6 +414,35 @@ export default function ModulesPage() {
             </code>{" "}
             になったり、TDZ エラーが出たりする。
           </p>
+          <CorrectionCard
+            misconception="循環参照になっていても、お互いに import し合っているだけだから問題ないはず"
+            correction="初期化順序が不定になり、import したはずの値が undefined になることがある"
+            reason="ESモジュールはビルド時に依存グラフを解析するが、循環があると「A を解決する前に B が必要、B を解決する前に A が必要」という状態が生まれる。実行タイミングによっては未初期化の値が渡ってしまう。"
+          />
+          <CodeBlock
+            title="循環参照の例と回避パターン"
+            language="typescript"
+            code={`// NG: A.ts と B.ts が互いを参照
+// A.ts
+import { funcB } from './B';
+export function funcA() { return funcB(); }
+
+// B.ts
+import { funcA } from './A';  // ← 循環！
+export function funcB() { return funcA(); }
+
+// OK: 共通部分を shared.ts に切り出す
+// shared.ts
+export const BASE_URL = 'https://example.com';
+
+// A.ts
+import { BASE_URL } from './shared';
+export function funcA() { return BASE_URL + '/a'; }
+
+// B.ts
+import { BASE_URL } from './shared';
+export function funcB() { return BASE_URL + '/b'; }`}
+          />
           <p>
             回避策は「共通の依存を別ファイル（types.ts / shared.ts など）に切り出す」のが基本。AとBの両方が必要としているものを第3のファイルに置けば、AとBの間に直接の参照が生まれず、循環が解消される。
           </p>
@@ -388,23 +461,39 @@ export default function ModulesPage() {
             </code>{" "}
             のようなファイルを作り、その中で複数モジュールの export をまとめ直すパターンを「バレルファイル」と呼ぶ。
           </p>
-          <p>
-            たとえば{" "}
-            <code
-              className="text-xs px-1.5 py-0.5 rounded font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#fb923c" }}
-            >
-              {`export { Button } from './Button'; export { Card } from './Card';`}
-            </code>{" "}
-            と書いておくと、利用側は{" "}
-            <code
-              className="text-xs px-1.5 py-0.5 rounded font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#fb923c" }}
-            >
-              {`import { Button, Card } from '@/components'`}
-            </code>{" "}
-            のようにまとめて読み込める。
-          </p>
+          <CodeBlock
+            title="バレルファイルの構造（components/index.ts）"
+            language="typescript"
+            code={`// components/index.ts — バレルファイル（再エクスポート）
+export { Button } from './Button';
+export { Card } from './Card';
+export { Modal } from './Modal';
+export { Input } from './Input';
+
+// ---- 利用側 ----
+// バレルなし → 個別にパスを書く
+import { Button } from '@/components/Button';
+import { Card } from '@/components/Card';
+
+// バレルあり → 1行にまとめられる
+import { Button, Card } from '@/components';`}
+          />
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: Package,
+              title: "バレルファイルあり",
+              subtitle: "import { Button, Card } from '@/components'",
+              description: "1行でまとめて読み込める。import パスが短くなり、ファイル移動時も index.ts だけ直せばよい。",
+              accentColor: "orange",
+            },
+            {
+              Icon: FileCode,
+              title: "バレルファイルなし",
+              subtitle: "import { Button } from '@/components/Button'",
+              description: "パスが長くなるが、Tree Shaking が確実に効く。大規模プロジェクトではこちらを選ぶチームも多い。",
+              accentColor: "sky",
+            },
+          ]} />
           <KeyPoint>
             バレルファイルは便利だが、巨大化させすぎるとビルド時の解析コストが上がり、Tree Shaking が効きにくくなる場合もある。「カテゴリ単位でまとめる」程度に留めるのが無難。
           </KeyPoint>
@@ -435,6 +524,37 @@ export default function ModulesPage() {
             </code>{" "}
             設定で「プロジェクトルート（または src/）」にマッピングされたパスエイリアス。
           </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: ArrowRight,
+              title: "相対パス（エイリアスなし）",
+              subtitle: "import { Button } from '../../../components/Button'",
+              description: "ファイルの深さに応じて ../ が連続する。ファイルを移動すると全パスが壊れる。",
+              accentColor: "red",
+            },
+            {
+              Icon: FolderOpen,
+              title: "@/ エイリアス（Next.js 標準）",
+              subtitle: "import { Button } from '@/components/Button'",
+              description: "@/ がプロジェクトルートを指す。ファイルを移動しても import パスは変わらない。",
+              accentColor: "orange",
+            },
+          ]} />
+          <CodeBlock
+            title="tsconfig.json — @/ エイリアスの設定"
+            language="json"
+            code={`{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
+
+// create-next-app でプロジェクトを作ると自動生成される。
+// 手動追加の必要はほぼない。`}
+          />
           <p>
             これがあると{" "}
             <code

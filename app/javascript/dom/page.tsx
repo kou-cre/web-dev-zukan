@@ -9,6 +9,12 @@ import {
   Trash2,
   Hand,
   Zap,
+  ListTree,
+  AlignLeft,
+  ShieldAlert,
+  ShieldCheck,
+  GitBranch,
+  SquareCode,
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
@@ -29,6 +35,10 @@ import {
   KeyPoint,
   WarningPoint,
 } from "@/components/DetailSection";
+import { CorrectionCard } from "@/components/CorrectionCard";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { BrowserMock } from "@/components/BrowserMock";
+import { CodeBlock } from "@/components/CodeBlock";
 import { domQuestions } from "@/content/questions/javascript/dom";
 
 export const metadata = {
@@ -348,6 +358,21 @@ export default function DomPage() {
             </code>{" "}
             があり、その下に html、body、各要素……と入れ子になっている。ツリーを構成する一つひとつを「ノード（Node）」と呼ぶ。
           </p>
+          <BrowserMock url="example.com/index.html">
+            <div className="p-4 font-mono text-xs">
+              <p className="text-gray-500 mb-2 text-xs">— DOMツリー構造 —</p>
+              <div className="space-y-0.5 leading-relaxed">
+                <p><span className="text-lime-300">document</span></p>
+                <p className="pl-4">└─ <span className="text-lime-300">&lt;html&gt;</span></p>
+                <p className="pl-8">├─ <span className="text-lime-300">&lt;head&gt;</span></p>
+                <p className="pl-12">│   └─ <span className="text-lime-300">&lt;title&gt;</span> <span className="text-gray-400">「My Page」</span> <span className="text-gray-600">← テキストノード</span></p>
+                <p className="pl-8">└─ <span className="text-lime-300">&lt;body&gt;</span></p>
+                <p className="pl-12">    ├─ <span className="text-lime-300">&lt;div id=&quot;app&quot;&gt;</span> <span className="text-gray-600">← 要素ノード</span></p>
+                <p className="pl-16">    │   └─ <span className="text-lime-300">&lt;p&gt;</span> <span className="text-gray-400">「Hello」</span> <span className="text-gray-600">← テキストノード</span></p>
+                <p className="pl-12">    └─ <span className="text-lime-300">&lt;button&gt;</span> <span className="text-gray-400">「Click」</span></p>
+              </div>
+            </div>
+          </BrowserMock>
           <p>
             ノードには種類がある：要素ノード（Element）、テキストノード（Text）、コメントノード（Comment）など。普段触るのはほぼ要素ノード。
             <code
@@ -365,6 +390,22 @@ export default function DomPage() {
             </code>
             はテキストノードまで含むので、用途で使い分ける。
           </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: ListTree,
+              title: "childNodes",
+              subtitle: "NodeList — 全ノードを含む",
+              description: "要素ノード・テキストノード・コメントノードを全て含む。改行（空白テキスト）も混入するので扱いが複雑になりやすい。",
+              accentColor: "amber",
+            },
+            {
+              Icon: AlignLeft,
+              title: "children",
+              subtitle: "HTMLCollection — 要素ノードのみ",
+              description: "要素ノード（タグ）だけを返す。テキストノードは無視されるので、ループ処理で意図しない空白に悩まされない。",
+              accentColor: "lime",
+            },
+          ]} />
           <KeyPoint>
             「ノード」が広い概念、「要素」がその中の主役。配列like（NodeList / HTMLCollection）として返ってくることが多いので、forEach や Array.from に慣れておくと操作が楽になる。
           </KeyPoint>
@@ -376,6 +417,42 @@ export default function DomPage() {
             <strong className="text-white">バブリング</strong>と呼ぶ（泡が水面に上がっていくイメージ）。逆に外から内へ降りてくる経路は{" "}
             <strong className="text-white">キャプチャ</strong>と呼ぶ。
           </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: Zap,
+              title: "バブリング（デフォルト）",
+              subtitle: "内 → 外 へ伝播",
+              description: "クリックされた要素から、document に向かって上に伝播していく。通常のイベントリスナー登録では自動的にこちらが使われる。",
+              accentColor: "lime",
+            },
+            {
+              Icon: Network,
+              title: "キャプチャ",
+              subtitle: "外 → 内 へ伝播",
+              description: "documentから対象要素に向かって下へ降りながら発火する。{ capture: true } オプションを指定した場合のみ有効。",
+              accentColor: "violet",
+            },
+          ]} />
+          <CodeBlock
+            title="event-bubbling.js"
+            language="javascript"
+            code={`// バブリング（デフォルト）— ボタンをクリックすると親divも反応する
+document.querySelector('#parent').addEventListener('click', (e) => {
+  console.log('親divがクリックを受け取った（バブリング）');
+});
+
+document.querySelector('#child').addEventListener('click', (e) => {
+  console.log('子ボタンがクリックされた');
+  // e.stopPropagation() を呼ぶと伝播をここで止められる
+});
+
+// イベント委譲 — リスト全体に1つのリスナーを付ける
+document.querySelector('#list').addEventListener('click', (e) => {
+  if (e.target.tagName === 'LI') {
+    console.log('クリックされた項目:', e.target.textContent);
+  }
+});`}
+          />
           <p>
             <code
               className="text-xs px-1.5 py-0.5 rounded font-mono"
@@ -407,6 +484,44 @@ export default function DomPage() {
             </code>{" "}
             タグやイベントハンドラ属性が混ざった瞬間に攻撃が成立する。これがXSS（Cross-Site Scripting）。
           </p>
+          <CorrectionCard
+            misconception="innerHTML は文字列を表示するだけだから、ユーザーの入力をそのまま渡しても大丈夫"
+            correction="innerHTML は文字列を HTML として実行する。<script> タグやイベント属性が混入した瞬間に攻撃が成立する"
+            reason="ユーザーが名前フォームに「<img src=x onerror=alert(1)>」と入力しただけで、そのスクリプトがページ上で実行されてしまう。"
+          />
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: ShieldAlert,
+              title: "innerHTML（危険な使い方）",
+              subtitle: "ユーザー入力を直接渡す",
+              description: "文字列をHTMLとして解釈するため、悪意ある入力に含まれたスクリプトがそのまま実行される。XSS攻撃の典型的な侵入口。",
+              accentColor: "red",
+            },
+            {
+              Icon: ShieldCheck,
+              title: "textContent（安全）",
+              subtitle: "文字列として扱う",
+              description: "タグや属性を「文字」として表示するだけで、スクリプトとして解釈しない。ユーザー入力を表示するなら必ずこちらを使う。",
+              accentColor: "lime",
+            },
+          ]} />
+          <CodeBlock
+            title="innerHTML-vs-textContent.js"
+            language="javascript"
+            code={`const userInput = '<img src=x onerror="alert(\'XSS攻撃!\')">';
+
+// 危険 — ユーザー入力をHTMLとして解釈・実行してしまう
+document.querySelector('#output').innerHTML = userInput;
+// → onerror イベントが発火して alert() が実行される
+
+// 安全 — 文字列としてそのまま表示する
+document.querySelector('#output').textContent = userInput;
+// → "<img src=x onerror=...>" がそのまま文字として画面に表示される
+
+// HTMLとして埋め込む必要がある場合はサニタイズを通す
+import DOMPurify from 'dompurify';
+document.querySelector('#output').innerHTML = DOMPurify.sanitize(userInput);`}
+          />
           <p>
             <code
               className="text-xs px-1.5 py-0.5 rounded font-mono"
@@ -432,6 +547,47 @@ export default function DomPage() {
           <p>
             Reactは生のDOM操作を毎回手で書かせない代わりに、「状態が変わったらUIがどう変わるか」を関数として書かせる。中身では仮想DOMという軽量なJSオブジェクトを使って、前回のUIと今回のUIを比較し、差分だけを実DOMに反映する。
           </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: SquareCode,
+              title: "生のDOM操作",
+              subtitle: "手動で要素を探して書き換える",
+              description: "querySelector で要素を取得し、textContent や classList を直接書き換える。どこを変えるかを自分でコントロールする。",
+              accentColor: "amber",
+            },
+            {
+              Icon: GitBranch,
+              title: "React（仮想DOM）",
+              subtitle: "状態だけ書けばUIが付いてくる",
+              description: "useState で状態を管理するだけで、Reactが差分を計算して必要な部分だけ実DOMに反映する。querySelector を書く必要がない。",
+              accentColor: "lime",
+            },
+          ]} />
+          <CodeBlock
+            title="dom-vs-react.js"
+            language="javascript"
+            code={`// ---- 生のDOM操作 ----
+let count = 0;
+const btn = document.querySelector('#btn');
+const display = document.querySelector('#display');
+
+btn.addEventListener('click', () => {
+  count++;
+  display.textContent = count; // 毎回、要素を探して書き換える
+});
+
+// ---- React（useState） ----
+// import { useState } from 'react';
+// function Counter() {
+//   const [count, setCount] = useState(0);
+//   return (
+//     <div>
+//       <p>{count}</p>  {/* 状態が変われば自動で再描画 */}
+//       <button onClick={() => setCount(count + 1)}>+1</button>
+//     </div>
+//   );
+// }`}
+          />
           <p>
             このページで学んだ querySelector / addEventListener / textContent といった概念は、Reactを使ってもなくならない。Reactは{" "}
             <strong className="text-white">DOM操作を抽象化したラッパー</strong>であって、DOMそのものを置き換える別世界ではない。

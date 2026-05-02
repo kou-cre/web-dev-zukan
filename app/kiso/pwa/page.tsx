@@ -12,6 +12,16 @@ import {
   RefreshCw,
   CheckCircle2,
   XCircle,
+  Paintbrush,
+  Link,
+  LayoutTemplate,
+  Zap,
+  Network,
+  RotateCcw,
+  ShoppingCart,
+  ListTodo,
+  Bluetooth,
+  Camera,
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
@@ -27,6 +37,9 @@ import { MajiDialogue } from "@/components/MajiDialogue";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { DetailSection, DetailBlock, KeyPoint } from "@/components/DetailSection";
+import { CorrectionCard } from "@/components/CorrectionCard";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { Timeline } from "@/components/Timeline";
 import { pwaQuestions } from "@/content/questions/kiso/pwa";
 
 export const metadata = {
@@ -377,14 +390,41 @@ export default function PwaPage() {
             </code>{" "}
             で読み込ませる。
           </p>
-          <p>
-            主なプロパティ：{" "}
-            <strong className="text-white">name / short_name</strong>（アプリ名）、{" "}
-            <strong className="text-white">icons</strong>（複数サイズのアイコン）、{" "}
-            <strong className="text-white">start_url</strong>（起動時に開くURL）、{" "}
-            <strong className="text-white">display</strong>（standalone / fullscreen / browser）、{" "}
-            <strong className="text-white">theme_color / background_color</strong>（テーマ色・起動画面の背景色）。
-          </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: FileJson,
+              title: "name / short_name",
+              subtitle: "アプリの名前",
+              description: "ホーム画面アイコン下に表示される名前。short_name はスペースが少ない場所で使われる短縮版。",
+              accentColor: "rose",
+            },
+            {
+              Icon: Paintbrush,
+              title: "icons",
+              subtitle: "アイコン画像（複数サイズ）",
+              description: "192px・512pxなど複数サイズを指定。ホーム画面・スプラッシュ画面で使われるため、丁寧に用意するほど見栄えが良くなる。",
+              accentColor: "violet",
+            },
+            {
+              Icon: Link,
+              title: "start_url",
+              subtitle: "起動時に開くURL",
+              description: "ホーム画面から起動したときに最初に開くパス。通常は / を指定するが、アプリの入口ページを指定することもある。",
+              accentColor: "blue",
+            },
+            {
+              Icon: LayoutTemplate,
+              title: "display",
+              subtitle: "表示モード",
+              description: "standalone（アドレスバーなし）/ fullscreen（完全全画面）/ browser（通常ブラウザ）から選ぶ。アプリらしくするには standalone が定番。",
+              accentColor: "amber",
+            },
+          ]} />
+          <CorrectionCard
+            misconception="manifest.json を置けば、それだけでPWAになる"
+            correction="manifest.json はPWAの『顔』を定義するだけ。オフライン動作・プッシュ通知などには Service Worker が別途必要"
+            reason="manifest.json だけでも『ホーム画面に追加』は機能するが、それだけでは通常のWebサイトとオフライン体験は変わらない。Service Worker とセットで初めてフル機能のPWAになる。"
+          />
           <KeyPoint>
             manifest.json は『アプリの顔』。ここを丁寧に書いておくと、ホーム画面追加時の見た目・起動時のスプラッシュ画面まできれいに整う。
           </KeyPoint>
@@ -394,12 +434,26 @@ export default function PwaPage() {
           <p>
             <strong className="text-white">Service Worker</strong> は、ブラウザのバックグラウンドで動作するJavaScript。Webページとは別のスレッドで動き、ネットワークリクエストを横取り（インターセプト）して、キャッシュから返したり、オフライン時のフォールバックを返したりできる。
           </p>
-          <p>
-            ライフサイクルは大きく3段階：{" "}
-            <strong className="text-white">install</strong>（最初に登録されたとき）→{" "}
-            <strong className="text-white">activate</strong>（古いService Workerと交代したとき）→{" "}
-            <strong className="text-white">fetch</strong>（リクエストが発生するたびに呼ばれる）。
-          </p>
+          <Timeline items={[
+            {
+              year: "install",
+              label: "最初の登録",
+              description: "Service Worker がブラウザに初めて登録されたとき発火。静的アセット（CSS・JS・画像）を事前キャッシュするのがここ。一度だけ実行される。",
+              accentColor: "rose",
+            },
+            {
+              year: "activate",
+              label: "古いWorkerと交代",
+              description: "新しいバージョンの Service Worker が有効になったとき発火。古いキャッシュのクリーンアップをここで行う。全タブが閉じられるまで待機することもある。",
+              accentColor: "amber",
+            },
+            {
+              year: "fetch",
+              label: "リクエストのたびに呼ばれる",
+              description: "ページからのすべてのネットワークリクエストをインターセプトする。キャッシュから返すか、ネットワークへ転送するかをここで判断する。最も頻繁に実行される。",
+              accentColor: "blue",
+            },
+          ]} />
           <p>
             主なできること：オフライン対応、リクエストのキャッシュ、プッシュ通知の受信、バックグラウンド同期。
           </p>
@@ -409,15 +463,29 @@ export default function PwaPage() {
         </DetailBlock>
 
         <DetailBlock heading="8.3 キャッシュ戦略の3パターン">
-          <p>
-            <strong className="text-white">Cache First</strong>：まずキャッシュを見て、あれば即返す。なければネットワークへ。CSS・JS・画像・フォントなど、ほぼ変わらない静的アセット向け。
-          </p>
-          <p>
-            <strong className="text-white">Network First</strong>：まずネットワークへ取りに行き、失敗したらキャッシュへフォールバック。ニュース記事・APIレスポンスなど鮮度が重要なもの向け。
-          </p>
-          <p>
-            <strong className="text-white">Stale While Revalidate</strong>：とりあえずキャッシュを返しつつ、裏でネットワークから最新を取ってきてキャッシュを更新。次回アクセス時に最新が返る。体感速度と鮮度のバランス型。
-          </p>
+          <UseCaseGrid cols={3} items={[
+            {
+              Icon: Zap,
+              title: "Cache First",
+              subtitle: "速度優先・静的アセット向け",
+              description: "まずキャッシュを見て、あれば即返す。なければネットワークへ。CSS・JS・画像・フォントなど変化しないリソースに最適。",
+              accentColor: "emerald",
+            },
+            {
+              Icon: Network,
+              title: "Network First",
+              subtitle: "鮮度優先・APIレスポンス向け",
+              description: "まずネットワークへ取りに行き、失敗したらキャッシュへフォールバック。ニュース・APIデータなど最新情報が重要なものに使う。",
+              accentColor: "blue",
+            },
+            {
+              Icon: RotateCcw,
+              title: "Stale While Revalidate",
+              subtitle: "速度と鮮度のバランス型",
+              description: "とりあえずキャッシュを返しつつ、裏でネットワークから最新を取ってキャッシュを更新。次回アクセス時に最新が返る。",
+              accentColor: "amber",
+            },
+          ]} />
           <KeyPoint>
             『どのリソースに、どの戦略を当てるか』を設計するのが Service Worker の腕の見せどころ。全部 Cache First にすると更新が反映されず、全部 Network First にするとオフラインの恩恵が消える。
           </KeyPoint>
@@ -429,35 +497,78 @@ export default function PwaPage() {
             <strong className="text-white">next-pwa</strong> や{" "}
             <strong className="text-white">@serwist/next</strong> といったライブラリを使うのが一般的。
           </p>
-          <p>
-            これらを導入すると、ビルド時に Service Worker の生成・登録・キャッシュ戦略の設定がほぼ自動で行われる。{" "}
-            <code
-              className="text-xs px-1.5 py-0.5 rounded font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#fda4af" }}
-            >
-              next.config.js
-            </code>{" "}
-            にラッパーを噛ませ、{" "}
-            <code
-              className="text-xs px-1.5 py-0.5 rounded font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#fda4af" }}
-            >
-              public/manifest.json
-            </code>{" "}
-            と各種アイコンを置けば、最低限のPWA化は完了する。
-          </p>
+          <Timeline items={[
+            {
+              year: "Step 1",
+              label: "ライブラリをインストール",
+              description: "npm install next-pwa または @serwist/next をインストール。Service Worker の生成・登録・キャッシュ戦略の設定が自動化される。",
+              accentColor: "rose",
+            },
+            {
+              year: "Step 2",
+              label: "next.config.js にラッパーを追加",
+              description: "withPWA() などのラッパー関数で既存の next.config.js を包む。ビルド時に sw.js が自動生成されるようになる。",
+              accentColor: "amber",
+            },
+            {
+              year: "Step 3",
+              label: "public/manifest.json とアイコンを置く",
+              description: "public/ 直下に manifest.json を作成し、アイコン画像（192px・512px）を置く。app/layout.tsx の <head> で manifest をリンクする。",
+              accentColor: "blue",
+            },
+            {
+              year: "Step 4",
+              label: "Vercel にデプロイすれば完了",
+              description: "Vercel は自動で HTTPS を設定するため、PWAの前提条件は自動でクリア。デプロイ後すぐにインストール可能なアプリとして認識される。",
+              accentColor: "emerald",
+            },
+          ]} />
+          <CorrectionCard
+            misconception="Service Worker は難しいので、自分でゼロから書かなければならない"
+            correction="next-pwa や @serwist/next を使えば、Service Worker の生成・登録・キャッシュ設定はほぼ自動で行われる"
+            reason="個人開発の初期段階では、ライブラリに任せて manifest.json とアイコンを置くだけで十分。Service Worker の内部構造は、PWA体験をカスタムしたくなったタイミングで深掘りすれば良い。"
+          />
           <KeyPoint>
             Vercelにデプロイする場合、HTTPSは自動で設定されるのでPWAの前提条件はクリア済み。あとは manifest.json と Service Worker を載せるだけで、いつでもアプリ化できる状態にある。
           </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading="8.5 PWAが向く場面・向かない場面">
-          <p>
-            <strong className="text-white">向く場面</strong>：ニュース・ブログ・ECサイト・社内ツール・ダッシュボード・タスク管理アプリなど、Webで完結するがアプリのように再訪問してほしいプロダクト。
-          </p>
-          <p>
-            <strong className="text-white">向かない場面</strong>：iOSの一部機能（Bluetooth・NFC・高度なカメラ制御など）を使う必要があるアプリ。iOSはAndroidに比べてPWAサポートが控えめなため、デバイス機能を深く使う場合はネイティブが堅い。
-          </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: ShoppingCart,
+              title: "ECサイト・ニュース",
+              subtitle: "向く場面",
+              description: "再訪問を促したい・オフラインでもコンテンツを見せたい・プッシュ通知でセール告知したい——Web完結型プロダクトに最適。",
+              accentColor: "emerald",
+            },
+            {
+              Icon: ListTodo,
+              title: "社内ツール・ダッシュボード",
+              subtitle: "向く場面",
+              description: "PCやスマホから手軽に開きたい業務ツール。ストア審査なしでアップデートを即反映できるのが強み。",
+              accentColor: "blue",
+            },
+            {
+              Icon: Bluetooth,
+              title: "Bluetooth・NFC連携アプリ",
+              subtitle: "向かない場面",
+              description: "iOSではPWAからBluetooth/NFCにアクセスできない。デバイス機能を深く使う場合はネイティブアプリが堅い選択。",
+              accentColor: "orange",
+            },
+            {
+              Icon: Camera,
+              title: "高度なカメラ・AR機能",
+              subtitle: "向かない場面",
+              description: "iOSのPWAサポートはAndroidより制限が多い。カメラや加速度センサーの高度な制御が必要なら、React Nativeなどネイティブ寄りの選択肢を検討する。",
+              accentColor: "orange",
+            },
+          ]} />
+          <CorrectionCard
+            misconception="PWAにすれば、ネイティブアプリと完全に同じことができる"
+            correction="PWAはWeb技術の範囲内でアプリ体験を拡張する技術。iOSのデバイスAPI制限など、ネイティブにしかできないことは今もある"
+            reason="特にiOSではAndroidに比べてPWAのサポートが限定的。プッシュ通知もiOS 16.4以降でようやく対応。すべての機能が両プラットフォームで同じように動くわけではない。"
+          />
           <KeyPoint>
             PWAは『どんなアプリも置き換える銀の弾丸』ではない。Web技術で十分なものをアプリ体験に近づける道具、と捉えるのが現実的。
           </KeyPoint>

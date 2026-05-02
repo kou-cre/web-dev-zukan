@@ -8,6 +8,9 @@ import {
   PlayCircle,
   Layers,
   Zap,
+  GitBranch,
+  Link2,
+  Combine,
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
@@ -23,6 +26,10 @@ import { MajiDialogue } from "@/components/MajiDialogue";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { DetailSection, DetailBlock, KeyPoint } from "@/components/DetailSection";
+import { CorrectionCard } from "@/components/CorrectionCard";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { Timeline } from "@/components/Timeline";
+import { CodeBlock } from "@/components/CodeBlock";
 import { asyncQuestions } from "@/content/questions/javascript/async";
 
 export const metadata = {
@@ -405,6 +412,25 @@ export default function AsyncPage() {
             </code>
             がキューから1つ取り出してスタックに積む。
           </p>
+          <CorrectionCard
+            misconception="async / await を使えば、JavaScriptは複数の処理を同時並行（マルチスレッド）で走らせられる"
+            correction="JSの実行レーンは1本のまま。async/awaitは「待ち時間を外に押し出す」仕組みであって、並列実行ではない"
+            reason="CPU負荷の高い計算（重いループや画像処理など）をasync関数で囲っても速くならない。並列化が必要な場面にはWeb Workerを使う。非同期が有効なのはあくまで「I/O待ち」の場面。"
+          />
+          <CodeBlock
+            title="event-loop-demo.js"
+            language="javascript"
+            code={`console.log('① 開始');
+
+setTimeout(() => {
+  console.log('③ タイムアウト（0ms後）');
+}, 0);
+
+console.log('② 終了');
+
+// 出力順：① → ② → ③
+// setTimeout(..., 0) でも、コールスタックが空になってから実行される`}
+          />
           <KeyPoint>
             「非同期＝並列ではない」。JSの実行レーンは1本のままで、待ち時間だけを外に押し出している。これを誤解すると、CPU負荷の高い計算をasyncにしても速くならない理由が分からなくなる。
           </KeyPoint>
@@ -420,16 +446,39 @@ export default function AsyncPage() {
             </code>
             は「Promiseが fulfilled になったら呼ばれる関数」を登録する。`.then()` の戻り値もまたPromiseなので、チェーンで繋いでいける。
           </p>
-          <pre
-            className="text-xs font-mono leading-relaxed overflow-x-auto rounded-lg p-4"
-            style={{ backgroundColor: "#0f1117", color: "#cbd5e1", border: "1px solid #2d3048" }}
-          >
-{`fetch('/api/user')
+          <UseCaseGrid cols={3} items={[
+            {
+              Icon: GitBranch,
+              title: ".then()",
+              subtitle: "fulfilled のとき",
+              description: "Promiseが成功したときに呼ばれる。戻り値は次の .then() に渡される。",
+              accentColor: "emerald",
+            },
+            {
+              Icon: XCircle,
+              title: ".catch()",
+              subtitle: "rejected のとき",
+              description: "チェーン途中のどこで投げられたエラーも最後の .catch() 1箇所で受け取れる。",
+              accentColor: "rose",
+            },
+            {
+              Icon: CheckCircle2,
+              title: ".finally()",
+              subtitle: "成功・失敗に関わらず",
+              description: "fulfilled / rejected どちらでも必ず実行される。ローディング解除などに使う。",
+              accentColor: "amber",
+            },
+          ]} />
+          <CodeBlock
+            title="promise-chain.js"
+            language="javascript"
+            code={`fetch('/api/user')
   .then(res => res.json())   // Response → JSON に変換（これもPromise）
   .then(user => user.name)   // 必要なフィールドだけ抜き出す
   .then(name => console.log(name))
-  .catch(err => console.error(err));  // どこで落ちても1箇所で受ける`}
-          </pre>
+  .catch(err => console.error(err))  // どこで落ちても1箇所で受ける
+  .finally(() => setLoading(false)); // 成否に関わらず実行`}
+          />
           <p>
             注意点は2つ。
             <strong className="text-white">①</strong> `.then()` の中で値を `return` するとそれが次の`.then()`の引数になる。
@@ -454,21 +503,28 @@ export default function AsyncPage() {
             </code>
             で捕まえられる。
           </p>
-          <pre
-            className="text-xs font-mono leading-relaxed overflow-x-auto rounded-lg p-4"
-            style={{ backgroundColor: "#0f1117", color: "#cbd5e1", border: "1px solid #2d3048" }}
-          >
-{`async function loadUser(id) {
+          <CorrectionCard
+            misconception="fetch('/api/user') が 404 や 500 を返したら、自動的に catch に飛んでくれる"
+            correction="fetch はネットワーク障害以外では reject しない。404・500 でも Promise は fulfilled になる"
+            reason="HTTPステータスは自分で res.ok（または res.status）を確認し、エラーなら手動で throw する必要がある。これを知らないと「エラーなのに catch が動かない」バグに悩まされる。"
+          />
+          <CodeBlock
+            title="async-error-handling.js"
+            language="javascript"
+            code={`async function loadUser(id) {
   try {
     const res = await fetch(\`/api/user/\${id}\`);
+
+    // fetch は 404/500 でも reject しないので、自分でチェックする
     if (!res.ok) throw new Error('HTTPエラー: ' + res.status);
+
     return await res.json();
   } catch (err) {
     console.error('読み込み失敗:', err);
     return null;
   }
 }`}
-          </pre>
+          />
           <KeyPoint>
             `fetch` はネットワーク失敗以外（404・500）では reject しない。HTTPステータスは自分で `res.ok` を見て手動で `throw` する必要がある。これは初心者がよく踏む落とし穴。
           </KeyPoint>
@@ -478,24 +534,60 @@ export default function AsyncPage() {
           <p>
             複数の非同期処理を「同時に走らせて、全部終わったら次へ」とまとめたい時に使う。直列で `await` を並べると合計時間になるが、`Promise.all` を使えば最も遅いものの時間で済む。
           </p>
-          <pre
-            className="text-xs font-mono leading-relaxed overflow-x-auto rounded-lg p-4"
-            style={{ backgroundColor: "#0f1117", color: "#cbd5e1", border: "1px solid #2d3048" }}
-          >
-{`// 直列：合計 = a + b + c
+          <Timeline items={[
+            {
+              year: "ES5以前",
+              label: "コールバック",
+              description: "非同期の結果を受け取るには、完了時に呼び出される関数（コールバック）を渡す。ネストが深くなる「コールバック地獄」が問題になった。",
+              accentColor: "gray",
+            },
+            {
+              year: "ES2015",
+              label: "Promise",
+              description: ".then() / .catch() のチェーンで非同期の流れを表現できるようになった。エラーハンドリングが統一され、Promise.all による並列処理も可能に。",
+              accentColor: "amber",
+            },
+            {
+              year: "ES2017",
+              label: "async / await",
+              description: "Promiseの糖衣構文として登場。同期コードと同じ見た目で非同期処理を書けるようになり、try/catchでエラーも直感的に扱える。現在の標準。",
+              accentColor: "emerald",
+            },
+          ]} />
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: Link2,
+              title: "Promise.all()",
+              subtitle: "fail-fast — 全部成功する前提",
+              description: "1つでも reject すると即座に全体が reject になる。順番を問わない複数リクエストを最速で並列実行したいときに使う。",
+              accentColor: "amber",
+            },
+            {
+              Icon: Combine,
+              title: "Promise.allSettled()",
+              subtitle: "全件待ち — 部分成功も許容",
+              description: "全Promiseが完了するまで待ち、成功・失敗それぞれの結果を配列で返す。「3件中1件失敗してもできた分は表示したい」場面で使う。",
+              accentColor: "violet",
+            },
+          ]} />
+          <CodeBlock
+            title="parallel-fetch.js"
+            language="javascript"
+            code={`// 直列（非効率）：合計時間 = fetchA + fetchB + fetchC
 const a = await fetchA();
 const b = await fetchB();
 const c = await fetchC();
 
-// 並列：合計 ≒ max(a, b, c)
-const [a, b, c] = await Promise.all([fetchA(), fetchB(), fetchC()]);`}
-          </pre>
-          <p>
-            <strong className="text-white">Promise.all()</strong>：1つでも reject すると全体が即 reject（fail-fast）。すべて成功する前提で使う。
-          </p>
-          <p>
-            <strong className="text-white">Promise.allSettled()</strong>：全部の結果（成功・失敗それぞれ）が揃うまで待つ。「3件中1件失敗してもいいから、できた分は表示したい」ような時に使う。
-          </p>
+// 並列（Promise.all）：合計時間 ≒ max(fetchA, fetchB, fetchC)
+const [a, b, c] = await Promise.all([fetchA(), fetchB(), fetchC()]);
+
+// 部分成功を許容（allSettled）
+const results = await Promise.allSettled([fetchA(), fetchB(), fetchC()]);
+results.forEach(r => {
+  if (r.status === 'fulfilled') console.log(r.value);
+  else console.error(r.reason);
+});`}
+          />
           <KeyPoint>
             「順番に依存しない処理」を直列の await で書いてしまうと、無駄に待ち時間が増える。並列にできるかをまず考える癖をつけると、体感速度が大きく変わる。
           </KeyPoint>

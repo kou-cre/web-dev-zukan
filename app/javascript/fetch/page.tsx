@@ -26,6 +26,10 @@ import { MajiDialogue } from "@/components/MajiDialogue";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { DetailSection, DetailBlock, KeyPoint, WarningPoint } from "@/components/DetailSection";
+import { CorrectionCard } from "@/components/CorrectionCard";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { CodeBlock } from "@/components/CodeBlock";
+import { TerminalBlock } from "@/components/TerminalBlock";
 import { fetchQuestions } from "@/content/questions/javascript/fetch";
 
 export const metadata = {
@@ -266,13 +270,60 @@ export default function FetchPage() {
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>DELETE</code>{" "}
             は削除。これに「リソースをURLで表す」というルールを足したのがREST（REpresentational State Transfer）。
           </p>
-          <p>
-            たとえば「ユーザーID=1の情報を取得」なら{" "}
-            <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>GET /api/users/1</code>、
-            「新しいユーザーを作成」なら{" "}
-            <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>POST /api/users</code>。
-            URL（名詞）+ メソッド（動詞）で「何をどうするか」を表現するのがRESTの基本姿勢。
-          </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: Download,
+              title: "GET — 取得",
+              subtitle: "URL: GET /api/users/1",
+              description: "情報を読み取る。パラメータはURLに付ける。何度叩いても同じ結果（べき等）。bodyは使わない。",
+              accentColor: "cyan",
+            },
+            {
+              Icon: Upload,
+              title: "POST — 作成",
+              subtitle: "URL: POST /api/users",
+              description: "新しいリソースを作る。bodyにJSONを入れて送信。叩くたびに状態が変わりうる。",
+              accentColor: "violet",
+            },
+            {
+              Icon: FileJson,
+              title: "PUT — 更新",
+              subtitle: "URL: PUT /api/users/1",
+              description: "既存リソースを丸ごと置き換える。対象のIDをURLに含め、新しい内容をbodyで送る。",
+              accentColor: "amber",
+            },
+            {
+              Icon: XCircle,
+              title: "DELETE — 削除",
+              subtitle: "URL: DELETE /api/users/1",
+              description: "リソースを削除する。URLで対象を指定するだけ。bodyは通常不要。",
+              accentColor: "rose",
+            },
+          ]} />
+          <CodeBlock
+            title="fetch メソッド別の書き方"
+            language="javascript"
+            code={`// GET（デフォルト — method省略OK）
+const res = await fetch('/api/users/1');
+const user = await res.json();
+
+// POST（新規作成）
+const res = await fetch('/api/users', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name: '山田太郎', age: 25 }),
+});
+
+// PUT（更新）
+const res = await fetch('/api/users/1', {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ name: '山田次郎', age: 26 }),
+});
+
+// DELETE（削除）
+const res = await fetch('/api/users/1', { method: 'DELETE' });`}
+          />
           <KeyPoint>fetchはデフォルトでGET。POST以降を使う時だけ method オプションを明示する。</KeyPoint>
         </DetailBlock>
 
@@ -282,12 +333,48 @@ export default function FetchPage() {
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>Response</code>{" "}
             オブジェクトは「中身を取り出すメソッド」を複数持つ。用途によって使い分ける。
           </p>
-          <p>
-            <strong className="text-white">response.json()</strong> — JSONデータを取りたい時の定番。最もよく使う。<br />
-            <strong className="text-white">response.text()</strong> — HTML・プレーンテキスト・CSVなどそのまま文字列で受け取りたい時。<br />
-            <strong className="text-white">response.blob()</strong> — 画像・PDF・動画などバイナリデータを扱う時。<br />
-            <strong className="text-white">response.arrayBuffer()</strong> — 低レベルにバイト列で扱いたい時。
-          </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: FileJson,
+              title: "response.json()",
+              subtitle: "最もよく使う定番",
+              description: "JSONデータを取りたい時。API通信のほぼ全てのケースはこれ。Promiseを返すのでawaitが必要。",
+              accentColor: "cyan",
+            },
+            {
+              Icon: FileJson,
+              title: "response.text()",
+              subtitle: "文字列をそのまま受け取る",
+              description: "HTML・プレーンテキスト・CSVなど。JSONでない文字データを扱う時に使う。",
+              accentColor: "sky",
+            },
+            {
+              Icon: Package,
+              title: "response.blob()",
+              subtitle: "バイナリデータ",
+              description: "画像・PDF・動画など。URLオブジェクトに変換してimg srcに渡したい時などに使う。",
+              accentColor: "violet",
+            },
+            {
+              Icon: Inbox,
+              title: "response.arrayBuffer()",
+              subtitle: "低レベルなバイト列",
+              description: "音声処理・暗号化など、バイト単位で操作したい場合に使う。通常のAPI通信では不要。",
+              accentColor: "amber",
+            },
+          ]} />
+          <CodeBlock
+            title="2段階のawaitが必要な理由"
+            language="javascript"
+            code={`// 1段階目: HTTPレスポンス全体が届く（ヘッダーだけ）
+const response = await fetch('/api/users');
+
+// 2段階目: bodyのストリームを読み切ってパース
+const data = await response.json();
+
+// ワンライナー（短く書きたい場合）
+const data = await fetch('/api/users').then(r => r.json());`}
+          />
           <KeyPoint>これらはすべてPromiseを返す。fetchが2段階のawaitを必要とするのはこのため。</KeyPoint>
         </DetailBlock>
 
@@ -299,16 +386,35 @@ export default function FetchPage() {
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>resolve</code>{" "}
             される。その結果、try/catchで捕まえようとしても引っかからない。
           </p>
+          <CorrectionCard
+            misconception="404や500が返ってきたら、try/catchで自動的に捕まえられる"
+            correction="fetchはHTTP通信が成功した時点でresolveされる。404・500はエラーではなく「返ってきたステータス」"
+            reason="rejectされるのはネットワーク接続そのものが失敗した時だけ（オフライン・DNS失敗など）。サーバーが404を返すのは「通信は成功した・中身がなかっただけ」なのでresolveされる。"
+          />
           <p>
             正しい書き方は「response.ok（status が 200〜299 ならtrue）」を自分で確認すること。
           </p>
-          <p>
-            <code className="text-xs px-1.5 py-0.5 rounded font-mono block" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>
-              const res = await fetch(url);<br />
-              if (!res.ok) throw new Error(`HTTP ${"{"}res.status{"}"}`);<br />
-              const data = await res.json();
-            </code>
-          </p>
+          <CodeBlock
+            title="正しいエラーハンドリングパターン"
+            language="javascript"
+            code={`async function fetchUser(id) {
+  try {
+    const res = await fetch(\`/api/users/\${id}\`);
+
+    // ここが重要：HTTPエラーを自分でthrowする
+    if (!res.ok) {
+      throw new Error(\`HTTP \${res.status}: \${res.statusText}\`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    // ネットワークエラー + 上のthrowの両方をここで捕まえられる
+    console.error('取得失敗:', err.message);
+    throw err;
+  }
+}`}
+          />
           <WarningPoint>
             この処理を毎回書くのが面倒なので、実務では axios や ky のような「HTTPエラーを自動でthrow」してくれるラッパーを使うことが多い。
           </WarningPoint>
@@ -318,6 +424,11 @@ export default function FetchPage() {
           <p>
             <strong className="text-white">CORS（Cross-Origin Resource Sharing）</strong>は、ブラウザが備えているセキュリティの仕組み。「別オリジン（別ドメイン・別ポート・別プロトコル）のサーバーから取得したレスポンスは、サーバー側が明示的に許可しない限りJavaScriptに渡さない」というルール。
           </p>
+          <CorrectionCard
+            misconception="CORSエラーはフロントエンドのコードを修正すれば直せる"
+            correction="CORSはブラウザの制限であり、解決するにはサーバー側でAccess-Control-Allow-Originヘッダーを返す必要がある"
+            reason="フロントのfetchの書き方をいくら変えてもCORSエラーは消えない。サーバー側（Express・Next.js API Routesなど）でCORSの許可設定を追加するか、同一オリジンのプロキシ経由で叩く必要がある。"
+          />
           <p>
             たとえば{" "}
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>https://myapp.com</code>{" "}
@@ -327,10 +438,21 @@ export default function FetchPage() {
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>Access-Control-Allow-Origin</code>{" "}
             ヘッダーで「myapp.comからのアクセスを許可します」と返さないとブラウザがレスポンスを破棄する。
           </p>
-          <p className="flex items-start gap-2">
-            <ShieldAlert className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
-            <span>これはあくまでブラウザ側の制限なので、サーバー同士の通信や、curl・Postmanからのアクセスは関係なく通る。「ブラウザだけ厳しい門番」と覚えておくと混乱しない。</span>
-          </p>
+          <TerminalBlock
+            title="CORSエラーの例（ブラウザ vs curl）"
+            lines={[
+              { type: "comment", text: "# ブラウザ（fetch）からの場合 → CORSエラーで弾かれる" },
+              { type: "error", text: "Access to fetch at 'https://api.other.com/data' from origin" },
+              { type: "error", text: "'https://myapp.com' has been blocked by CORS policy:" },
+              { type: "error", text: "No 'Access-Control-Allow-Origin' header is present." },
+              { type: "comment", text: "" },
+              { type: "comment", text: "# curlからの場合 → CORSは関係なく普通に通る" },
+              { type: "command", text: "curl https://api.other.com/data" },
+              { type: "success", text: '{"users": [...]}  ← 問題なく取得できる' },
+              { type: "comment", text: "" },
+              { type: "comment", text: "# CORSはブラウザだけの制限。curlやサーバー間通信は無関係。" },
+            ]}
+          />
           <KeyPoint>CORSエラーが出たら、まずサーバー側の設定を疑う。フロントのコードをいじっても直らないことが多い。</KeyPoint>
         </DetailBlock>
       </DetailSection>

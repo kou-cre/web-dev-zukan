@@ -7,6 +7,9 @@ import {
   Layers,
   Boxes,
   ArrowUpFromLine,
+  RefreshCw,
+  Ban,
+  CheckCheck,
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
@@ -22,6 +25,10 @@ import { MajiDialogue } from "@/components/MajiDialogue";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { DetailSection, DetailBlock, KeyPoint, WarningPoint } from "@/components/DetailSection";
+import { CorrectionCard } from "@/components/CorrectionCard";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { Timeline } from "@/components/Timeline";
+import { CodeBlock } from "@/components/CodeBlock";
 import { variablesQuestions } from "@/content/questions/javascript/variables";
 
 export const metadata = {
@@ -331,6 +338,27 @@ export default function VariablesPage() {
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#fca5a5" }}>ReferenceError</code>{" "}
             になる。つまり「準備ができていないものを使おうとした」ことが、その場で明確にエラーとして分かる。
           </p>
+          <CodeBlock
+            title="hoisting.js"
+            language="javascript"
+            code={`// ── var のホイスティング ──
+console.log(name); // → undefined（エラーにならない！）
+var name = "マジ";
+console.log(name); // → "マジ"
+
+// ── let のホイスティング（TDZ）──
+console.log(age);  // → ReferenceError: Cannot access 'age' before initialization
+let age = 20;
+console.log(age);  // → 20
+
+// ── なぜ var は危ないか ──
+// 宣言前に undefined が返っても気づきにくく、バグの原因になる`}
+          />
+          <CorrectionCard
+            misconception="let / const はホイスティングされない（だからエラーになる）"
+            correction="let / const もホイスティングされる。ただし宣言の行に到達するまで TDZ（触れない期間）に入るためエラーになる"
+            reason="「巻き上げ」はすべての宣言に起きる。var との違いは「巻き上げ後に undefined で初期化するか、TDZ に入れるか」の違い。let / const のエラーは「巻き上げがない」のではなく「巻き上げはされたが、まだ使えない状態」というのが正確。"
+          />
           <KeyPoint>
             「let / const は巻き上げられない」という説明をたまに見るが、正確には誤り。「巻き上げはされるが、宣言の行までは触ったらエラー」が正しい挙動。
           </KeyPoint>
@@ -350,6 +378,24 @@ export default function VariablesPage() {
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#fde047" }}>count++</code>{" "}
             するアロー関数を返すと、外側に出た後も count を覚え続ける。これが状態を持つ関数の正体で、Reactの useState の中でも似た仕組みが動いている。
           </p>
+          <CodeBlock
+            title="closure.js"
+            language="javascript"
+            code={`function makeCounter() {
+  let count = 0; // ← この count を内側の関数が「覚えている」
+
+  return function increment() {
+    count++;       // 外側スコープの count にアクセスできる
+    return count;
+  };
+}
+
+const counter = makeCounter();
+console.log(counter()); // → 1
+console.log(counter()); // → 2
+console.log(counter()); // → 3
+// makeCounter の実行は終わっているが、count は生き続けている`}
+          />
           <KeyPoint>
             クロージャは「スコープのネスト構造」を理解していれば自然に納得できる。逆に言えば、スコープを曖昧にしたままクロージャを学ぼうとすると必ず詰まる。
           </KeyPoint>
@@ -371,6 +417,28 @@ export default function VariablesPage() {
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#fde047" }}>arr = [9]</code>{" "}
             のように別の配列を再代入することだけが禁止される。
           </p>
+          <CodeBlock
+            title="const-mutation.js"
+            language="javascript"
+            code={`const arr = [1, 2, 3];
+
+// ✅ 中身の変更は OK
+arr.push(4);      // → [1, 2, 3, 4]
+arr[0] = 99;      // → [99, 2, 3, 4]
+
+// ✅ オブジェクトのプロパティ変更も OK
+const user = { name: "マジ" };
+user.name = "マスター"; // → { name: "マスター" }
+
+// ❌ 再代入はエラー
+arr = [9];         // TypeError: Assignment to constant variable.
+user = { name: "新しい人" }; // TypeError: Assignment to constant variable.`}
+          />
+          <CorrectionCard
+            misconception="const にすれば配列やオブジェクトの中身も書き換わらない（安全）"
+            correction="const が固定するのは『変数がどのオブジェクトを指すか』だけ。中身のプロパティや要素は普通に変更できる"
+            reason="中身まで凍らせたい場合は Object.freeze() を使う。ただし深いネストには効かないため、不変性が重要な場面では Immutable.js や構造的コピーの設計が必要になる。"
+          />
           <WarningPoint>
             「const にしておけば中身も安全」と思い込むと、配列やオブジェクトを別の場所から書き換えられて気づかないバグを生む。中身まで固定したいときは Object.freeze を使うか、書き換えない設計にする。
           </WarningPoint>
@@ -386,6 +454,49 @@ export default function VariablesPage() {
           <p>
             <strong className="text-white">禁止：var は新規コードに書かない</strong>。読むときに出てきたら「古いコードだな」とだけ思えばOK。
           </p>
+          <Timeline items={[
+            {
+              year: "〜ES5",
+              label: "var の時代",
+              description: "var しか存在しない。関数スコープのみで、再宣言し放題。規模が大きくなると変数の衝突やホイスト起因のバグが頻発した。",
+              accentColor: "rose",
+            },
+            {
+              year: "ES6（2015）",
+              label: "let / const の登場",
+              description: "ブロックスコープの let と const が追加。再宣言禁止・TDZ導入により、変数まわりの事故が大幅に減少。const ファーストの文化が始まる。",
+              accentColor: "blue",
+            },
+            {
+              year: "現在",
+              label: "const ファーストが標準",
+              description: "ESLint / TypeScript などのツールチェーンが const 推奨・var 禁止を自動でチェック。「ルールを手で守る」から「ツールに守らせる」へ。",
+              accentColor: "emerald",
+            },
+          ]} />
+          <UseCaseGrid cols={3} items={[
+            {
+              Icon: Ban,
+              title: "var",
+              subtitle: "レガシーコードのみ",
+              description: "新規コードでは使わない。読むときに出てきたら「古い書き方」とだけ認識する。",
+              accentColor: "red",
+            },
+            {
+              Icon: RefreshCw,
+              title: "let",
+              subtitle: "値が変わるときだけ",
+              description: "カウンタ・フラグ・段階的に組み立てる値。再代入が必要な箱にのみ使う。",
+              accentColor: "blue",
+            },
+            {
+              Icon: CheckCheck,
+              title: "const",
+              subtitle: "迷ったらこれ（第一選択）",
+              description: "まず const で宣言。再代入が必要になった時点で let に書き換える。",
+              accentColor: "yellow",
+            },
+          ]} />
           <KeyPoint>
             「const から書き始めて、再代入したくなったら let に書き換える」だけで、変数まわりの事故の8割は防げる。手で守るルールというより、エディタが教えてくれるルール（const に再代入しようとするとTypeScriptがエラーを出す）として運用する。
           </KeyPoint>

@@ -10,6 +10,11 @@ import {
   Wand2,
   PackageOpen,
   ArrowUpFromLine,
+  Bug,
+  Tag,
+  List,
+  Terminal,
+  BellRing,
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
@@ -30,6 +35,10 @@ import {
   KeyPoint,
   WarningPoint,
 } from "@/components/DetailSection";
+import { CorrectionCard } from "@/components/CorrectionCard";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { Timeline } from "@/components/Timeline";
+import { CodeBlock } from "@/components/CodeBlock";
 import { errorQuestions } from "@/content/questions/javascript/error";
 
 export const metadata = {
@@ -326,15 +335,43 @@ export default function ErrorPage() {
             </code>{" "}
             オブジェクトには主に3つの情報が乗る。
           </p>
-          <p>
-            <strong className="text-white">message</strong>：エラーの説明文（人間向け）。例：「Failed to fetch」。
-          </p>
-          <p>
-            <strong className="text-white">name</strong>：エラーの種類名（TypeError / ReferenceError / カスタム名など）。
-          </p>
-          <p>
-            <strong className="text-white">stack</strong>：エラーが発生した場所までの呼び出し履歴（スタックトレース）。デバッグの命綱。
-          </p>
+          <UseCaseGrid cols={3} items={[
+            {
+              Icon: Bug,
+              title: "message",
+              subtitle: "人間向けの説明文",
+              description: "エラーの内容を文章で説明する。例：「Failed to fetch」「user 42 not found」。",
+              accentColor: "red",
+            },
+            {
+              Icon: Tag,
+              title: "name",
+              subtitle: "エラーの種類名",
+              description: "TypeError / ReferenceError / カスタム名など。instanceof での判別にも使える。",
+              accentColor: "amber",
+            },
+            {
+              Icon: List,
+              title: "stack",
+              subtitle: "スタックトレース",
+              description: "エラーが発生した場所までの呼び出し履歴。デバッグの命綱。本番では Sentry 等に送る。",
+              accentColor: "violet",
+            },
+          ]} />
+          <CodeBlock
+            title="error-properties.ts"
+            language="typescript"
+            code={`try {
+  const data = JSON.parse("invalid json");
+} catch (e) {
+  // TypeScript では e の型は unknown — instanceof でガードする
+  if (e instanceof Error) {
+    console.log(e.message); // "Unexpected token i in JSON..."
+    console.log(e.name);    // "SyntaxError"
+    console.log(e.stack);   // "SyntaxError: ... at JSON.parse ..."
+  }
+}`}
+          />
           <KeyPoint>
             catch (e) で受けた e は基本的に Error のインスタンス。だが TypeScript の型は unknown 扱いなので、e instanceof Error でガードしてから e.message を読む癖をつけると安全。
           </KeyPoint>
@@ -344,25 +381,49 @@ export default function ErrorPage() {
           <p>
             業務固有のエラーは Error を継承した独自クラスを作るのが定石。class 構文で1行書くだけで、catch 側で種類を判別できるようになる。
           </p>
-          <p>
-            例：
-            <code
-              className="text-xs px-1.5 py-0.5 rounded font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#34d399" }}
-            >
-              class UserNotFoundError extends Error {"{ constructor(id) { super(`user ${id} not found`); this.name = 'UserNotFoundError'; } }"}
-            </code>
-          </p>
-          <p>
-            catch 側では{" "}
-            <code
-              className="text-xs px-1.5 py-0.5 rounded font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#34d399" }}
-            >
-              if (e instanceof UserNotFoundError)
-            </code>{" "}
-            で分岐できる。複数のエラー種別を扱う API では特に効果が大きい。
-          </p>
+          <CodeBlock
+            title="custom-error.ts"
+            language="typescript"
+            code={`// カスタムエラークラスを定義する
+class UserNotFoundError extends Error {
+  constructor(id: number) {
+    super(\`user \${id} not found\`);
+    this.name = "UserNotFoundError";
+  }
+}
+
+class InsufficientStockError extends Error {
+  constructor(itemId: string) {
+    super(\`item \${itemId} is out of stock\`);
+    this.name = "InsufficientStockError";
+  }
+}
+
+// catch 側でエラー種別を判別して分岐できる
+async function processOrder(userId: number, itemId: string) {
+  try {
+    const user = await fetchUser(userId);
+    const item = await fetchItem(itemId);
+    await placeOrder(user, item);
+  } catch (e) {
+    if (e instanceof UserNotFoundError) {
+      // ユーザー未登録のケース → 登録を促す
+      showToast("アカウントが見つかりません。再ログインしてください。");
+    } else if (e instanceof InsufficientStockError) {
+      // 在庫切れのケース → 再入荷通知を提案
+      showToast("在庫が不足しています。再入荷通知を設定しますか？");
+    } else {
+      // 想定外のエラー → 汎用メッセージ
+      showToast("エラーが発生しました。しばらく後にお試しください。");
+    }
+  }
+}`}
+          />
+          <CorrectionCard
+            misconception="catch (e) の e は常に Error クラスのインスタンスで、e.message で安全にメッセージを読める"
+            correction="JavaScript では何でも throw できるので、e は文字列や数値の場合もある。TypeScript の catch 節では e の型は unknown になる"
+            reason="instanceof Error でガードしてから e.message を読むのが安全な書き方。カスタムエラーも extends Error で作ると instanceof による判別が確実に機能する。"
+          />
         </DetailBlock>
 
         <DetailBlock heading="6.3 非同期エラーの罠（未処理のPromiseリジェクション）">
@@ -376,18 +437,85 @@ export default function ErrorPage() {
             </code>{" "}
             も await もしないと、エラーは「未処理のPromiseリジェクション（unhandledrejection）」になり、ログに警告が出るだけで握りつぶされることがある。
           </p>
+          <CorrectionCard
+            misconception="try/catch の中で async 関数を呼べば、その中のエラーは必ず catch に届く"
+            correction="await を書き忘れると Promise が返ってくるだけで、エラーは catch に届かない"
+            reason="async 関数は常に Promise を返す。await なしで呼ぶと、その Promise が reject されても try/catch はそれを感知できない。結果として「なぜか動かないが何のエラーも出ない」という厄介な状態になる。"
+          />
+          <CodeBlock
+            title="async-error.ts"
+            language="typescript"
+            code={`// NG: await なし — エラーが catch に届かない
+async function bad() {
+  try {
+    fetchUser(42); // await を忘れた！ Promise が宙に浮く
+  } catch (e) {
+    console.error(e); // ここには来ない
+  }
+}
+
+// OK: await あり — エラーが catch に届く
+async function good() {
+  try {
+    await fetchUser(42); // await で Promise を解決する
+  } catch (e) {
+    console.error(e); // ここに来る
+  }
+}
+
+// OK: Promise チェーンで書く場合は .catch() を使う
+fetchUser(42)
+  .then((user) => console.log(user))
+  .catch((e) => console.error(e)); // .catch() を忘れずに`}
+          />
           <WarningPoint>
             await を忘れた async 関数の戻り値は Promise のまま放置される。awaitを書き忘れたが故にエラーがどこにも届かないまま、なぜか挙動だけがおかしい——という事故は本当に多い。Lint ルール（@typescript-eslint/no-floating-promises 等）で機械的に検出できるので必ず有効化する。
           </WarningPoint>
         </DetailBlock>
 
         <DetailBlock heading="6.4 エラーログとユーザー向けメッセージの分離">
-          <p>
-            <strong className="text-white">開発者向けログ</strong>：スタックトレース、リクエスト ID、入力値の概要などを残す（個人情報・パスワード・トークンは記録しない）。Sentry や Cloud Logging に送るのが定番。
-          </p>
-          <p>
-            <strong className="text-white">ユーザー向けメッセージ</strong>：「もう一度お試しください」「しばらくしてから再度アクセスしてください」のような、原因の詳細を漏らさない丁寧な表現にする。
-          </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: Terminal,
+              title: "開発者向けログ",
+              subtitle: "Sentry / Cloud Logging に送る",
+              description: "スタックトレース・リクエストID・入力値の概要を記録する。個人情報・パスワード・トークンは絶対に含めない。",
+              accentColor: "violet",
+            },
+            {
+              Icon: BellRing,
+              title: "ユーザー向けメッセージ",
+              subtitle: "画面・トーストで表示する",
+              description: "「もう一度お試しください」のような丁寧な表現にする。技術的な原因・スタックトレースは絶対に見せない。",
+              accentColor: "sky",
+            },
+          ]} />
+          <Timeline items={[
+            {
+              year: "発生",
+              label: "エラーが throw される",
+              description: "API 呼び出し失敗・DB エラー・バリデーション違反など、何らかの理由でエラーが投げられる。",
+              accentColor: "rose",
+            },
+            {
+              year: "検知",
+              label: "catch 節で受け取る",
+              description: "catch (e) でエラーオブジェクトを受け取る。e instanceof Error でガードして e.message・e.stack を取り出す。",
+              accentColor: "amber",
+            },
+            {
+              year: "記録",
+              label: "開発者向けログを送信",
+              description: "Sentry.captureException(e) や console.error(e) でスタックトレースをログシステムに送る。個人情報は除外する。",
+              accentColor: "violet",
+            },
+            {
+              year: "通知",
+              label: "ユーザーへ丁寧に伝える",
+              description: "「エラーが発生しました。しばらくしてから再度お試しください。」のような文言を表示する。スタックトレースは見せない。",
+              accentColor: "sky",
+            },
+          ]} />
           <KeyPoint>
             原則：技術情報をユーザーに見せない、人間向け文言を開発者ログに混ぜない。両者の目的と読み手が違うので、必ず分けて設計する。
           </KeyPoint>

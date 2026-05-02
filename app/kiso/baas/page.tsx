@@ -9,6 +9,9 @@ import {
   Flame,
   Layers,
   Wrench,
+  Lock,
+  DollarSign,
+  AlertTriangle,
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
@@ -25,6 +28,9 @@ import { MajiDialogue } from "@/components/MajiDialogue";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { DetailSection, DetailBlock, KeyPoint } from "@/components/DetailSection";
+import { CorrectionCard } from "@/components/CorrectionCard";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { Timeline } from "@/components/Timeline";
 import { baasQuestions } from "@/content/questions/kiso/baas";
 
 export const metadata = {
@@ -350,59 +356,132 @@ export default function BaasPage() {
 
       <DetailSection title="詳細解説">
         <DetailBlock heading="7.1 BaaSが提供する主要機能">
-          <p>
-            <strong className="text-white">Auth（認証）</strong>：メール・Google・GitHub・Apple など、10以上のログイン手段を数行のコードで実装できる。自前で作ろうとすると、パスワードのハッシュ化・トークン管理・OAuth連携など、地雷が多い領域。
-          </p>
-          <p>
-            <strong className="text-white">Database（DB）</strong>：Firebase は Firestore（NoSQL・ドキュメント型）、Supabase は PostgreSQL（RDB）。アプリのデータを保存・取得する核の部分。
-          </p>
-          <p>
-            <strong className="text-white">Storage（ストレージ）</strong>：画像・動画・PDFなど大きなファイルを保管する場所。DBに直接入れると重くなるので、ファイルは別管理が原則。
-          </p>
-          <p>
-            <strong className="text-white">Functions（関数）</strong>：クライアントから直接見せられない処理（決済・メール送信など）をクラウド上で動かす。Firebase は Cloud Functions、Supabase は Edge Functions。
-          </p>
-          <p>
-            <strong className="text-white">Hosting（ホスティング）</strong>：作った Web アプリを公開する場所。Firebase Hosting は静的サイト配信に特化。Supabase 単体では提供せず、Vercel と組み合わせるのが一般的。
-          </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: KeyRound,
+              title: "Auth（認証）",
+              subtitle: "Firebase Auth / Supabase Auth",
+              description: "メール・Google・GitHub・Apple など10以上のログイン手段を数行で実装。パスワードのハッシュ化・トークン管理・OAuth連携を全部肩代わりしてくれる。",
+              accentColor: "amber",
+            },
+            {
+              Icon: Database,
+              title: "Database（DB）",
+              subtitle: "Firestore（NoSQL）/ PostgreSQL（RDB）",
+              description: "アプリのデータを保存・取得する核の部分。Firebase は Firestore（ドキュメント型）、Supabase は PostgreSQL（SQL対応）。",
+              accentColor: "emerald",
+            },
+            {
+              Icon: HardDrive,
+              title: "Storage（ストレージ）",
+              subtitle: "Cloud Storage / Supabase Storage",
+              description: "画像・動画・PDFなど大きなファイルを保管する場所。DB に直接入れると重くなるため、ファイルは別管理が原則。",
+              accentColor: "violet",
+            },
+            {
+              Icon: Zap,
+              title: "Functions（関数）",
+              subtitle: "Cloud Functions / Edge Functions",
+              description: "クライアントから直接見せられない処理（決済・メール送信など）をクラウド上で動かす。秘密鍵もここで守る。",
+              accentColor: "orange",
+            },
+            {
+              Icon: Cloud,
+              title: "Hosting（ホスティング）",
+              subtitle: "Firebase Hosting / Vercel と組み合わせ",
+              description: "作った Web アプリを公開する場所。Firebase Hosting は静的サイト配信に特化。Supabase 単体では提供せず Vercel と組み合わせるのが一般的。",
+              accentColor: "blue",
+            },
+          ]} />
         </DetailBlock>
 
         <DetailBlock heading="7.2 Firebase と Supabase の選び方">
-          <p>
-            <strong className="text-white">Firebase</strong> を選ぶ理由：Google 製で資料が圧倒的に多い。Firestore のリアルタイム同期（onSnapshot）が強力で、チャットや共同編集系と相性が良い。無料枠（Spark プラン）が個人開発には十分寛大。
-          </p>
-          <p>
-            <strong className="text-white">Supabase</strong> を選ぶ理由：PostgreSQL ベースなので SQL が書ける。OSS（オープンソース）なのでベンダーロックインを回避しやすく、いざとなれば自分のサーバーに移せる。RDB 設計に慣れている人ほど自然に入れる。
-          </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: Flame,
+              title: "Firebase を選ぶ理由",
+              subtitle: "Google製・Firestore（NoSQL）",
+              description: "資料が圧倒的に多い。Firestore のリアルタイム同期（onSnapshot）が強力でチャット・共同編集と相性抜群。無料枠（Spark プラン）が個人開発には十分寛大。SQL を書いたことがない人に最適。",
+              accentColor: "orange",
+            },
+            {
+              Icon: Layers,
+              title: "Supabase を選ぶ理由",
+              subtitle: "OSS・PostgreSQL（RDB）",
+              description: "PostgreSQL ベースなので SQL が書ける。OSS なのでベンダーロックインを回避しやすく、いざとなれば自分のサーバーに移せる。RDB 設計に慣れている人ほど自然に入れる。",
+              accentColor: "emerald",
+            },
+          ]} />
+          <CorrectionCard
+            misconception="Firebase か Supabase か、最初の選択を間違えると取り返しがつかない"
+            correction="どちらも「BaaS」という同じカテゴリの中の選択。片方を理解すれば概念は8割方そのまま通用する"
+            reason="Auth・DB・Storage・Functions の構造はどちらも共通。最初は Firebase から入って、必要になったタイミングで Supabase に乗り換える人も多い。道具を選ぶことより、選んだ道具を使いこなすことが先。"
+          />
           <KeyPoint>
-            初めて触るなら Firebase からで十分。SQL 経験者は Supabase の方がストレスが少ない。どちらも「BaaS」という同じカテゴリの中の選択なので、片方を理解すれば、もう片方の概念は8割方そのまま通用する。
+            初めて触るなら Firebase からで十分。SQL 経験者は Supabase の方がストレスが少ない。
           </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading="7.3 BaaSの制約とトレードオフ">
-          <p>
-            <strong className="text-white">ベンダーロックイン</strong>：Firebase に深く依存すると、他社サービスへの移行コストが大きくなる。Firestore のクエリは Firestore 専用で、そのままでは PostgreSQL に持っていけない。
-          </p>
-          <p>
-            <strong className="text-white">クエリ制限</strong>：Firestore は OR 検索・複数フィールドの不等号条件など、できないクエリがある。RDB なら自由に書ける SQL も、Firestore では「先にデータ構造を寄せておく」必要がある。
-          </p>
-          <p>
-            <strong className="text-white">コスト構造</strong>：BaaS は「使った分だけ」の従量課金。アクセスが急増すると DB の読み書き回数で課金が爆発するケースもある。設計段階で「1ユーザーあたり何回読み書きするか」を意識する必要がある。
-          </p>
+          <UseCaseGrid cols={3} items={[
+            {
+              Icon: Lock,
+              title: "ベンダーロックイン",
+              description: "Firebase に深く依存すると移行コストが大きくなる。Firestore のクエリは Firestore 専用で、そのままでは PostgreSQL に持っていけない。",
+              accentColor: "red",
+            },
+            {
+              Icon: AlertTriangle,
+              title: "クエリ制限",
+              description: "Firestore は OR 検索・複数フィールドの不等号条件など、できないクエリがある。RDB なら自由な SQL も、Firestore では「先にデータ構造を寄せる」必要がある。",
+              accentColor: "amber",
+            },
+            {
+              Icon: DollarSign,
+              title: "コスト構造",
+              description: "BaaS は「使った分だけ」の従量課金。アクセスが急増すると DB の読み書き回数で課金が爆発するケースもある。設計段階からアクセスパターンを意識する必要がある。",
+              accentColor: "orange",
+            },
+          ]} />
+          <CorrectionCard
+            misconception="BaaS を使えばコストも設計もすべておまかせでよい"
+            correction="BaaS は「インフラ管理」を肩代わりしてくれるが、データ設計・クエリ設計・コスト管理は自分の責任"
+            reason="特に Firestore は「先に読み取りパターンを想定したデータ設計」が必要。後から構造を変えると全データ移行が必要になるケースもある。便利な分だけ、設計上の制約を受け入れる前提で使う道具。"
+          />
           <KeyPoint>
-            BaaSは「最短で動かす」には最適。ただし「何が苦手か」を知った上で選ぶこと。便利な分、設計上の制約を受け入れる前提で使う道具。
+            BaaSは「最短で動かす」には最適。ただし「何が苦手か」を知った上で選ぶこと。
           </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading="7.4 BaaSの学習ロードマップ — どこから始めるか">
-          <p>
-            <strong className="text-white">最初のステップ</strong>：Firebase（または Supabase）+ Vercel の組み合わせから入るのが一般的。認証・DB・ストレージは BaaS で済ませ、フロントエンド（Next.js）と BaaS の組み合わせに集中する。
-          </p>
-          <p>
-            <strong className="text-white">次のステップ</strong>：BaaS の制約にぶつかったとき、または案件で「自前で作ってほしい」と要請されたときに、Express / Hono / Next.js API Routes に踏み込む。
-          </p>
+          <Timeline items={[
+            {
+              year: "Stage 1",
+              label: "BaaS で始める",
+              description: "Firebase（または Supabase）+ Vercel の組み合わせから入る。認証・DB・ストレージは BaaS で済ませ、フロントエンド（Next.js）と BaaS の組み合わせに集中する。",
+              accentColor: "emerald",
+            },
+            {
+              year: "Stage 2",
+              label: "BaaSの裏を理解する",
+              description: "BaaS の中身は「HTTPサーバー＋処理ロジック＋DB接続＋外部API連携」がクラウド側で動いているだけ。概念図Bの構造を意識しながら、何が裏でどう動いているかを想像できるようにする。",
+              accentColor: "blue",
+            },
+            {
+              year: "Stage 3",
+              label: "BaaSの壁にぶつかる",
+              description: "複雑なビジネスロジック・定期実行・Firestore のクエリ制限・コスト爆発など、BaaS だけでは対応しにくい要件が出てくる。この壁がサーバーサイドを学ぶ動機になる。",
+              accentColor: "amber",
+            },
+            {
+              year: "Stage 4",
+              label: "自前バックエンドへ踏み込む",
+              description: "Express / Hono / Next.js API Routes へ。案件で「自前で作ってほしい」と要請されたタイミングでも自然に入れる。BaaS の構造を知っていれば地続きで理解できる。",
+              accentColor: "violet",
+            },
+          ]} />
           <KeyPoint>
-            ゴールは「BaaS を使いこなしつつ、その裏で何が動いているか想像できる」状態。Firestore のクエリも、Supabase の Row Level Security も、概念図Bの「Auth・DB・Storage・Functions」の組み合わせがクラウド側で動いているだけ。構造を理解しておけば、自前バックエンドを学ぶときの地続き感が違う。
+            ゴールは「BaaS を使いこなしつつ、その裏で何が動いているか想像できる」状態。構造を理解しておけば、自前バックエンドを学ぶときの地続き感がまったく違う。
           </KeyPoint>
         </DetailBlock>
       </DetailSection>

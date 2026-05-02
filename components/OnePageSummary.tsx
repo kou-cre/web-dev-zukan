@@ -21,20 +21,25 @@ export function OnePageSummary({ keyMessage, metaphorTitle, metaphorPoints, defi
         ONE PAGE SUMMARY
       </h2>
 
-      {/* Key message — 全体像を一言で */}
       <div
-        className="rounded-xl border p-5 mb-4"
+        className="rounded-xl border p-6"
         style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
       >
-        <p className="text-sm text-gray-300 leading-relaxed">{keyMessage}</p>
-      </div>
+        {/* 一言定義 — 最初に答えを提示 */}
+        <div className="text-center mb-5">
+          <div className="inline-flex items-center gap-1.5 mb-3">
+            <Lightbulb className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wide">一言定義</span>
+          </div>
+          <p className="text-base font-bold text-white leading-snug mb-2">{definition}</p>
+          <p className="text-sm text-gray-400 leading-relaxed">{keyMessage}</p>
+        </div>
 
-      {/* Metaphor — ストーリーフロー */}
-      <div
-        className="rounded-xl border p-5 mb-4"
-        style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
-      >
-        <div className="flex items-center gap-2 mb-5">
+        {/* Divider */}
+        <div className="border-t my-5" style={{ borderColor: "#2d3048" }} />
+
+        {/* Metaphor — ストーリーフロー */}
+        <div className="flex items-center gap-2 mb-4">
           <Quote className="w-4 h-4 text-amber-400" />
           <p className="text-xs font-semibold text-amber-400">{metaphorTitle}</p>
         </div>
@@ -67,15 +72,6 @@ export function OnePageSummary({ keyMessage, metaphorTitle, metaphorPoints, defi
             </Fragment>
           ))}
         </div>
-      </div>
-
-      {/* One-line definition — 全体像の結晶 */}
-      <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5">
-        <div className="flex items-center gap-2 mb-2">
-          <Lightbulb className="w-4 h-4 text-emerald-400" />
-          <p className="text-xs font-semibold text-emerald-400">一言定義</p>
-        </div>
-        <p className="text-base font-medium text-white leading-relaxed">{definition}</p>
       </div>
     </section>
   );

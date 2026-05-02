@@ -200,6 +200,282 @@ export default function StatePage() {
             showArrow={false}
           />
         </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図D：State更新のバッチング（React 18の自動バッチング）"
+          description="複数のsetState呼び出しをまとめて1回の再レンダリングに抑える仕組み"
+          accentColor="violet"
+        >
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div
+                className="rounded-xl border p-4"
+                style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+              >
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3 text-center">
+                  React 17以前
+                </p>
+                <div className="space-y-1.5 text-xs text-gray-400 leading-relaxed mb-3">
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" />
+                    <span>setTimeout / fetchコールバック内では<br />1回のsetState = 1回の再レンダリング</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" />
+                    <span>3回setStateを呼ぶ = 3回再レンダリング</span>
+                  </div>
+                </div>
+                <div
+                  className="rounded-lg px-3 py-2 text-xs font-mono text-gray-500"
+                  style={{ backgroundColor: "#1a1d2a" }}
+                >
+                  <span className="text-gray-500">{"// setTimeout内では個別に再レンダリング"}</span><br />
+                  setCount(c + 1);<span className="text-red-400"> {"// 再レンダリング①"}</span><br />
+                  setName(<span className="text-amber-400">{"'Alice'"}</span>);<span className="text-red-400"> {"// 再レンダリング②"}</span><br />
+                  setVisible(<span className="text-sky-400">true</span>);<span className="text-red-400"> {"// 再レンダリング③"}</span>
+                </div>
+              </div>
+
+              <div
+                className="rounded-xl border border-violet-500/40 p-4"
+                style={{ backgroundColor: "rgba(139,92,246,0.05)" }}
+              >
+                <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-3 text-center">
+                  React 18（自動バッチング）
+                </p>
+                <div className="space-y-1.5 text-xs text-gray-300 leading-relaxed mb-3">
+                  <div className="flex items-start gap-2">
+                    <RefreshCw className="w-3.5 h-3.5 text-violet-400 flex-shrink-0 mt-0.5" />
+                    <span>非同期コールバック内でも自動バッチング</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <RefreshCw className="w-3.5 h-3.5 text-violet-400 flex-shrink-0 mt-0.5" />
+                    <span>3回setStateを呼んでも1回しか再レンダリングしない</span>
+                  </div>
+                </div>
+                <div
+                  className="rounded-lg px-3 py-2 text-xs font-mono"
+                  style={{ backgroundColor: "#1a1d2a" }}
+                >
+                  <span className="text-gray-500">{"// どこでも自動バッチング"}</span><br />
+                  setCount(c + 1);<br />
+                  setName(<span className="text-amber-400">{"'Alice'"}</span>);<br />
+                  setVisible(<span className="text-sky-400">true</span>);<br />
+                  <span className="text-violet-400">{"// ↑ まとめて1回の再レンダリング"}</span>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className="rounded-xl border border-violet-500/20 px-4 py-3 flex items-center gap-3"
+              style={{ backgroundColor: "rgba(139,92,246,0.08)" }}
+            >
+              <Layers className="w-4 h-4 text-violet-400 flex-shrink-0" />
+              <p className="text-xs text-gray-300">
+                パフォーマンス改善：N回の再レンダリング
+                <span className="mx-2 text-violet-400 font-bold">→</span>
+                1回の再レンダリング。不要なレンダリングが減りUIがスムーズになる。
+              </p>
+            </div>
+          </div>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図E：useState と useReducer の使い分け"
+          description="シンプルな値にはuseState、複雑なロジックにはuseReducer"
+          accentColor="violet"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest mb-3 text-center">
+                useState
+              </p>
+              <p className="text-xs text-gray-400 mb-3">単純な値の更新に最適</p>
+              <div
+                className="rounded-lg px-3 py-2 text-xs font-mono mb-3"
+                style={{ backgroundColor: "#1a1d2a" }}
+              >
+                <span className="text-violet-300">const</span>{" "}
+                <span className="text-white">[count, setCount] =</span><br />
+                <span className="text-white">{"  "}useState(0);</span><br />
+                <span className="text-white">setCount(count + 1);</span>
+              </div>
+              <div className="space-y-1.5 text-xs text-gray-400">
+                <div className="flex items-start gap-2">
+                  <Hash className="w-3.5 h-3.5 text-blue-400 flex-shrink-0 mt-0.5" />
+                  <span>独立したシンプルな値</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <ToggleLeft className="w-3.5 h-3.5 text-blue-400 flex-shrink-0 mt-0.5" />
+                  <span>トグル・カウンター・フォーム入力</span>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className="rounded-xl border border-violet-500/40 p-4"
+              style={{ backgroundColor: "rgba(139,92,246,0.05)" }}
+            >
+              <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-3 text-center">
+                useReducer
+              </p>
+              <p className="text-xs text-gray-300 mb-3">複数のstateが絡み合うロジックに最適</p>
+              <div
+                className="rounded-lg px-3 py-2 text-xs font-mono mb-3"
+                style={{ backgroundColor: "#1a1d2a" }}
+              >
+                <span className="text-violet-300">const</span>{" "}
+                <span className="text-white">[state, dispatch] =</span><br />
+                <span className="text-white">{"  "}useReducer(reducer, init);</span><br />
+                <span className="text-white">dispatch({"{"} type:</span>{" "}
+                <span className="text-amber-400">{"'INCREMENT'"}</span>{" "}
+                <span className="text-white">{"}"});</span>
+              </div>
+              <div className="space-y-1.5 text-xs text-gray-300">
+                <div className="flex items-start gap-2">
+                  <Layers className="w-3.5 h-3.5 text-violet-400 flex-shrink-0 mt-0.5" />
+                  <span>複数stateが連動して変化する処理</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <RefreshCw className="w-3.5 h-3.5 text-violet-400 flex-shrink-0 mt-0.5" />
+                  <span>reducerは純粋関数 = 単体テスト可能</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="rounded-xl border border-violet-500/20 p-4"
+            style={{ backgroundColor: "rgba(139,92,246,0.08)" }}
+          >
+            <p className="text-xs font-semibold text-violet-300 mb-3">使い分け判断ガイド</p>
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center gap-2">
+                <span className="text-gray-400 w-36 flex-shrink-0">独立したシンプルな値</span>
+                <span className="text-violet-400 font-bold">→</span>
+                <span className="text-gray-300">useState</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-gray-400 w-36 flex-shrink-0">複数stateが連動して変化</span>
+                <span className="text-violet-400 font-bold">→</span>
+                <span className="text-gray-300">useReducer</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-gray-400 w-36 flex-shrink-0">次のStateが前のStateに依存</span>
+                <span className="text-violet-400 font-bold">→</span>
+                <span className="text-gray-300">useReducer（reducerは純粋関数）</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-gray-400 w-36 flex-shrink-0">テストしやすくしたい</span>
+                <span className="text-violet-400 font-bold">→</span>
+                <span className="text-gray-300">useReducer（reducerを単体テスト可能）</span>
+              </div>
+            </div>
+          </div>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図F：イミュータブル（不変）更新パターン"
+          description="Reactは参照比較でstate変化を検知する — 直接変更ではReactは気づけない"
+          accentColor="violet"
+        >
+          <div
+            className="rounded-xl border border-amber-500/30 px-4 py-3 mb-4 flex items-start gap-3"
+            style={{ backgroundColor: "rgba(245,158,11,0.07)" }}
+          >
+            <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-gray-300 leading-relaxed">
+              Reactはオブジェクト・配列を<span className="text-amber-300 font-semibold">参照（アドレス）</span>で比較する。
+              中身を直接変更しても参照が同じなら<span className="text-red-400 font-semibold">変化を検知できず再レンダリングが起きない</span>。
+              必ず新しいオブジェクト・配列を作って渡す。
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
+                配列への追加
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+                <div
+                  className="rounded-lg px-3 py-2"
+                  style={{ backgroundColor: "#1a1d2a" }}
+                >
+                  <span className="text-red-400">{"// ❌ 直接変更（NG）"}</span><br />
+                  <span className="text-gray-400">state.push(item);</span>
+                </div>
+                <div
+                  className="rounded-lg px-3 py-2 border border-violet-500/30"
+                  style={{ backgroundColor: "rgba(139,92,246,0.05)" }}
+                >
+                  <span className="text-violet-400">{"// ✅ 新しい配列を作成"}</span><br />
+                  <span className="text-gray-300">[...state, item]</span>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
+                オブジェクト更新
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+                <div
+                  className="rounded-lg px-3 py-2"
+                  style={{ backgroundColor: "#1a1d2a" }}
+                >
+                  <span className="text-red-400">{"// ❌ プロパティを直接変更"}</span><br />
+                  <span className="text-gray-400">state.name = <span className="text-amber-400">{"'new'"}</span>;</span>
+                </div>
+                <div
+                  className="rounded-lg px-3 py-2 border border-violet-500/30"
+                  style={{ backgroundColor: "rgba(139,92,246,0.05)" }}
+                >
+                  <span className="text-violet-400">{"// ✅ スプレッドでコピー"}</span><br />
+                  <span className="text-gray-300">{"{ ...state, name: "}<span className="text-amber-400">{"'new'"}</span>{" }"}</span>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
+                ネストしたオブジェクトの更新
+              </p>
+              <div
+                className="rounded-lg px-3 py-2 border border-violet-500/30 text-xs font-mono"
+                style={{ backgroundColor: "rgba(139,92,246,0.05)" }}
+              >
+                <span className="text-violet-400">{"// ✅ 各レベルをスプレッドでコピー"}</span><br />
+                <span className="text-gray-300">
+                  {"{ ...state, user: { ...state.user, name: "}<span className="text-amber-400">{"'new'"}</span>{" } }"}
+                </span>
+              </div>
+            </div>
+
+            <div
+              className="rounded-xl border border-violet-500/20 px-4 py-3 flex items-start gap-3"
+              style={{ backgroundColor: "rgba(139,92,246,0.08)" }}
+            >
+              <Layers className="w-4 h-4 text-violet-400 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-gray-300 leading-relaxed">
+                ネストが深くなると冗長になる。
+                <span className="text-violet-300 font-semibold">Immer</span> ライブラリを使うと
+                直接変更するような直感的な書き方でイミュータブル更新が可能になる。
+              </p>
+            </div>
+          </div>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">

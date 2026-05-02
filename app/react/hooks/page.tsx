@@ -198,6 +198,150 @@ export default function HooksPage() {
             </p>
           </div>
         </ConceptDiagram>
+
+        {/* 図D: カスタムフックの構造 */}
+        <ConceptDiagram
+          title="概念図D：カスタムフックの構造と使いどころ"
+          description="カスタムフックは「use始まりの関数」にすぎない。内部で他のHooksを呼び、値を返す。"
+        >
+          {/* useWindowSize の中身 */}
+          <div
+            className="rounded-lg border p-4 mb-4"
+            style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+          >
+            <p className="text-xs font-semibold text-emerald-400 mb-2">useWindowSize() の中身</p>
+            <p className="text-xs font-mono text-gray-400 leading-relaxed whitespace-pre-wrap">{`function useWindowSize() {
+  const [size, setSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const handler = () =>
+      setSize({ width: window.innerWidth, height: window.innerHeight });
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+
+  return size; // { width, height }
+}`}</p>
+          </div>
+
+          {/* 抽出パターン */}
+          <div className="flex flex-col sm:flex-row items-start gap-3 mb-4">
+            <div className="flex-1 rounded-lg border px-4 py-3" style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}>
+              <p className="text-xs font-semibold text-gray-400 mb-2">抽出前：3つのコンポーネントで重複</p>
+              {["ComponentA", "ComponentB", "ComponentC"].map((c) => (
+                <div key={c} className="flex items-center gap-2 mb-1">
+                  <div className="w-2 h-2 rounded-full bg-gray-600 flex-shrink-0" />
+                  <span className="text-xs text-gray-500">{c} — localStorage ロジックをそれぞれ実装</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center self-center">
+              <ArrowRight className="w-5 h-5 text-emerald-500" />
+            </div>
+            <div className="flex-1 rounded-lg border px-4 py-3" style={{ backgroundColor: "#0f1117", borderColor: "#34d399", borderWidth: 1 }}>
+              <p className="text-xs font-semibold text-emerald-400 mb-2">抽出後：useLocalStorage() に集約</p>
+              {["ComponentA", "ComponentB", "ComponentC"].map((c) => (
+                <div key={c} className="flex items-center gap-2 mb-1">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0" />
+                  <code className="text-xs text-gray-300">{c} — useLocalStorage() を呼ぶだけ</code>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ルール補足 */}
+          <div className="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3">
+            <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-amber-300 leading-relaxed">
+              カスタムフックもHooksのルールに従う。コンポーネントのトップレベルでのみ呼び出し可能——条件分岐やループの中では呼べない。
+            </p>
+          </div>
+        </ConceptDiagram>
+
+        {/* 図E: Hookの実行順序とルール */}
+        <ConceptDiagram
+          title="概念図E：Hooksのルールと実行順序の重要性"
+          description="Reactは「何番目のhookか」でstateを管理している。順番が変わると状態が混乱する。"
+        >
+          {/* NG パターン */}
+          <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-4 mb-3">
+            <p className="text-xs font-semibold text-red-400 mb-2">NG — 条件によって呼び出し順が変わる</p>
+            <p className="text-xs font-mono text-gray-400 whitespace-pre-wrap leading-relaxed">{`if (isLoggedIn) {
+  const [name, setName] = useState(""); // ❌ 条件次第でスキップされる
+}`}</p>
+            <p className="text-xs text-red-300 mt-2">レンダリングごとにHookの数が変わり、ReactがどのstateをどのHookに対応させるか分からなくなる。</p>
+          </div>
+
+          {/* OK パターン */}
+          <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4 mb-4">
+            <p className="text-xs font-semibold text-emerald-400 mb-2">OK — Hooksをトップレベルに置き、条件は後で</p>
+            <p className="text-xs font-mono text-gray-400 whitespace-pre-wrap leading-relaxed">{`const [name, setName] = useState(""); // ✅ 常に1番目に呼ばれる
+
+if (isLoggedIn) {
+  // name を使う処理
+}`}</p>
+          </div>
+
+          {/* 実行順序の可視化 */}
+          <p className="text-xs font-semibold text-gray-400 mb-2">コンポーネント内の実行順序（毎レンダーで固定）</p>
+          <div className="flex flex-col gap-1">
+            {[
+              { label: "1番目", code: "useState(false)", color: "text-emerald-400" },
+              { label: "2番目", code: "useState(0)", color: "text-emerald-400" },
+              { label: "3番目", code: "useEffect(...)", color: "text-blue-400" },
+              { label: "4番目", code: "useCallback(...)", color: "text-violet-400" },
+              { label: "5番目", code: "useCustomHook() ← 内部でuseState + useEffect", color: "text-amber-400" },
+            ].map(({ label, code, color }) => (
+              <div key={label} className="flex items-center gap-3 rounded px-3 py-1.5" style={{ backgroundColor: "#0f1117" }}>
+                <span className="text-xs text-gray-600 w-12 flex-shrink-0">{label}</span>
+                <code className={`text-xs font-mono ${color}`}>{code}</code>
+              </div>
+            ))}
+          </div>
+        </ConceptDiagram>
+
+        {/* 図F: useMemo vs useCallback */}
+        <ConceptDiagram
+          title="概念図F：useMemo と useCallback の違いと使い分け"
+          description="どちらも「前回と同じなら再計算・再生成しない」最適化。メモ化する対象が違う。"
+        >
+          {/* 並列比較 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            {/* useMemo */}
+            <div className="rounded-lg border p-4" style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}>
+              <p className="text-xs font-semibold text-emerald-400 mb-2">useMemo — 計算結果をメモ化</p>
+              <p className="text-xs font-mono text-gray-400 whitespace-pre-wrap leading-relaxed mb-2">{`const result = useMemo(
+  () => expensiveCalc(a, b),
+  [a, b]
+);`}</p>
+              <p className="text-xs text-gray-400">a か b が変わったときだけ再計算。それ以外は前回の結果を使い回す。</p>
+              <div className="mt-2 rounded px-2 py-1 bg-emerald-500/10 border border-emerald-500/20">
+                <p className="text-xs text-emerald-300">用途: 重いフィルタリング・ソート・集計処理</p>
+              </div>
+            </div>
+
+            {/* useCallback */}
+            <div className="rounded-lg border p-4" style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}>
+              <p className="text-xs font-semibold text-blue-400 mb-2">useCallback — 関数自体をメモ化</p>
+              <p className="text-xs font-mono text-gray-400 whitespace-pre-wrap leading-relaxed mb-2">{`const fn = useCallback(
+  () => doSomething(id),
+  [id]
+);`}</p>
+              <p className="text-xs text-gray-400">id が変わったときだけ新しい関数を生成。それ以外は同じ関数参照を返す。</p>
+              <div className="mt-2 rounded px-2 py-1 bg-blue-500/10 border border-blue-500/20">
+                <p className="text-xs text-blue-300">用途: React.memo された子へのコールバック渡し</p>
+              </div>
+            </div>
+          </div>
+
+          {/* アンチパターン */}
+          <div className="flex items-start gap-2 rounded-lg border border-red-500/30 bg-red-500/5 px-4 py-3">
+            <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-red-300 leading-relaxed">
+              アンチパターン: 全ての値・関数に useMemo / useCallback をつけない。メモ化自体にも計算コストがある。本当に重い処理・参照同一性が必要な箇所だけに限定する。
+            </p>
+          </div>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">

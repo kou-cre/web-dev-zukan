@@ -246,6 +246,328 @@ export default function DomPage() {
             「いつ」動かすかを決めるのがイベントリスナー、「何を」動かすかを決めるのが関数の中身。
           </p>
         </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図D：DOMツリーの階層構造とノードの種類"
+          description="HTMLページはブラウザによってツリー構造に変換される。各ノードには種類があり、親子・兄弟の関係で繋がっている。"
+          accentColor="lime"
+        >
+          <div className="rounded-xl border-2 border-dashed border-lime-700/50 p-4 mb-4">
+            <p className="text-xs font-semibold text-lime-400 text-center mb-3 tracking-wide uppercase">
+              HTMLページのDOMツリー全体像
+            </p>
+            <div className="font-mono text-xs leading-relaxed space-y-0.5 pl-2">
+              <p><span className="text-lime-300">document</span></p>
+              <p className="pl-4">└─ <span className="text-lime-300">html</span></p>
+              <p className="pl-8">├─ <span className="text-lime-300">head</span></p>
+              <p className="pl-12">│   ├─ <span className="text-lime-300">title</span> <span className="text-gray-400">「My Page」</span> <span className="text-gray-600 text-[10px]">← テキストノード</span></p>
+              <p className="pl-12">│   └─ <span className="text-lime-300">meta</span> <span className="text-blue-400">[charset=&quot;UTF-8&quot;]</span> <span className="text-gray-600 text-[10px]">← 属性ノード</span></p>
+              <p className="pl-8">└─ <span className="text-lime-300">body</span></p>
+              <p className="pl-12">    ├─ <span className="text-lime-300">header</span> <span className="text-gray-600 text-[10px]">← 要素ノード（Element）</span></p>
+              <p className="pl-16">    │   └─ <span className="text-lime-300">h1</span> <span className="text-gray-400">「サイトタイトル」</span></p>
+              <p className="pl-12">    ├─ <span className="text-lime-300">main</span></p>
+              <p className="pl-16">    │   ├─ <span className="text-lime-300">section</span></p>
+              <p className="pl-20">    │   │   ├─ <span className="text-lime-300">h2</span> <span className="text-gray-400">「見出し」</span></p>
+              <p className="pl-20">    │   │   └─ <span className="text-lime-300">p</span> <span className="text-gray-400">「本文テキスト」</span></p>
+              <p className="pl-16">    │   └─ <span className="text-lime-300">ul</span></p>
+              <p className="pl-20">    │       ├─ <span className="text-lime-300">li</span> <span className="text-gray-400">「項目1」</span> <span className="text-gray-600 text-[10px]">← liはulの子 / 兄弟li同士</span></p>
+              <p className="pl-20">    │       └─ <span className="text-lime-300">li</span> <span className="text-gray-400">「項目2」</span></p>
+              <p className="pl-12">    └─ <span className="text-lime-300">footer</span></p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+            {[
+              {
+                label: "Element Node",
+                sub: "要素ノード（タグ）",
+                color: "text-lime-400",
+                border: "border-lime-500/30",
+                bg: "bg-lime-500/5",
+                desc: "<div> <p> <ul> など。DOMツリーの主役で、querySelector 等で取得できるのはこのノード。",
+              },
+              {
+                label: "Text Node",
+                sub: "テキストノード（文字）",
+                color: "text-blue-400",
+                border: "border-blue-500/30",
+                bg: "bg-blue-500/5",
+                desc: "タグの中の文字データ。textContent や innerText で読み書きする。",
+              },
+              {
+                label: "Attribute Node",
+                sub: "属性ノード（属性）",
+                color: "text-violet-400",
+                border: "border-violet-500/30",
+                bg: "bg-violet-500/5",
+                desc: "id / class / href など。element.getAttribute() や dataset で操作する。",
+              },
+            ].map(({ label, sub, color, border, bg, desc }, i) => (
+              <div
+                key={i}
+                className={`rounded-xl border p-3 ${border} ${bg}`}
+              >
+                <p className={`text-xs font-bold ${color} mb-0.5`}>{label}</p>
+                <p className="text-[11px] text-gray-500 mb-1.5">{sub}</p>
+                <p className="text-xs text-gray-400 leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div
+            className="rounded-xl border p-4"
+            style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+          >
+            <p className="text-xs font-semibold text-lime-400 mb-3">取得メソッドの使い分け</p>
+            <div className="space-y-2">
+              {[
+                {
+                  method: "querySelector('#id')",
+                  point: "IDで1件取得。最も柔軟、迷ったらこれ。",
+                  good: "汎用",
+                },
+                {
+                  method: "getElementById('id')",
+                  point: "IDで1件取得。最速だがCSSセレクタ記法は不可。",
+                  good: "速度重視",
+                },
+                {
+                  method: "querySelectorAll('.cls')",
+                  point: "条件に合う全要素をNodeListで返す。forEach 可。",
+                  good: "複数取得",
+                },
+              ].map(({ method, point, good }, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <code className="text-[11px] font-mono text-lime-300 bg-lime-500/10 px-1.5 py-0.5 rounded shrink-0">
+                    {method}
+                  </code>
+                  <span className="text-xs text-gray-400 leading-relaxed">{point}</span>
+                  <span className="text-[10px] text-lime-500 border border-lime-500/30 px-1.5 py-0.5 rounded shrink-0">
+                    {good}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-3">
+            親子関係：上の要素が「親（parent）」、直下が「子（child）」。同じ親を持つ要素同士が「兄弟（sibling）」。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図E：イベント伝播の仕組み（バブリング/キャプチャリング）"
+          description="クリックなどのイベントは、ターゲット要素だけでなくDOMツリーを上下に伝播する。その仕組みを理解するとイベント委譲が使えるようになる。"
+          accentColor="lime"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div className="rounded-xl border border-blue-500/30 bg-blue-500/5 p-4">
+              <p className="text-xs font-bold text-blue-400 mb-1">Phase 1：キャプチャリング</p>
+              <p className="text-[11px] text-gray-500 mb-3">外 → 内（document から button へ下る）</p>
+              <div className="space-y-1 font-mono text-xs">
+                {["document", "html", "body", "section", "div", "button"].map((node, i, arr) => (
+                  <div key={i} className="flex items-center gap-1.5" style={{ paddingLeft: `${i * 8}px` }}>
+                    <span className={i === arr.length - 1 ? "text-lime-300 font-bold" : "text-gray-400"}>
+                      {node}
+                    </span>
+                    {i < arr.length - 1 && (
+                      <span className="text-blue-500 text-[10px]">↓</span>
+                    )}
+                    {i === arr.length - 1 && (
+                      <span className="text-lime-400 text-[10px] ml-1">← クリック!</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-lime-500/30 bg-lime-500/5 p-4">
+              <p className="text-xs font-bold text-lime-400 mb-1">Phase 2：バブリング</p>
+              <p className="text-[11px] text-gray-500 mb-3">内 → 外（button から document へ上る）</p>
+              <div className="space-y-1 font-mono text-xs">
+                {["button", "div", "section", "body", "html", "document"].map((node, i, arr) => (
+                  <div key={i} className="flex items-center gap-1.5" style={{ paddingLeft: `${(arr.length - 1 - i) * 8}px` }}>
+                    <span className={i === 0 ? "text-lime-300 font-bold" : "text-gray-400"}>
+                      {node}
+                    </span>
+                    {i < arr.length - 1 && (
+                      <span className="text-lime-500 text-[10px]">↑</span>
+                    )}
+                    {i === 0 && (
+                      <span className="text-lime-400 text-[10px] ml-1">← 発火元</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            <div
+              className="rounded-xl border p-3"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-bold text-rose-400 mb-1.5">stopPropagation()</p>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                イベントハンドラ内で呼ぶと、そこで伝播を止める。
+                「親divには反応させたくない」場面で使う。
+              </p>
+              <code className="text-[11px] font-mono text-rose-300 bg-rose-500/10 px-2 py-1 rounded block mt-2">
+                e.stopPropagation()
+              </code>
+            </div>
+
+            <div
+              className="rounded-xl border border-lime-500/30 bg-lime-500/5 p-3"
+            >
+              <p className="text-xs font-bold text-lime-400 mb-1.5">イベント委譲（Event Delegation）</p>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                バブリングを活用したパターン。子要素に個別リスナーを付けず、
+                親要素1つで全子要素のイベントを管理する。
+              </p>
+              <code className="text-[11px] font-mono text-lime-300 bg-lime-500/10 px-2 py-1 rounded block mt-2">
+                {'親.addEventListener → e.target で判別'}
+              </code>
+            </div>
+          </div>
+
+          <div
+            className="rounded-xl border p-3"
+            style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+          >
+            <p className="text-xs font-semibold text-gray-400 mb-2">イベント委譲の例</p>
+            <div className="font-mono text-[11px] text-gray-300 space-y-0.5">
+              <p><span className="text-gray-600">{"// 子li 100個に個別リスナーを付ける代わりに..."}</span></p>
+              <p><span className="text-lime-300">ul</span>.addEventListener(<span className="text-amber-300">&apos;click&apos;</span>, (e) {"=> {"}</p>
+              <p className="pl-4">{"if (e.target.tagName === "}<span className="text-amber-300">&apos;LI&apos;</span>{") {"}</p>
+              <p className="pl-8">{"console.log(e.target.textContent);"}</p>
+              <p className="pl-4">{"}"}</p>
+              <p>{"});"}</p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-3">
+            デフォルトはバブリングフェーズで発火。キャプチャで拾うには {"{ capture: true }"} を第3引数に渡す。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図F：仮想DOM（Virtual DOM）とリアルDOMの違い"
+          description="なぜReactは速いのか。直接DOM操作のコストと、仮想DOMによる差分更新の仕組みを比較する。"
+          accentColor="lime"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4">
+              <p className="text-xs font-bold text-amber-400 mb-1">直接DOM操作（jQuery等）</p>
+              <p className="text-[11px] text-gray-500 mb-3">1回の変更でもフル再描画のコスト</p>
+              <div className="space-y-2">
+                {[
+                  { step: "1", label: "DOM変更", sub: "element.textContent = ..." },
+                  { step: "2", label: "レイアウト再計算", sub: "Reflow — 要素の位置・サイズを再計算" },
+                  { step: "3", label: "ペイント", sub: "Repaint — ピクセルを再描画" },
+                  { step: "4", label: "コンポジット", sub: "レイヤーを合成して画面に表示" },
+                ].map(({ step, label, sub }, i, arr) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <span className="text-[10px] text-amber-500 border border-amber-500/30 rounded px-1 shrink-0 mt-0.5">
+                      {step}
+                    </span>
+                    <div>
+                      <p className="text-xs text-gray-300">{label}</p>
+                      <p className="text-[10px] text-gray-500">{sub}</p>
+                    </div>
+                    {i < arr.length - 1 && (
+                      <span className="text-amber-600 text-xs ml-auto shrink-0">↓</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-amber-400 border border-amber-500/30 rounded px-2 py-1 mt-3 text-center">
+                変更のたびに毎回全ステップ実行
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-lime-500/30 bg-lime-500/5 p-4">
+              <p className="text-xs font-bold text-lime-400 mb-1">React（仮想DOM）</p>
+              <p className="text-[11px] text-gray-500 mb-3">差分のみ実DOMに反映</p>
+              <div className="space-y-2">
+                {[
+                  { step: "1", label: "状態変化", sub: "setState / useState 更新" },
+                  { step: "2", label: "仮想DOM生成", sub: "軽量JSオブジェクトとして新UIを生成" },
+                  { step: "3", label: "差分（diff）計算", sub: "旧仮想DOM vs 新仮想DOM を比較" },
+                  { step: "4", label: "差分のみ実DOMに反映", sub: "変わった箇所だけ Reflow/Repaint" },
+                ].map(({ step, label, sub }, i, arr) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <span className="text-[10px] text-lime-500 border border-lime-500/30 rounded px-1 shrink-0 mt-0.5">
+                      {step}
+                    </span>
+                    <div>
+                      <p className="text-xs text-gray-300">{label}</p>
+                      <p className="text-[10px] text-gray-500">{sub}</p>
+                    </div>
+                    {i < arr.length - 1 && (
+                      <span className="text-lime-600 text-xs ml-auto shrink-0">↓</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-lime-400 border border-lime-500/30 rounded px-2 py-1 mt-3 text-center">
+                最小限の実DOM操作 = 高速・予測可能
+              </p>
+            </div>
+          </div>
+
+          <div
+            className="rounded-xl border p-4 mb-3"
+            style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+          >
+            <p className="text-xs font-semibold text-gray-400 mb-3">Reconciliation（差分検出）の概念</p>
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <div className="text-center">
+                <div className="rounded-lg border border-gray-700 bg-gray-800/50 px-3 py-2 font-mono text-[11px] text-gray-300 mb-1">
+                  {'<ul> → <li>A</li> <li>B</li> </ul>'}
+                </div>
+                <p className="text-[10px] text-gray-600">旧 仮想DOM</p>
+              </div>
+              <div className="text-lime-500 font-bold">diff</div>
+              <div className="text-center">
+                <div className="rounded-lg border border-lime-700/40 bg-lime-900/20 px-3 py-2 font-mono text-[11px] text-gray-300 mb-1">
+                  {'<ul> → <li>A</li> <li>B</li> <li className="text-lime-300">C</li> </ul>'}
+                </div>
+                <p className="text-[10px] text-gray-600">新 仮想DOM</p>
+              </div>
+              <div className="text-lime-500 font-bold">→</div>
+              <div className="text-center">
+                <div className="rounded-lg border border-lime-500/30 bg-lime-500/10 px-3 py-2 font-mono text-[11px] text-lime-300 mb-1">
+                  {'appendChild(<li>C</li>)'}
+                </div>
+                <p className="text-[10px] text-lime-600">実DOMへの変更は最小限</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div
+              className="rounded-xl border p-3"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-bold text-amber-400 mb-1.5">jQuery（直接操作）</p>
+              <div className="font-mono text-[11px] text-gray-400 space-y-0.5">
+                <p>{"$('#list').append('<li>C</li>');  // 直接実DOM"}</p>
+                <p className="text-gray-600">{"// 変更のたびに Reflow 発生"}</p>
+              </div>
+            </div>
+            <div
+              className="rounded-xl border border-lime-500/30 bg-lime-500/5 p-3"
+            >
+              <p className="text-xs font-bold text-lime-400 mb-1.5">React（仮想DOM）</p>
+              <div className="font-mono text-[11px] text-gray-400 space-y-0.5">
+                <p>{"setItems([...items, 'C']); // 状態更新のみ"}</p>
+                <p className="text-lime-600">{"// Reactが差分を計算して反映"}</p>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-3">
+            仮想DOMはメモリ上の軽量JSオブジェクト。実DOMと異なりレイアウト計算が発生しないため、比較コストが極めて低い。
+          </p>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">

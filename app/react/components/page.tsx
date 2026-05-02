@@ -199,6 +199,249 @@ export default function ComponentsPage() {
             関数コンポーネントは「Propsを受け取り、JSXを返す純粋な関数」として設計するのが理想。
           </p>
         </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図D：コンポーネントの再利用パターン"
+          description="1つのコンポーネントを柔軟に使い回す仕組み"
+          accentColor="blue"
+        >
+          {/* Propsで柔軟に変化するButtonの例 */}
+          <div className="mb-5">
+            <p className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-2">
+              Props で柔軟に変化する Button コンポーネント
+            </p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              {[
+                { variant: "primary", size: "md", label: "送信" },
+                { variant: "danger", size: "sm", label: "削除" },
+                { variant: "outline", size: "lg", label: "キャンセル" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-lg border border-blue-500/30 bg-blue-500/10 px-3 py-2 text-center"
+                >
+                  <p className="text-xs font-mono text-blue-300">
+                    {"<Button"}
+                  </p>
+                  <p className="text-xs font-mono text-gray-400 ml-2">
+                    variant={JSON.stringify(item.variant)}
+                  </p>
+                  <p className="text-xs font-mono text-gray-400 ml-2">
+                    size={JSON.stringify(item.size)}
+                  </p>
+                  <p className="text-xs font-mono text-blue-300">
+                    {"  />"} <span className="text-gray-500">→</span>{" "}
+                    <span className="text-white">{item.label}</span>
+                  </p>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 text-center mt-2">
+              1つのButtonコンポーネントが全ページで統一UIを提供
+            </p>
+          </div>
+
+          {/* コンポジションパターン */}
+          <div className="mb-5">
+            <p className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-2">
+              コンポジション — 小さな部品を組み合わせる
+            </p>
+            <div className="rounded-xl border border-blue-500/30 bg-blue-500/5 p-3">
+              <p className="text-xs font-mono text-gray-300 text-center mb-1">
+                Card = CardHeader + CardBody + CardFooter
+              </p>
+              <div className="flex flex-col gap-1">
+                <div className="rounded border border-blue-400/40 bg-blue-500/10 px-3 py-1.5 text-xs text-blue-300 font-mono text-center">
+                  CardHeader（タイトル・アイコン）
+                </div>
+                <div className="rounded border border-gray-600 bg-gray-800/50 px-3 py-1.5 text-xs text-gray-300 font-mono text-center">
+                  CardBody（メインコンテンツ）
+                </div>
+                <div className="rounded border border-gray-700 bg-gray-800/30 px-3 py-1.5 text-xs text-gray-400 font-mono text-center">
+                  CardFooter（アクション・補足）
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Container vs Presentational */}
+          <div>
+            <p className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-2">
+              Container vs Presentational の分離
+            </p>
+            <div className="flex gap-2">
+              <div className="flex-1 rounded-lg border border-violet-500/30 bg-violet-500/10 p-2">
+                <p className="text-xs font-semibold text-violet-300 mb-1">Container（賢い）</p>
+                <p className="text-xs text-gray-400">データ取得・状態管理・ロジックを担当。見た目は持たない。</p>
+              </div>
+              <div className="flex-1 rounded-lg border border-blue-500/30 bg-blue-500/10 p-2">
+                <p className="text-xs font-semibold text-blue-300 mb-1">Presentational（表示専用）</p>
+                <p className="text-xs text-gray-400">Propsを受け取り表示するだけ。ロジックを持たない。</p>
+              </div>
+            </div>
+          </div>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図E：Reactコンポーネントのレンダリングサイクル"
+          description="マウントから更新、アンマウントまでの完全な流れ"
+          accentColor="blue"
+        >
+          {/* 3フェーズ */}
+          <div className="flex flex-col gap-3 mb-5">
+            {/* 初回マウント */}
+            <div className="rounded-xl border border-blue-500/40 bg-blue-500/5 p-3">
+              <p className="text-xs font-semibold text-blue-400 mb-2 uppercase tracking-wide">
+                1. 初回マウント
+              </p>
+              <div className="flex flex-wrap items-center gap-1 text-xs">
+                <span className="rounded bg-blue-500/20 px-2 py-0.5 text-blue-300 font-mono">関数実行</span>
+                <FlowArrow label="" direction="right" />
+                <span className="rounded bg-blue-500/20 px-2 py-0.5 text-blue-300 font-mono">JSX</span>
+                <FlowArrow label="" direction="right" />
+                <span className="rounded bg-blue-500/20 px-2 py-0.5 text-blue-300 font-mono">Virtual DOM</span>
+                <FlowArrow label="" direction="right" />
+                <span className="rounded bg-blue-500/20 px-2 py-0.5 text-blue-300 font-mono">Real DOM</span>
+                <FlowArrow label="" direction="right" />
+                <span className="rounded bg-violet-500/20 px-2 py-0.5 text-violet-300 font-mono">useEffect（mount）</span>
+              </div>
+            </div>
+
+            {/* 更新 */}
+            <div className="rounded-xl border border-amber-500/40 bg-amber-500/5 p-3">
+              <p className="text-xs font-semibold text-amber-400 mb-2 uppercase tracking-wide">
+                2. 更新（State / Props 変化）
+              </p>
+              <div className="flex flex-wrap items-center gap-1 text-xs">
+                <span className="rounded bg-amber-500/20 px-2 py-0.5 text-amber-300 font-mono">State変化</span>
+                <FlowArrow label="" direction="right" />
+                <span className="rounded bg-amber-500/20 px-2 py-0.5 text-amber-300 font-mono">再レンダリング</span>
+                <FlowArrow label="" direction="right" />
+                <span className="rounded bg-amber-500/20 px-2 py-0.5 text-amber-300 font-mono">新Virtual DOM</span>
+                <FlowArrow label="diff比較" direction="right" />
+                <span className="rounded bg-amber-500/20 px-2 py-0.5 text-amber-300 font-mono">差分のみDOM更新</span>
+                <FlowArrow label="" direction="right" />
+                <span className="rounded bg-violet-500/20 px-2 py-0.5 text-violet-300 font-mono">useEffect（update）</span>
+              </div>
+            </div>
+
+            {/* アンマウント */}
+            <div className="rounded-xl border border-red-500/40 bg-red-500/5 p-3">
+              <p className="text-xs font-semibold text-red-400 mb-2 uppercase tracking-wide">
+                3. アンマウント
+              </p>
+              <div className="flex flex-wrap items-center gap-1 text-xs">
+                <span className="rounded bg-red-500/20 px-2 py-0.5 text-red-300 font-mono">コンポーネント削除</span>
+                <FlowArrow label="" direction="right" />
+                <span className="rounded bg-violet-500/20 px-2 py-0.5 text-violet-300 font-mono">useEffect cleanup実行</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 再レンダリングの原因 + React.memo */}
+          <div className="flex gap-2">
+            <div className="flex-1 rounded-lg border border-gray-700 bg-gray-800/40 p-2">
+              <p className="text-xs font-semibold text-gray-300 mb-1">再レンダリングの原因</p>
+              <ul className="text-xs text-gray-400 space-y-0.5 list-disc list-inside">
+                <li>state 変化</li>
+                <li>props 変化</li>
+                <li>親コンポーネントの再レンダリング</li>
+                <li>context 変化</li>
+              </ul>
+            </div>
+            <div className="flex-1 rounded-lg border border-blue-500/30 bg-blue-500/10 p-2">
+              <p className="text-xs font-semibold text-blue-300 mb-1">React.memo() で最適化</p>
+              <p className="text-xs text-gray-400">
+                propsが変わっていなければ再レンダリングをスキップ。不要な再描画を防ぐ。
+              </p>
+            </div>
+          </div>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図F：クラスコンポーネントと関数コンポーネントの比較"
+          description="書き方・ライフサイクル・現在の推奨を並べて確認する"
+          accentColor="blue"
+        >
+          {/* コード比較 */}
+          <div className="flex flex-col sm:flex-row gap-3 mb-5">
+            {/* クラスコンポーネント */}
+            <div className="flex-1 rounded-xl border border-gray-600 bg-gray-800/50 p-3">
+              <p className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">
+                クラスコンポーネント（レガシー）
+              </p>
+              <pre className="text-xs text-gray-400 font-mono leading-relaxed whitespace-pre-wrap">
+{`class MyComp
+  extends React.Component {
+  state = {};
+  componentDidMount() {
+    // 初回マウント時の処理
+  }
+  render() {
+    return <div />;
+  }
+}`}
+              </pre>
+            </div>
+
+            {/* 関数コンポーネント */}
+            <div className="flex-1 rounded-xl border border-blue-500/40 bg-blue-500/5 p-3">
+              <p className="text-xs font-semibold text-blue-400 mb-2 uppercase tracking-wide">
+                関数コンポーネント（現在の主流）
+              </p>
+              <pre className="text-xs text-blue-200 font-mono leading-relaxed whitespace-pre-wrap">
+{`function MyComp({ props }) {
+  const [state, setState]
+    = useState();
+  useEffect(() => {
+    // 副作用の処理
+    return () => { /* cleanup */ };
+  }, []);
+  return <div />;
+}`}
+              </pre>
+            </div>
+          </div>
+
+          {/* ライフサイクル対応表 */}
+          <div className="mb-3">
+            <p className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-2">
+              ライフサイクルの対応関係
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs border-collapse">
+                <thead>
+                  <tr>
+                    <th className="border border-gray-700 bg-gray-800 px-2 py-1.5 text-left text-gray-400 font-semibold">クラス</th>
+                    <th className="border border-gray-700 bg-gray-800 px-2 py-1.5 text-left text-gray-400 font-semibold">矢印</th>
+                    <th className="border border-blue-500/30 bg-blue-500/10 px-2 py-1.5 text-left text-blue-300 font-semibold">関数（Hooks）</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="border border-gray-700 px-2 py-1.5 text-gray-400 font-mono">componentDidMount</td>
+                    <td className="border border-gray-700 px-2 py-1.5 text-gray-600 text-center">→</td>
+                    <td className="border border-blue-500/20 px-2 py-1.5 text-blue-300 font-mono">useEffect(fn, [])</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-gray-700 px-2 py-1.5 text-gray-400 font-mono">componentDidUpdate</td>
+                    <td className="border border-gray-700 px-2 py-1.5 text-gray-600 text-center">→</td>
+                    <td className="border border-blue-500/20 px-2 py-1.5 text-blue-300 font-mono">useEffect(fn, [dep])</td>
+                  </tr>
+                  <tr>
+                    <td className="border border-gray-700 px-2 py-1.5 text-gray-400 font-mono">componentWillUnmount</td>
+                    <td className="border border-gray-700 px-2 py-1.5 text-gray-600 text-center">→</td>
+                    <td className="border border-blue-500/20 px-2 py-1.5 text-blue-300 font-mono">useEffect cleanup</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <p className="text-xs text-gray-500 text-center">
+            関数コンポーネントが現在のReactの主流。クラスはレガシー — 新規コードはすべて関数で書く。
+          </p>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">

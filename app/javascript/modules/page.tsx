@@ -217,6 +217,323 @@ export default function ModulesPage() {
             Next.js の場合、Turbopack や Webpack がこの bundle を自動でやってくれる。開発者は「ファイルを分割して書く」ことに集中できる。
           </p>
         </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図D：モジュールの依存グラフと循環依存の問題"
+          description="バンドラーはファイル間の import/export をたどって依存グラフを構築する。循環があると問題が起きる。"
+          accentColor="orange"
+        >
+          {/* 通常の依存グラフ */}
+          <p className="text-xs font-semibold text-orange-400 mb-3 uppercase tracking-wide">
+            正常な依存グラフ
+          </p>
+          <div className="flex flex-col items-center gap-1 mb-5">
+            {/* app.js */}
+            <div
+              className="rounded-lg border px-4 py-2 text-xs font-mono text-orange-300 font-semibold"
+              style={{ backgroundColor: "#1a1d2a", borderColor: "#f97316" }}
+            >
+              app.js
+            </div>
+            {/* 矢印 → 3 children */}
+            <div className="flex items-start gap-6 mt-1">
+              <div className="flex flex-col items-center gap-1">
+                <div className="w-px h-4 bg-gray-600" />
+                <div
+                  className="rounded-lg border px-3 py-1.5 text-xs font-mono text-gray-300"
+                  style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+                >
+                  utils.js
+                </div>
+                <div className="w-px h-4 bg-gray-600" />
+                <div
+                  className="rounded-lg border px-3 py-1.5 text-xs font-mono text-gray-400"
+                  style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+                >
+                  helpers.js
+                </div>
+              </div>
+              <div className="flex flex-col items-center gap-1 mt-5">
+                <div
+                  className="rounded-lg border px-3 py-1.5 text-xs font-mono text-gray-300"
+                  style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+                >
+                  api.js
+                </div>
+              </div>
+              <div className="flex flex-col items-center gap-1 mt-5">
+                <div
+                  className="rounded-lg border px-3 py-1.5 text-xs font-mono text-gray-300"
+                  style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+                >
+                  components/Button.js
+                </div>
+              </div>
+            </div>
+            <p className="text-xs text-gray-500 mt-2 text-center">
+              app.js → utils.js, api.js, Button.js（各ファイルは一方向に依存）
+            </p>
+          </div>
+
+          {/* 循環依存 */}
+          <div
+            className="rounded-xl border p-4 mb-4"
+            style={{ backgroundColor: "#1a1020", borderColor: "#7c2d2d" }}
+          >
+            <p className="text-xs font-semibold text-red-400 mb-2 uppercase tracking-wide">
+              循環依存（NG）
+            </p>
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <div
+                className="rounded-lg border px-3 py-1.5 text-xs font-mono text-red-300"
+                style={{ backgroundColor: "#0f1117", borderColor: "#7c2d2d" }}
+              >
+                A.js
+              </div>
+              <span className="text-xs text-red-400">→ import</span>
+              <div
+                className="rounded-lg border px-3 py-1.5 text-xs font-mono text-red-300"
+                style={{ backgroundColor: "#0f1117", borderColor: "#7c2d2d" }}
+              >
+                B.js
+              </div>
+              <span className="text-xs text-red-400">→ import</span>
+              <div
+                className="rounded-lg border px-3 py-1.5 text-xs font-mono text-red-300"
+                style={{ backgroundColor: "#0f1117", borderColor: "#7c2d2d" }}
+              >
+                A.js
+              </div>
+              <span className="text-xs text-red-500 font-bold">循環！</span>
+            </div>
+            <p className="text-xs text-red-400 mt-2 text-center">
+              A を解決するには B が必要・B を解決するには A が必要 → undefined / TDZ エラーの原因
+            </p>
+          </div>
+
+          {/* Tree-shaking */}
+          <div
+            className="rounded-xl border p-4"
+            style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+          >
+            <p className="text-xs font-semibold text-orange-400 mb-2 uppercase tracking-wide">
+              Tree-shaking：未使用 export を刈り取る
+            </p>
+            <div className="flex items-center gap-2 flex-wrap justify-center text-xs text-gray-300">
+              <span className="px-2 py-1 rounded" style={{ backgroundColor: "#1a1d2a" }}>
+                utils.js: export {"{add, subtract, multiply}"}
+              </span>
+              <span className="text-gray-500">→</span>
+              <span className="px-2 py-1 rounded text-orange-300" style={{ backgroundColor: "#1a1d2a" }}>
+                import {"{ add }"} のみ使用
+              </span>
+              <span className="text-gray-500">→</span>
+              <span className="px-2 py-1 rounded bg-orange-500/10 text-orange-300 border border-orange-500/30">
+                bundle: add のみ含む
+              </span>
+            </div>
+            <p className="text-xs text-gray-500 mt-2 text-center">
+              subtract・multiply はバンドルから除外 → ファイルサイズ削減
+            </p>
+          </div>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図E：バンドラー（webpack/Rollup/Vite）が何をしているか"
+          description="複数ファイルに分かれた ESM/CJS ソースを、ブラウザが受け取れる少数のファイルに変換する処理パイプライン。"
+          accentColor="orange"
+        >
+          {/* パイプライン */}
+          <div className="space-y-2 mb-5">
+            {[
+              {
+                step: "1. 入力",
+                detail: "複数の ESM / CJS ファイル（.ts / .tsx / .js）",
+                color: "text-blue-300",
+                border: "#1e3a5f",
+                bg: "#0d1e36",
+              },
+              {
+                step: "2. 解析",
+                detail: "import / require の依存関係を解決し、依存グラフを構築",
+                color: "text-violet-300",
+                border: "#3b2570",
+                bg: "#1a0d36",
+              },
+              {
+                step: "3. 変換",
+                detail: "TypeScript / JSX → JS に変換（Babel / SWC / esbuild）",
+                color: "text-amber-300",
+                border: "#78490a",
+                bg: "#2a1a06",
+              },
+              {
+                step: "4. 最適化",
+                detail: "Tree-shaking（未使用コード削除）・コード分割（dynamic import）",
+                color: "text-orange-300",
+                border: "#7c3e0a",
+                bg: "#2a1608",
+              },
+              {
+                step: "5. 出力",
+                detail: "bundle.js・chunk-xxx.js・source map ファイル群",
+                color: "text-emerald-300",
+                border: "#14532d",
+                bg: "#052e16",
+              },
+            ].map((item, i, arr) => (
+              <div key={i}>
+                <div
+                  className="rounded-lg border px-4 py-2.5 flex items-center gap-3"
+                  style={{ backgroundColor: item.bg, borderColor: item.border }}
+                >
+                  <span className={`text-xs font-bold shrink-0 ${item.color}`}>
+                    {item.step}
+                  </span>
+                  <span className="text-xs text-gray-300">{item.detail}</span>
+                </div>
+                {i < arr.length - 1 && (
+                  <div className="flex justify-center my-0.5">
+                    <span className="text-gray-600 text-sm">↓</span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* コード分割 & source map */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div
+              className="rounded-xl border p-3"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-orange-400 mb-2">
+                コード分割（Code Splitting）
+              </p>
+              <div className="space-y-1.5 text-xs text-gray-300">
+                <p>{"import('./HeavyComponent')"} を書くと</p>
+                <p className="text-gray-400">→ 別チャンク（chunk-xxx.js）に分離</p>
+                <p className="text-gray-400">→ 初回ロードのJSを小さく保てる</p>
+              </div>
+            </div>
+            <div
+              className="rounded-xl border p-3"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-orange-400 mb-2">
+                ソースマップ（Source Map）
+              </p>
+              <div className="space-y-1.5 text-xs text-gray-300">
+                <p>bundle.js.map ファイルが生成される</p>
+                <p className="text-gray-400">→ DevTools でエラー行がオリジナルの</p>
+                <p className="text-gray-400">　 TypeScript コードに対応して表示</p>
+              </div>
+            </div>
+          </div>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図F：動的import()による遅延ロード（Lazy Loading）"
+          description="全コードを最初に読み込まず、必要になったときだけ読み込む——初期JSを小さくしてページの表示を速くする手法。"
+          accentColor="orange"
+        >
+          {/* 静的 vs 動的 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#1a1020", borderColor: "#7c2d2d" }}
+            >
+              <p className="text-xs font-bold text-red-400 mb-2">静的 import（従来）</p>
+              <code
+                className="block text-xs font-mono text-gray-300 mb-2 p-2 rounded"
+                style={{ backgroundColor: "#0f1117" }}
+              >
+                {`import HeavyLib from './heavy'`}
+              </code>
+              <ul className="text-xs text-gray-400 space-y-1">
+                <li>・ビルド時に全て bundle に含まれる</li>
+                <li>・初期 JS が大きくなる</li>
+                <li>・画面表示が遅くなりがち</li>
+              </ul>
+            </div>
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#0d1f14", borderColor: "#14532d" }}
+            >
+              <p className="text-xs font-bold text-emerald-400 mb-2">動的 import()（推奨）</p>
+              <code
+                className="block text-xs font-mono text-gray-300 mb-2 p-2 rounded"
+                style={{ backgroundColor: "#0f1117" }}
+              >
+                {`import('./heavy').then(m => m.run())`}
+              </code>
+              <ul className="text-xs text-gray-400 space-y-1">
+                <li>・必要なときだけ読み込む</li>
+                <li>・別チャンクに分離される</li>
+                <li>・初期 JS を小さく保てる</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* React.lazy + Suspense */}
+          <div
+            className="rounded-xl border p-4 mb-4"
+            style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+          >
+            <p className="text-xs font-semibold text-orange-400 mb-2">
+              React.lazy() + Suspense パターン
+            </p>
+            <code
+              className="block text-xs font-mono text-gray-300 p-3 rounded leading-relaxed"
+              style={{ backgroundColor: "#1a1d2a" }}
+            >
+              {`const Modal = React.lazy(() => import('./Modal'))
+
+<Suspense fallback={<div>Loading...</div>}>
+  <Modal />
+</Suspense>`}
+            </code>
+            <p className="text-xs text-gray-500 mt-2">
+              Modal は表示が必要になったときに初めてネットワークから取得される
+            </p>
+          </div>
+
+          {/* ユースケース & ネットワーク比較 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div
+              className="rounded-xl border p-3"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-orange-400 mb-2">主なユースケース</p>
+              <ul className="text-xs text-gray-300 space-y-1">
+                <li>・ルートレベルの分割（ページ単位）</li>
+                <li>・重いモーダル / グラフ描画ライブラリ</li>
+                <li>・Admin 機能など条件付き機能</li>
+                <li>・ユーザーがスクロールして初めて見える要素</li>
+              </ul>
+            </div>
+            <div
+              className="rounded-xl border p-3"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-orange-400 mb-2">
+                ネットワーク：分割前後
+              </p>
+              <div className="space-y-2 text-xs text-gray-400">
+                <div>
+                  <p className="text-red-400 mb-0.5">分割前</p>
+                  <div className="h-3 rounded bg-red-900/60 w-full" />
+                  <p className="mt-0.5">bundle.js — 500KB（全ページ分）</p>
+                </div>
+                <div>
+                  <p className="text-emerald-400 mb-0.5">分割後</p>
+                  <div className="h-3 rounded bg-orange-900/60 w-2/5" />
+                  <p className="mt-0.5">main.js — 200KB（初期）+ 遅延読み込み</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">

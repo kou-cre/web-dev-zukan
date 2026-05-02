@@ -202,6 +202,264 @@ export default function UseEffectPage() {
             </p>
           </div>
         </ConceptDiagram>
+
+        {/* 図D: クラスライフサイクルとuseEffectの対応関係 */}
+        <ConceptDiagram
+          title="概念図D"
+          description="クラスコンポーネントのライフサイクルとuseEffectの対応関係。移行時の読み替えに使う。"
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs border-collapse">
+              <thead>
+                <tr>
+                  <th
+                    className="text-left px-3 py-2 font-semibold text-gray-400 border-b"
+                    style={{ borderColor: "#2d3048" }}
+                  >
+                    クラスコンポーネント
+                  </th>
+                  <th
+                    className="text-left px-3 py-2 font-semibold text-gray-400 border-b"
+                    style={{ borderColor: "#2d3048" }}
+                  >
+                    useEffect 相当
+                  </th>
+                  <th
+                    className="text-left px-3 py-2 font-semibold text-gray-400 border-b"
+                    style={{ borderColor: "#2d3048" }}
+                  >
+                    タイミング
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  {
+                    lifecycle: "componentDidMount",
+                    hook: "useEffect(() => { /* 処理 */ }, [])",
+                    timing: "マウント時のみ（1回）",
+                  },
+                  {
+                    lifecycle: "componentDidUpdate（全更新）",
+                    hook: "useEffect(() => { /* 処理 */ })",
+                    timing: "毎レンダリング後",
+                  },
+                  {
+                    lifecycle: "componentDidUpdate（特定deps）",
+                    hook: "useEffect(() => { /* 処理 */ }, [dep1, dep2])",
+                    timing: "dep変化時のみ",
+                  },
+                  {
+                    lifecycle: "componentWillUnmount",
+                    hook: "useEffect(() => { return () => { /* クリーンアップ */ } }, [])",
+                    timing: "アンマウント時",
+                  },
+                ].map((row, i) => (
+                  <tr key={i} style={{ borderBottom: "1px solid #2d3048" }}>
+                    <td className="px-3 py-2 text-amber-300 font-mono font-semibold whitespace-nowrap">
+                      {row.lifecycle}
+                    </td>
+                    <td className="px-3 py-2">
+                      <code
+                        className="px-1.5 py-0.5 rounded font-mono text-cyan-300 block leading-snug"
+                        style={{ backgroundColor: "#0f1117" }}
+                      >
+                        {row.hook}
+                      </code>
+                    </td>
+                    <td className="px-3 py-2 text-gray-300 whitespace-nowrap">{row.timing}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="mt-4 grid grid-cols-4 gap-1 items-end text-center">
+            {[
+              { label: "mount", color: "text-cyan-400", events: ["componentDidMount", "useEffect([], [])"] },
+              { label: "update", color: "text-blue-400", events: ["componentDidUpdate", "useEffect([deps])"] },
+              { label: "update", color: "text-blue-400", events: ["componentDidUpdate", "useEffect([deps])"] },
+              { label: "unmount", color: "text-red-400", events: ["componentWillUnmount", "useEffect return"] },
+            ].map((phase, i) => (
+              <div key={i} className="flex flex-col items-center gap-1">
+                <p className={`text-xs font-bold ${phase.color}`}>{phase.label}</p>
+                <div
+                  className="rounded border px-2 py-1 w-full"
+                  style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+                >
+                  {phase.events.map((e, j) => (
+                    <p key={j} className="text-xs text-gray-400 leading-snug break-all">{e}</p>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-gray-500 text-center mt-3">
+            ライフサイクルメソッドはuseEffectの依存配列パターンで書き換えられる。
+          </p>
+        </ConceptDiagram>
+
+        {/* 図E: データフェッチの標準パターン */}
+        <ConceptDiagram
+          title="概念図E"
+          description="useEffectを使ったデータフェッチの正しいパターン——AbortControllerでキャンセルする。"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* 問題: レースコンディション */}
+            <div
+              className="rounded-xl border p-4 flex flex-col gap-2"
+              style={{ backgroundColor: "#0f1117", borderColor: "#ef444440" }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                <p className="text-xs font-bold text-red-300">問題：レースコンディション</p>
+              </div>
+              <p className="text-xs text-gray-400 leading-snug">
+                連続でfetchが走ると古いレスポンスが後から届いて最新データを上書きする。
+              </p>
+              <div className="flex flex-col gap-1 mt-1">
+                {["fetch #1 開始", "fetch #2 開始", "fetch #2 完了 → stateに書き込み", "fetch #1 完了 → 古いデータで上書き！"].map(
+                  (step, i) => (
+                    <div key={i} className="flex items-start gap-2">
+                      <span
+                        className={`text-xs font-bold w-4 flex-shrink-0 ${i === 3 ? "text-red-400" : "text-gray-500"}`}
+                      >
+                        {i + 1}
+                      </span>
+                      <p className={`text-xs leading-snug ${i === 3 ? "text-red-300" : "text-gray-400"}`}>{step}</p>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+
+            {/* 解決: AbortController */}
+            <div
+              className="rounded-xl border p-4 flex flex-col gap-2"
+              style={{ backgroundColor: "#0f1117", borderColor: "#22d3ee40" }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <CheckCircle className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+                <p className="text-xs font-bold text-cyan-300">解決：AbortController</p>
+              </div>
+              <pre
+                className="rounded p-2 font-mono text-xs leading-relaxed overflow-x-auto"
+                style={{ backgroundColor: "#1a1d2a", color: "#94a3b8" }}
+              >
+                <span style={{ color: "#67e8f9" }}>{"const controller"}</span>
+                {" = new AbortController();\n"}
+                <span style={{ color: "#67e8f9" }}>{"const { signal }"}</span>
+                {" = controller;\n\n"}
+                {"fetch(url, { signal })\n"}
+                {"  .then(r => r.json())\n"}
+                {"  .then(d => setData(d));\n\n"}
+                <span style={{ color: "#f59e0b" }}>{"return"}</span>
+                {" () => controller.abort();"}
+              </pre>
+              <p className="text-xs text-gray-400 leading-snug mt-1">
+                クリーンアップでabort()を呼ぶと、古いfetchのレスポンスは無視される。
+              </p>
+            </div>
+          </div>
+
+          {/* 3ステートの標準構成 */}
+          <div className="mt-4 rounded-xl border p-4" style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}>
+            <p className="text-xs font-semibold text-gray-300 mb-3">標準的な3ステート構成</p>
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { name: "loading", type: "boolean", desc: "通信中フラグ。trueの間はスピナーを表示" },
+                { name: "data", type: "T | null", desc: "取得成功時のデータ" },
+                { name: "error", type: "Error | null", desc: "取得失敗時のエラー情報" },
+              ].map((s, i) => (
+                <div
+                  key={i}
+                  className="rounded-lg border p-2 flex flex-col gap-1"
+                  style={{ borderColor: "#2d3048" }}
+                >
+                  <code className="text-xs text-cyan-300 font-mono font-bold">{s.name}</code>
+                  <code className="text-xs text-violet-300 font-mono">{s.type}</code>
+                  <p className="text-xs text-gray-500 leading-snug">{s.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-3 flex items-start gap-2 rounded-lg border border-cyan-500/30 bg-cyan-500/5 px-4 py-3">
+            <CheckCircle className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-cyan-300 leading-snug">
+              React Query / SWR を使うとこのボイラープレートが不要になる。プロダクトではこれらの採用を検討する。
+            </p>
+          </div>
+        </ConceptDiagram>
+
+        {/* 図F: 無限ループの原因と回避策 */}
+        <ConceptDiagram
+          title="概念図F"
+          description="useEffectの無限ループの原因と回避策——3パターンを把握する。"
+        >
+          <div className="flex flex-col gap-3">
+            {[
+              {
+                no: "1",
+                title: "state更新が依存配列に入っている",
+                bad: "useEffect(() => { setCount(count + 1); }, [count]);",
+                reason: "count更新 → 再レンダリング → countが変化 → Effectが走る → ループ",
+                fix: "setState(prev => prev + 1) で前の値に依存しない形に変える。または依存配列からそのstateを外す。",
+              },
+              {
+                no: "2",
+                title: "オブジェクトリテラルを依存配列に入れている",
+                bad: "useEffect(() => { ... }, [{ id: 1 }]);",
+                reason: "毎レンダリングで新しいオブジェクト参照が生まれる → 常に「変化した」とみなされる → ループ",
+                fix: "useMemoでオブジェクトを安定化する。またはプリミティブ値（id）だけを依存配列に入れる。",
+              },
+              {
+                no: "3",
+                title: "関数を依存配列に入れている",
+                bad: "useEffect(() => { fetchData(); }, [fetchData]);",
+                reason: "コンポーネント内の関数は毎レンダリングで再生成される → 常に新しい参照 → ループ",
+                fix: "useCallbackで関数を安定化してから依存配列に入れる。",
+              },
+            ].map((item) => (
+              <div
+                key={item.no}
+                className="rounded-xl border p-4 flex flex-col gap-2"
+                style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+              >
+                <div className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center text-xs font-bold text-red-400">
+                    {item.no}
+                  </span>
+                  <p className="text-xs font-bold text-white leading-snug">{item.title}</p>
+                </div>
+                <code
+                  className="rounded px-2 py-1.5 font-mono text-xs text-red-300 block"
+                  style={{ backgroundColor: "#1a1d2a" }}
+                >
+                  {item.bad}
+                </code>
+                <div className="flex items-start gap-1.5">
+                  <AlertCircle className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs text-red-300 leading-snug">{item.reason}</p>
+                </div>
+                <div className="flex items-start gap-1.5">
+                  <CheckCircle className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs text-cyan-300 leading-snug">{item.fix}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3">
+            <Activity className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-amber-300 leading-snug">
+              <strong className="text-amber-200">eslint-plugin-react-hooks</strong> の
+              <code className="mx-1 px-1 rounded font-mono text-xs" style={{ backgroundColor: "rgba(0,0,0,0.3)" }}>
+                exhaustive-deps
+              </code>
+              ルールが依存配列の過不足を検出してくれる。ESLint設定に必ず追加する。
+            </p>
+          </div>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">

@@ -227,6 +227,324 @@ export default function ContextPage() {
             showArrow={false}
           />
         </ConceptDiagram>
+
+        {/* 図D: Context値更新と再レンダリング範囲 */}
+        <ConceptDiagram
+          title="概念図D"
+          description="Contextの値が更新されたとき、useContextを使っている全コンポーネントが再レンダリングされる。分割で対策できる。"
+          accentColor="rose"
+        >
+          {/* 問題: 1つのContextに複数の値 */}
+          <div className="mb-4">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              問題：1つのContextに詰め込む
+            </p>
+            <div
+              className="rounded-lg border p-3 mb-2"
+              style={{ borderColor: "#ef4444", backgroundColor: "#ef444410" }}
+            >
+              <p className="text-xs font-bold text-red-400 mb-1">ThemeContext</p>
+              <div className="flex gap-2 flex-wrap">
+                <span className="text-xs px-2 py-0.5 rounded-full border border-rose-500/40 text-rose-300">
+                  color
+                </span>
+                <span className="text-xs px-2 py-0.5 rounded-full border border-gray-600 text-gray-400">
+                  fontSize
+                </span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div
+                className="rounded border p-2 text-center"
+                style={{ borderColor: "#ef4444", backgroundColor: "#ef444410" }}
+              >
+                <p className="text-xs font-bold text-rose-300">ColorButton</p>
+                <p className="text-xs text-gray-400">color を使う</p>
+                <p className="text-xs text-red-400 mt-1">color 変更 → 再レンダー</p>
+              </div>
+              <div
+                className="rounded border p-2 text-center"
+                style={{ borderColor: "#ef4444", backgroundColor: "#ef444410" }}
+              >
+                <p className="text-xs font-bold text-gray-300">FontLabel</p>
+                <p className="text-xs text-gray-400">fontSize を使う</p>
+                <p className="text-xs text-red-400 mt-1">color 変更でも再レンダー</p>
+              </div>
+            </div>
+            <p className="text-xs text-red-400 text-center mt-2">
+              colorだけ変えても、fontSize読者まで巻き込まれる
+            </p>
+          </div>
+
+          {/* 解決策: Contextを分割 */}
+          <div>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              解決策：Contextを関心事で分割する
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <div
+                className="rounded-lg border p-3"
+                style={{ borderColor: "#2d3048", backgroundColor: "#1a1d2a" }}
+              >
+                <p className="text-xs font-bold text-rose-400 mb-1">ColorContext</p>
+                <span className="text-xs px-2 py-0.5 rounded-full border border-rose-500/40 text-rose-300">
+                  color
+                </span>
+                <p className="text-xs text-gray-500 mt-2">color が変わった</p>
+                <p className="text-xs text-rose-300">ColorButton のみ再レンダー</p>
+              </div>
+              <div
+                className="rounded-lg border p-3"
+                style={{ borderColor: "#2d3048", backgroundColor: "#1a1d2a" }}
+              >
+                <p className="text-xs font-bold text-violet-400 mb-1">FontContext</p>
+                <span className="text-xs px-2 py-0.5 rounded-full border border-violet-500/40 text-violet-300">
+                  fontSize
+                </span>
+                <p className="text-xs text-gray-500 mt-2">color が変わっても</p>
+                <p className="text-xs text-green-400">FontLabel は再レンダーしない</p>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            Contextは「1つの関心事 = 1つのContext」を目安に分割すると再レンダリングを最小化できる。
+          </p>
+        </ConceptDiagram>
+
+        {/* 図E: 複数Contextの入れ子構造 */}
+        <ConceptDiagram
+          title="概念図E"
+          description="複数のContextをネストする構造と、Providerをまとめてスッキリさせるパターン。"
+          accentColor="rose"
+        >
+          {/* ネスト構造の図 */}
+          <div className="mb-4">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              Providerをネストした構造
+            </p>
+            <div
+              className="rounded-lg border p-3"
+              style={{ borderColor: "#f43f5e66", backgroundColor: "#f43f5e0a" }}
+            >
+              <p className="text-xs font-bold text-rose-400 mb-2">AuthContext.Provider</p>
+              <div
+                className="rounded-lg border p-3 ml-3"
+                style={{ borderColor: "#a78bfa66", backgroundColor: "#a78bfa0a" }}
+              >
+                <p className="text-xs font-bold text-violet-400 mb-2">ThemeContext.Provider</p>
+                <div
+                  className="rounded-lg border p-3 ml-3"
+                  style={{ borderColor: "#60a5fa66", backgroundColor: "#60a5fa0a" }}
+                >
+                  <p className="text-xs font-bold text-blue-400 mb-2">LanguageContext.Provider</p>
+                  <div
+                    className="rounded-lg border px-3 py-2 ml-3 text-center"
+                    style={{ borderColor: "#2d3048", backgroundColor: "#1a1d2a" }}
+                  >
+                    <p className="text-xs font-bold text-white">App</p>
+                    <p className="text-xs text-gray-400">3つ全てのContextにアクセス可能</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* useContext複数呼び出し */}
+          <div className="mb-4">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              コンポーネントで複数のContextを受け取る
+            </p>
+            <div
+              className="rounded-lg border p-3 font-mono text-xs"
+              style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}
+            >
+              <p className="text-gray-400">{"// 1つのコンポーネントで複数呼び出し可能"}</p>
+              <p>
+                <span className="text-rose-400">const</span>
+                <span className="text-gray-300"> user = </span>
+                <span className="text-blue-400">useContext</span>
+                <span className="text-gray-300">(AuthContext)</span>
+              </p>
+              <p>
+                <span className="text-rose-400">const</span>
+                <span className="text-gray-300"> theme = </span>
+                <span className="text-blue-400">useContext</span>
+                <span className="text-gray-300">(ThemeContext)</span>
+              </p>
+              <p>
+                <span className="text-rose-400">const</span>
+                <span className="text-gray-300"> lang = </span>
+                <span className="text-blue-400">useContext</span>
+                <span className="text-gray-300">(LanguageContext)</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Providerをまとめるパターン */}
+          <div>
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+              Providerをまとめてスッキリさせる
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <p className="text-xs text-gray-500 text-center mb-1">ベタ書き</p>
+                <div
+                  className="rounded border p-2 font-mono text-xs"
+                  style={{ borderColor: "#ef444430", backgroundColor: "#0f1117" }}
+                >
+                  <p className="text-red-400">{"<AuthContext.Provider>"}</p>
+                  <p className="text-red-400 ml-2">{"<ThemeContext.Provider>"}</p>
+                  <p className="text-red-400 ml-4">{"<LangContext.Provider>"}</p>
+                  <p className="text-gray-500 ml-6">{"<App />"}</p>
+                  <p className="text-red-400 ml-4">{"</LangContext.Provider>"}</p>
+                  <p className="text-red-400 ml-2">{"</ThemeContext.Provider>"}</p>
+                  <p className="text-red-400">{"</AuthContext.Provider>"}</p>
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 text-center mb-1">Composedにまとめる</p>
+                <div
+                  className="rounded border p-2 font-mono text-xs"
+                  style={{ borderColor: "#22c55e30", backgroundColor: "#0f1117" }}
+                >
+                  <p className="text-green-400">{"<ComposedProviders>"}</p>
+                  <p className="text-gray-400 ml-2">{"<App />"}</p>
+                  <p className="text-green-400">{"</ComposedProviders>"}</p>
+                  <p className="text-gray-600 mt-2">{"// 全Providerを"}</p>
+                  <p className="text-gray-600">{"// 1コンポーネントに集約"}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            子コンポーネントはどのContextでも useContext 1回で受け取れる。Providerは複数あっても入れ子にすればよい。
+          </p>
+        </ConceptDiagram>
+
+        {/* 図F: Context vs Zustand/Redux 使い分け */}
+        <ConceptDiagram
+          title="概念図F"
+          description="React Context と外部状態管理ライブラリ（Zustand / Redux）の使い分け。更新頻度と複雑さで判断する。"
+          accentColor="rose"
+        >
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            {/* React Context */}
+            <div
+              className="rounded-lg border p-3"
+              style={{ borderColor: "#f43f5e40", backgroundColor: "#f43f5e08" }}
+            >
+              <p className="text-xs font-bold text-rose-400 mb-3 text-center uppercase tracking-wide">
+                React Context
+              </p>
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-start gap-1.5">
+                  <span className="text-green-400 text-xs mt-0.5">+</span>
+                  <p className="text-xs text-gray-300">追加ライブラリ不要</p>
+                </div>
+                <div className="flex items-start gap-1.5">
+                  <span className="text-green-400 text-xs mt-0.5">+</span>
+                  <p className="text-xs text-gray-300">テーマ・言語・認証など静的〜低頻度データに最適</p>
+                </div>
+                <div className="flex items-start gap-1.5">
+                  <span className="text-red-400 text-xs mt-0.5">-</span>
+                  <p className="text-xs text-gray-400">頻繁な更新でパフォーマンス問題</p>
+                </div>
+                <div className="flex items-start gap-1.5">
+                  <span className="text-red-400 text-xs mt-0.5">-</span>
+                  <p className="text-xs text-gray-400">DevToolsが弱くデバッグしにくい</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Zustand/Redux */}
+            <div
+              className="rounded-lg border p-3"
+              style={{ borderColor: "#6366f140", backgroundColor: "#6366f108" }}
+            >
+              <p className="text-xs font-bold text-indigo-400 mb-3 text-center uppercase tracking-wide">
+                Zustand / Redux
+              </p>
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-start gap-1.5">
+                  <span className="text-green-400 text-xs mt-0.5">+</span>
+                  <p className="text-xs text-gray-300">高頻度更新OK（selector最適化）</p>
+                </div>
+                <div className="flex items-start gap-1.5">
+                  <span className="text-green-400 text-xs mt-0.5">+</span>
+                  <p className="text-xs text-gray-300">DevToolsでデバッグしやすい</p>
+                </div>
+                <div className="flex items-start gap-1.5">
+                  <span className="text-green-400 text-xs mt-0.5">+</span>
+                  <p className="text-xs text-gray-300">複雑な状態ロジックを整理できる</p>
+                </div>
+                <div className="flex items-start gap-1.5">
+                  <span className="text-red-400 text-xs mt-0.5">-</span>
+                  <p className="text-xs text-gray-400">追加ライブラリの学習コストがある</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 判断フローチャート */}
+          <div
+            className="rounded-lg border p-3"
+            style={{ borderColor: "#2d3048", backgroundColor: "#1a1d2a" }}
+          >
+            <p className="text-xs font-semibold text-gray-400 mb-2 text-center">
+              判断の目安
+            </p>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <div
+                  className="rounded px-2 py-1 text-xs text-rose-300 font-medium border border-rose-500/30 whitespace-nowrap"
+                  style={{ backgroundColor: "#f43f5e10" }}
+                >
+                  更新頻度が高い
+                </div>
+                <ArrowDown className="w-3 h-3 text-gray-600 rotate-[-90deg]" />
+                <div
+                  className="rounded px-2 py-1 text-xs text-indigo-300 font-medium border border-indigo-500/30"
+                  style={{ backgroundColor: "#6366f110" }}
+                >
+                  Zustand / Redux
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div
+                  className="rounded px-2 py-1 text-xs text-rose-300 font-medium border border-rose-500/30 whitespace-nowrap"
+                  style={{ backgroundColor: "#f43f5e10" }}
+                >
+                  派生状態が複雑
+                </div>
+                <ArrowDown className="w-3 h-3 text-gray-600 rotate-[-90deg]" />
+                <div
+                  className="rounded px-2 py-1 text-xs text-indigo-300 font-medium border border-indigo-500/30"
+                  style={{ backgroundColor: "#6366f110" }}
+                >
+                  Zustand / Redux
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div
+                  className="rounded px-2 py-1 text-xs text-gray-300 font-medium border border-gray-600 whitespace-nowrap"
+                  style={{ backgroundColor: "#1a1d2a" }}
+                >
+                  テーマ・認証・言語
+                </div>
+                <ArrowDown className="w-3 h-3 text-gray-600 rotate-[-90deg]" />
+                <div
+                  className="rounded px-2 py-1 text-xs text-rose-300 font-medium border border-rose-500/30"
+                  style={{ backgroundColor: "#f43f5e10" }}
+                >
+                  Context で十分
+                </div>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            まずContextで始め、パフォーマンス問題や複雑な状態ロジックが出てきたタイミングで外部ライブラリに移行するのがベストプラクティス。
+          </p>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">

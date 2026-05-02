@@ -10,6 +10,11 @@ import {
   Layers,
   Cloud,
   Users,
+  KeyRound,
+  ArrowRight,
+  RefreshCw,
+  FileText,
+  Wifi,
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
@@ -168,6 +173,165 @@ export default function ServerPage() {
                 <Icon className={`w-5 h-5 mx-auto mb-1.5 ${highlight ? "text-emerald-400" : "text-gray-400"}`} />
                 <p className={`text-xs font-bold mb-1 ${highlight ? "text-emerald-300" : "text-white"}`}>{label}</p>
                 <p className="text-xs text-gray-500 leading-tight">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </ConceptDiagram>
+
+        {/* 概念図D: HTTP詳細フロー */}
+        <ConceptDiagram title="概念図D：HTTPリクエスト〜レスポンスの詳細フロー" accentColor="emerald">
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            ブラウザにURLを入力してからページが表示されるまで、裏側では以下のステップが順番に実行されています。
+            各ステップを理解することで「なぜページ表示に時間がかかるのか」が見えてきます。
+          </p>
+          <div className="flex flex-col gap-2">
+            {[
+              { Icon: Monitor, label: "① ブラウザ", desc: "URLを入力 / リンクをクリック → HTTPリクエストを生成", color: "text-emerald-400" },
+              { Icon: Globe, label: "② DNS解決", desc: "ドメイン名（example.com）→ IPアドレス（93.184.216.34）に変換", color: "text-sky-400" },
+              { Icon: Wifi, label: "③ TCP接続", desc: "クライアント↔サーバー間で3-wayハンドシェイク（SYN→SYN-ACK→ACK）", color: "text-blue-400" },
+              { Icon: Send, label: "④ HTTPリクエスト送信", desc: "GET /page HTTP/1.1 + ヘッダー（Host・Cookie・Accept など）", color: "text-purple-400" },
+              { Icon: Cpu, label: "⑤ サーバー処理", desc: "リクエストを解析 → DB照会・ロジック実行 → レスポンス生成", color: "text-orange-400" },
+              { Icon: FileText, label: "⑥ HTTPレスポンス送信", desc: "ステータスコード（200 OK等）+ ヘッダー + ボディ（HTML/JSON）", color: "text-yellow-400" },
+              { Icon: Monitor, label: "⑦ ブラウザが描画", desc: "HTML解析 → DOM構築 → CSS適用 → JavaScriptで動的処理", color: "text-emerald-400" },
+            ].map(({ Icon, label, desc, color }, i, arr) => (
+              <div key={i}>
+                <div className="flex items-start gap-3 rounded-lg border p-3" style={{ borderColor: "#2d3048", background: "#1a1d2a" }}>
+                  <Icon className={`w-5 h-5 mt-0.5 shrink-0 ${color}`} />
+                  <div>
+                    <p className="text-sm font-bold text-white mb-0.5">{label}</p>
+                    <p className="text-xs text-gray-400 leading-snug">{desc}</p>
+                  </div>
+                </div>
+                {i < arr.length - 1 && (
+                  <div className="flex justify-center py-1">
+                    <ArrowRight className="w-4 h-4 text-gray-600 rotate-90" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3">
+            <p className="text-xs text-emerald-300 font-semibold mb-1">ステータスコードの意味</p>
+            <div className="grid grid-cols-2 gap-2 text-xs text-gray-300">
+              <span><span className="text-green-400 font-bold">2xx</span> 成功（200 OK, 201 Created）</span>
+              <span><span className="text-yellow-400 font-bold">3xx</span> リダイレクト（301, 302）</span>
+              <span><span className="text-orange-400 font-bold">4xx</span> クライアントエラー（404, 403）</span>
+              <span><span className="text-red-400 font-bold">5xx</span> サーバーエラー（500, 503）</span>
+            </div>
+          </div>
+        </ConceptDiagram>
+
+        {/* 概念図E: ステートレスとセッション管理 */}
+        <ConceptDiagram title="概念図E：ステートレスの本質とセッション管理の仕組み" accentColor="emerald">
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            HTTPは「ステートレス」プロトコルです。サーバーはリクエストごとに「誰からの通信か」を覚えていません。
+            ではなぜログイン状態が維持できるのか？ Cookie とセッションIDが解決します。
+          </p>
+          <div className="grid grid-cols-1 gap-4 mb-4">
+            <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-3">
+              <p className="text-sm font-bold text-red-300 mb-2">ステートレスの問題点</p>
+              <div className="flex flex-col gap-2">
+                {[
+                  { step: "1回目", msg: "ログインしました（ID: user123）", color: "text-blue-400" },
+                  { step: "2回目", msg: "別のページへ移動", color: "text-gray-400" },
+                  { step: "サーバー", msg: "え、あなた誰ですか？（記憶なし）", color: "text-red-400" },
+                ].map(({ step, msg, color }) => (
+                  <div key={step} className="flex gap-2 text-xs">
+                    <span className="text-gray-500 w-16 shrink-0">{step}:</span>
+                    <span className={color}>{msg}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3">
+              <p className="text-sm font-bold text-emerald-300 mb-2">Cookie＋セッションIDによる解決策</p>
+              <div className="flex flex-col gap-2">
+                {[
+                  { step: "ログイン時", msg: "サーバーがセッションID発行 → Cookie に保存", color: "text-emerald-400" },
+                  { step: "次回リクエスト", msg: "ブラウザが自動でCookieを送信（セッションIDを添付）", color: "text-sky-400" },
+                  { step: "サーバー", msg: "セッションIDでユーザーを識別 → ログイン状態を維持", color: "text-emerald-400" },
+                ].map(({ step, msg, color }) => (
+                  <div key={step} className="flex gap-2 text-xs">
+                    <span className="text-gray-500 w-24 shrink-0">{step}:</span>
+                    <span className={color}>{msg}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { Icon: KeyRound, label: "セッションID", desc: "ランダムな文字列。本人確認の「チケット」", accent: "emerald" },
+              { Icon: Database, label: "セッションDB", desc: "サーバー側でID→ユーザー情報のマッピングを保存", accent: "blue" },
+              { Icon: RefreshCw, label: "有効期限", desc: "一定時間で無効化。セキュリティ確保のため必須", accent: "orange" },
+            ].map(({ Icon, label, desc, accent }) => (
+              <div key={label} className={`rounded-lg border border-${accent}-500/30 bg-${accent}-500/5 p-3 text-center`}>
+                <Icon className={`w-5 h-5 mx-auto mb-1.5 text-${accent}-400`} />
+                <p className={`text-xs font-bold text-${accent}-300 mb-1`}>{label}</p>
+                <p className="text-xs text-gray-500 leading-tight">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </ConceptDiagram>
+
+        {/* 概念図F: SSRの流れ */}
+        <ConceptDiagram title="概念図F：SSR（サーバーサイドレンダリング）の流れ" accentColor="emerald">
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            SSRでは「HTMLの生成」をサーバー側で行います。ブラウザは完成品のHTMLを受け取るため、
+            初期表示が速くSEOにも有利です。通常のSPA（CSR）と比べながら理解しましょう。
+          </p>
+          <div className="grid grid-cols-1 gap-3 mb-4">
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">CSR（通常のSPA）の流れ</p>
+              <div className="flex items-center gap-1 flex-wrap">
+                {[
+                  { label: "ブラウザ", sub: "リクエスト送信" },
+                  { label: "サーバー", sub: "空のHTMLを返す" },
+                  { label: "JS取得", sub: "bundle.jsをDL" },
+                  { label: "JS実行", sub: "DOMを生成" },
+                  { label: "表示完了", sub: "ここで初めて見える" },
+                ].map(({ label, sub }, i, arr) => (
+                  <div key={i} className="flex items-center gap-1">
+                    <div className="rounded border border-gray-600 bg-gray-800 px-2 py-1 text-center">
+                      <p className="text-xs font-bold text-gray-300">{label}</p>
+                      <p className="text-xs text-gray-500">{sub}</p>
+                    </div>
+                    {i < arr.length - 1 && <ArrowRight className="w-3 h-3 text-gray-600" />}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-emerald-500 uppercase tracking-widest mb-2">SSR（Next.js等）の流れ</p>
+              <div className="flex items-center gap-1 flex-wrap">
+                {[
+                  { label: "ブラウザ", sub: "リクエスト送信", highlight: false },
+                  { label: "サーバー", sub: "DB取得+HTML生成", highlight: true },
+                  { label: "完成HTML", sub: "コンテンツ込みで返す", highlight: true },
+                  { label: "即表示", sub: "JSなしでも見える", highlight: false },
+                  { label: "Hydration", sub: "JSで動的処理追加", highlight: false },
+                ].map(({ label, sub, highlight }, i, arr) => (
+                  <div key={i} className="flex items-center gap-1">
+                    <div className={`rounded border px-2 py-1 text-center ${highlight ? "border-emerald-500/40 bg-emerald-500/10" : "border-gray-600 bg-gray-800"}`}>
+                      <p className={`text-xs font-bold ${highlight ? "text-emerald-300" : "text-gray-300"}`}>{label}</p>
+                      <p className="text-xs text-gray-500">{sub}</p>
+                    </div>
+                    {i < arr.length - 1 && <ArrowRight className="w-3 h-3 text-gray-600" />}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { label: "初期表示速度", csr: "遅い（JS実行待ち）", ssr: "速い（HTML即返却）", winner: "ssr" },
+              { label: "SEO", csr: "不利（空HTML）", ssr: "有利（コンテンツ入り）", winner: "ssr" },
+              { label: "サーバー負荷", csr: "低い（静的配信）", ssr: "高い（毎回生成）", winner: "csr" },
+            ].map(({ label, csr, ssr, winner }) => (
+              <div key={label} className="rounded-lg border p-2" style={{ borderColor: "#2d3048" }}>
+                <p className="text-xs font-bold text-white mb-1 text-center">{label}</p>
+                <p className={`text-xs mb-0.5 ${winner === "csr" ? "text-emerald-400 font-semibold" : "text-gray-500"}`}>CSR: {csr}</p>
+                <p className={`text-xs ${winner === "ssr" ? "text-emerald-400 font-semibold" : "text-gray-500"}`}>SSR: {ssr}</p>
               </div>
             ))}
           </div>
@@ -331,11 +495,9 @@ export default function ServerPage() {
         </DetailBlock>
 
         <DetailBlock heading="6.3 「クラウド」は誰かのサーバー">
-          <CorrectionCard
-            misconception="クラウドは「雲の中」に漂う、実体のない何かである"
-            correction="他人が建てたデータセンターの物理サーバー（または仮想サーバー）を、ネット経由で借りているだけ"
-            reason={"There is no cloud — it's just someone else's computer. VercelもFirebaseもSupabaseも、最終的には誰かのデータセンターのラックに刺さっているサーバーが動いている。"}
-          />
+          <KeyPoint>
+            「クラウド」の実態は他人のデータセンターのサーバーをネット経由で借りているだけ。VercelもFirebaseもSupabaseも最終的には誰かのラックに刺さった物理サーバーが動いている。"There is no cloud — it's just someone else's computer."
+          </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading="6.4 フロントエンドとバックエンドの分業">

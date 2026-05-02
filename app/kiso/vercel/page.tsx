@@ -14,6 +14,10 @@ import {
   Server,
   Cloud,
   MapPin,
+  Zap,
+  Package,
+  AlertTriangle,
+  SlidersHorizontal,
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
@@ -227,6 +231,277 @@ export default function VercelPage() {
             個人開発でも「main に入れる前にスマホで確認する」用途で Preview は便利。
           </p>
         </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図D：CDNエッジネットワークの仕組み"
+          description="Vercelのグローバルエッジがリクエストをどう処理するか。キャッシュHITとMISSの2パターンで理解する。"
+          accentColor="sky"
+        >
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div
+                className="rounded-lg border p-4"
+                style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Zap className="w-4 h-4 text-sky-400" />
+                  <p className="text-xs font-bold text-sky-300">キャッシュHIT（高速）</p>
+                </div>
+                <div className="flex flex-col gap-1 text-xs text-gray-400">
+                  <span>ユーザー（東京）</span>
+                  <span className="text-gray-600">↓</span>
+                  <span>東京エッジサーバー</span>
+                  <span className="text-gray-600">↓</span>
+                  <span className="text-emerald-400 font-semibold">キャッシュHIT → 即返却</span>
+                  <span className="mt-1 text-sky-400 font-semibold">約 30ms</span>
+                </div>
+              </div>
+              <div
+                className="rounded-lg border p-4"
+                style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Server className="w-4 h-4 text-amber-400" />
+                  <p className="text-xs font-bold text-amber-300">キャッシュMISS（初回）</p>
+                </div>
+                <div className="flex flex-col gap-1 text-xs text-gray-400">
+                  <span>ユーザー（東京）</span>
+                  <span className="text-gray-600">↓</span>
+                  <span>東京エッジ → オリジンサーバーへ</span>
+                  <span className="text-gray-600">↓</span>
+                  <span>コンテンツ取得 → エッジにキャッシュ保存</span>
+                  <span className="text-gray-600">↓</span>
+                  <span className="text-amber-400 font-semibold">ユーザーへ返却</span>
+                </div>
+              </div>
+            </div>
+            <div
+              className="rounded-lg border p-4"
+              style={{ borderColor: "#2d3048", backgroundColor: "#1a1d2a" }}
+            >
+              <p className="text-xs font-semibold text-gray-400 mb-3">レイテンシ比較</p>
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-xs text-gray-500 w-40">CDNなし（Origin直アクセス）</span>
+                <div className="flex-1 bg-sky-500/10 rounded-full h-3">
+                  <div className="bg-orange-400 h-3 rounded-full" style={{ width: "100%" }} />
+                </div>
+                <span className="text-xs text-orange-400 font-semibold w-14 text-right">300ms</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-gray-500 w-40">CDNあり（エッジキャッシュ）</span>
+                <div className="flex-1 bg-sky-500/10 rounded-full h-3">
+                  <div className="bg-sky-400 h-3 rounded-full" style={{ width: "10%" }} />
+                </div>
+                <span className="text-xs text-sky-400 font-semibold w-14 text-right">30ms</span>
+              </div>
+            </div>
+            <div
+              className="rounded-lg border p-3"
+              style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <MapPin className="w-3.5 h-3.5 text-sky-400" />
+                <p className="text-xs font-semibold text-sky-300">主要エッジ拠点（100以上の都市）</p>
+              </div>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                東京、ニューヨーク、ロンドン、シンガポール、サンパウロ など 100+ 都市に拠点を配置。
+                ユーザーのIPに最も近い拠点が自動で応答する。
+              </p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            2回目以降のアクセスはキャッシュHITになるため、体感速度がさらに向上する。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図E：GitプッシュからVercel本番デプロイまで"
+          description="git push の瞬間からユーザーが新バージョンを見られるまで、Vercelの内部で何が順番に起きているか。"
+          accentColor="sky"
+        >
+          <div className="space-y-2">
+            {[
+              {
+                step: "1",
+                icon: <GitBranch className="w-4 h-4 text-blue-400" />,
+                label: "git push",
+                detail: "mainブランチへ push → GitHub Webhook が Vercel に通知",
+              },
+              {
+                step: "2",
+                icon: <Triangle className="w-4 h-4 text-sky-400" />,
+                label: "Vercel Build Queue",
+                detail: "ビルドジョブがキューに登録される",
+              },
+              {
+                step: "3",
+                icon: <Package className="w-4 h-4 text-amber-400" />,
+                label: "npm install（依存関係）",
+                detail: "package.json をもとに node_modules を構築。キャッシュにより2回目以降は高速化",
+              },
+              {
+                step: "4",
+                icon: <Hammer className="w-4 h-4 text-orange-400" />,
+                label: "next build",
+                detail: "TypeScript 型チェック + ESLint + HTML ページ生成。エラーがあればここで失敗する",
+              },
+              {
+                step: "5",
+                icon: <Zap className="w-4 h-4 text-yellow-400" />,
+                label: "静的ファイル最適化",
+                detail: "画像圧縮・コード分割・フォント最適化など自動処理",
+              },
+              {
+                step: "6",
+                icon: <Globe2 className="w-4 h-4 text-emerald-400" />,
+                label: "Edge Network配布",
+                detail: "成果物を世界100以上のエッジ拠点へ配置",
+              },
+              {
+                step: "7",
+                icon: <Eye className="w-4 h-4 text-violet-400" />,
+                label: "Preview URL発行",
+                detail: "すべてのデプロイに専用の確認URLが発行される",
+              },
+              {
+                step: "8",
+                icon: <Rocket className="w-4 h-4 text-sky-400" />,
+                label: "本番URL更新",
+                detail: "main ブランチの場合のみ本番URLが新バージョンを指すように切り替わる",
+              },
+            ].map(({ step, icon, label, detail }, i, arr) => (
+              <div key={step} className="flex gap-3 items-start">
+                <div className="flex flex-col items-center gap-0 shrink-0">
+                  <div
+                    className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-gray-300"
+                    style={{ backgroundColor: "#1a1d2a", border: "1px solid #2d3048" }}
+                  >
+                    {step}
+                  </div>
+                  {i < arr.length - 1 && (
+                    <div className="w-px h-5 bg-gray-700 mt-0.5" />
+                  )}
+                </div>
+                <div className="pb-1">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    {icon}
+                    <span className="text-xs font-semibold text-gray-200">{label}</span>
+                  </div>
+                  <p className="text-xs text-gray-500 leading-relaxed">{detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div
+            className="mt-4 rounded-lg border px-4 py-3 flex items-center gap-3"
+            style={{ borderColor: "#2d3048", backgroundColor: "#1a1d2a" }}
+          >
+            <Zap className="w-4 h-4 text-sky-400 shrink-0" />
+            <p className="text-xs text-gray-400">
+              典型的なビルド時間: <span className="text-sky-300 font-semibold">30秒〜3分</span>。
+              push してからブラウザをリロードするだけで新バージョンが確認できる。
+            </p>
+          </div>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図F：Vercelの環境変数管理"
+          description="シークレット情報をコードに直書きせず、どこでどう管理するかを3つの環境に分けて整理する。"
+          accentColor="sky"
+        >
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {[
+                {
+                  label: "Development",
+                  sublabel: "ローカル .env.local",
+                  color: "text-amber-300",
+                  borderColor: "#92400e",
+                  url: "localhost:3000",
+                  desc: "Gitに含めない。.gitignore に .env*.local を追記する",
+                },
+                {
+                  label: "Preview",
+                  sublabel: "PRごとのURL",
+                  color: "text-violet-300",
+                  borderColor: "#5b21b6",
+                  url: "xxx.vercel.app",
+                  desc: "Vercelダッシュボードで Preview 環境用に設定できる",
+                },
+                {
+                  label: "Production",
+                  sublabel: "本番URL",
+                  color: "text-sky-300",
+                  borderColor: "#0369a1",
+                  url: "web-dev-zukan.vercel.app",
+                  desc: "Vercelダッシュボードの Production 欄で管理する",
+                },
+              ].map(({ label, sublabel, color, borderColor, url, desc }) => (
+                <div
+                  key={label}
+                  className="rounded-lg border p-3"
+                  style={{ borderColor, backgroundColor: "#0f1117" }}
+                >
+                  <p className={`text-xs font-bold mb-0.5 ${color}`}>{label}</p>
+                  <p className="text-xs text-gray-500 mb-2">{sublabel}</p>
+                  <p className="text-xs font-mono text-gray-600 mb-2">{url}</p>
+                  <p className="text-xs text-gray-400 leading-relaxed">{desc}</p>
+                </div>
+              ))}
+            </div>
+            <div
+              className="rounded-lg border p-4 space-y-2"
+              style={{ borderColor: "#2d3048", backgroundColor: "#1a1d2a" }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <SlidersHorizontal className="w-3.5 h-3.5 text-sky-400" />
+                <p className="text-xs font-semibold text-sky-300">変数の種類と用途</p>
+              </div>
+              {[
+                {
+                  key: "SECRET_KEY, DB_PASSWORD",
+                  rule: "Vercelダッシュボードに設定（コードに書かない）",
+                  color: "text-rose-400",
+                },
+                {
+                  key: "NEXT_PUBLIC_API_URL",
+                  rule: "NEXT_PUBLIC_ プレフィックス → ブラウザからもアクセス可",
+                  color: "text-sky-400",
+                },
+                {
+                  key: "通常の環境変数",
+                  rule: "サーバーサイドのみ → ブラウザには公開されない",
+                  color: "text-gray-400",
+                },
+              ].map(({ key, rule, color }) => (
+                <div key={key} className="flex gap-2 items-start">
+                  <code
+                    className="text-xs px-1.5 py-0.5 rounded font-mono shrink-0"
+                    style={{ backgroundColor: "#0f1117", color: "#34d399" }}
+                  >
+                    {key}
+                  </code>
+                  <span className={`text-xs leading-relaxed ${color}`}>{rule}</span>
+                </div>
+              ))}
+            </div>
+            <div
+              className="rounded-lg border p-4 flex gap-3 items-start"
+              style={{ borderColor: "#7f1d1d", backgroundColor: "#1a0a0a" }}
+            >
+              <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-xs font-semibold text-red-300 mb-1">.envをGitにコミットするリスク</p>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  .env をリポジトリに含めると APIキーやパスワードが公開される。
+                  流出すると不正利用・課金被害に直結する。
+                  必ず <code className="text-xs px-1 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>.gitignore</code>{" "}
+                  に <code className="text-xs px-1 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>.env*.local</code> を追記すること。
+                </p>
+              </div>
+            </div>
+          </div>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">
@@ -364,11 +639,9 @@ export default function VercelPage() {
               accentColor: "sky",
             },
           ]} />
-          <CorrectionCard
-            misconception="デプロイ = FTPソフトでファイルをアップロードする手作業"
-            correction="Vercel を使えば git push するだけで自動デプロイが完了する"
-            reason="FTPアップロードはかつての手作業デプロイの方法。現代のホスティングサービスはGitHubと連携し、pushを検知して自動でビルド・配信まで完結させる。"
-          />
+          <KeyPoint>
+            かつてのデプロイはFTPで手動アップロードしていたが、現代は git push するだけで自動ビルド・配信まで完結する。Vercelはこの自動化を最も手軽に実現できるホスティングサービスのひとつ。
+          </KeyPoint>
           <KeyPoint>
             「デプロイした」＝「ローカルから本番環境へ、書いたコードの『動く版』を引っ越しさせた」と理解しておけばOK。Vercel はこの引っ越し作業を自動でやってくれる業者と言える。
           </KeyPoint>

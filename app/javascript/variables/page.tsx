@@ -237,6 +237,336 @@ export default function VariablesPage() {
             「巻き上げられる」点はどれも同じ。違うのは「巻き上げ後に触ったときの挙動」。
           </p>
         </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図D：クロージャ（Closure）の仕組み"
+          description="外側の関数が終わっても、内側の関数はその変数を「覚えている」。"
+          accentColor="yellow"
+        >
+          <div className="space-y-3">
+            <div
+              className="rounded-xl border-2 border-dashed border-yellow-700/40 p-4"
+            >
+              <p className="text-xs font-semibold text-yellow-400 uppercase tracking-wide mb-3">
+                クロージャの構造
+              </p>
+              <div className="flex flex-col gap-2">
+                <div
+                  className="rounded-lg border p-3"
+                  style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+                >
+                  <p className="text-xs text-gray-400 mb-1.5">
+                    外側の関数スコープ — <span className="text-yellow-300 font-mono">makeCounter()</span>
+                  </p>
+                  <div
+                    className="rounded border p-3 ml-4"
+                    style={{ backgroundColor: "rgba(234,179,8,0.05)", borderColor: "rgba(234,179,8,0.3)" }}
+                  >
+                    <p className="text-xs text-gray-300 mb-1">
+                      <span className="text-yellow-300 font-mono">let count = 0</span>
+                      <span className="text-gray-500 ml-2">← この変数を「閉じ込める」</span>
+                    </p>
+                    <div
+                      className="rounded border p-2 ml-4 mt-2"
+                      style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+                    >
+                      <p className="text-xs text-gray-300">
+                        内側の関数 — <span className="text-yellow-300 font-mono">increment()</span>
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        外側の <span className="font-mono text-yellow-300">count</span> を参照・更新できる
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div
+                className="rounded-lg border p-3"
+                style={{ backgroundColor: "rgba(234,179,8,0.05)", borderColor: "rgba(234,179,8,0.3)" }}
+              >
+                <p className="text-xs font-semibold text-yellow-300 mb-2">counterA（独立した count）</p>
+                <div className="font-mono text-xs space-y-0.5 text-gray-300">
+                  <p><span className="text-gray-500">call 1 →</span> count: 1</p>
+                  <p><span className="text-gray-500">call 2 →</span> count: 2</p>
+                  <p><span className="text-gray-500">call 3 →</span> count: 3</p>
+                </div>
+              </div>
+              <div
+                className="rounded-lg border p-3"
+                style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+              >
+                <p className="text-xs font-semibold text-gray-300 mb-2">counterB（別インスタンス）</p>
+                <div className="font-mono text-xs space-y-0.5 text-gray-400">
+                  <p><span className="text-gray-500">call 1 →</span> count: 1</p>
+                  <p><span className="text-gray-500">call 2 →</span> count: 2</p>
+                </div>
+                <p className="text-xs text-gray-600 mt-2">counterA と count を共有しない</p>
+              </div>
+            </div>
+
+            <div
+              className="rounded-lg border p-3 font-mono text-xs leading-relaxed"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-gray-500 mb-1">{"// クロージャの基本パターン"}</p>
+              <p>
+                <span className="text-blue-300">function</span>
+                <span className="text-yellow-300"> makeCounter</span>
+                <span className="text-gray-300">{"() {"}</span>
+              </p>
+              <p className="ml-4">
+                <span className="text-blue-300">let</span>
+                <span className="text-gray-300"> count </span>
+                <span className="text-gray-500">= </span>
+                <span className="text-orange-300">0</span>
+                <span className="text-gray-300">;</span>
+              </p>
+              <p className="ml-4">
+                <span className="text-blue-300">return</span>
+                <span className="text-gray-300">{" () => { count++; "}</span>
+                <span className="text-blue-300">return</span>
+                <span className="text-gray-300">{" count; };"}</span>
+              </p>
+              <p className="text-gray-300">{"}"}</p>
+              <p className="mt-2">
+                <span className="text-blue-300">const</span>
+                <span className="text-gray-300"> counterA </span>
+                <span className="text-gray-500">= </span>
+                <span className="text-yellow-300">makeCounter</span>
+                <span className="text-gray-300">();</span>
+              </p>
+              <p>
+                <span className="text-blue-300">const</span>
+                <span className="text-gray-300"> counterB </span>
+                <span className="text-gray-500">= </span>
+                <span className="text-yellow-300">makeCounter</span>
+                <span className="text-gray-300">();</span>
+              </p>
+              <p className="mt-1 text-gray-500">{"// counterA と counterB は count を共有しない"}</p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-3">
+            クロージャ = 「スコープのネスト」+ 「関数が変数を覚え続ける」の組み合わせ。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図E：プリミティブ型とオブジェクト型のメモリの違い"
+          description="値そのものを持つ型と、参照（アドレス）を持つ型では、コピーの挙動が変わる。"
+          accentColor="yellow"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-bold text-blue-300 mb-3 uppercase tracking-wide">
+                プリミティブ型 — スタック
+              </p>
+              <p className="text-xs text-gray-500 mb-2">number / string / boolean / null / undefined</p>
+              <div className="space-y-2">
+                <div
+                  className="rounded border px-3 py-2 text-xs font-mono"
+                  style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+                >
+                  <span className="text-gray-400">a </span>
+                  <span className="text-gray-600">= </span>
+                  <span className="text-orange-300">42</span>
+                  <span className="text-gray-600 ml-2">← 値そのもの</span>
+                </div>
+                <div
+                  className="rounded border px-3 py-2 text-xs font-mono"
+                  style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+                >
+                  <span className="text-gray-400">b </span>
+                  <span className="text-gray-600">= </span>
+                  <span className="text-orange-300">42</span>
+                  <span className="text-gray-600 ml-2">← 値のコピー</span>
+                </div>
+              </div>
+              <p className="text-xs text-gray-500 mt-3 leading-relaxed">
+                b を変えても a は変わらない。それぞれ独立した箱。
+              </p>
+            </div>
+
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "rgba(234,179,8,0.05)", borderColor: "rgba(234,179,8,0.3)" }}
+            >
+              <p className="text-xs font-bold text-yellow-300 mb-3 uppercase tracking-wide">
+                オブジェクト型 — ヒープ
+              </p>
+              <p className="text-xs text-gray-500 mb-2">object / array / function</p>
+              <div className="space-y-2">
+                <div
+                  className="rounded border px-3 py-2 text-xs font-mono"
+                  style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+                >
+                  <span className="text-gray-400">a </span>
+                  <span className="text-gray-600">= </span>
+                  <span className="text-yellow-300">0xA1</span>
+                  <span className="text-gray-600 ml-2">← アドレス</span>
+                </div>
+                <div
+                  className="rounded border px-3 py-2 text-xs font-mono"
+                  style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+                >
+                  <span className="text-gray-400">b </span>
+                  <span className="text-gray-600">= </span>
+                  <span className="text-yellow-300">0xA1</span>
+                  <span className="text-gray-600 ml-2">← 同じアドレス！</span>
+                </div>
+                <div
+                  className="rounded border px-3 py-2 text-xs"
+                  style={{ backgroundColor: "rgba(234,179,8,0.08)", borderColor: "rgba(234,179,8,0.25)" }}
+                >
+                  <p className="text-xs text-gray-400">ヒープ上のデータ</p>
+                  <p className="font-mono text-xs text-yellow-200 mt-0.5">{"{ x: 1 }"}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="rounded-lg border mt-4 p-3"
+            style={{ backgroundColor: "rgba(239,68,68,0.06)", borderColor: "rgba(239,68,68,0.3)" }}
+          >
+            <p className="text-xs font-semibold text-red-300 mb-2">参照コピーの罠</p>
+            <div
+              className="rounded border p-3 font-mono text-xs leading-relaxed"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p>
+                <span className="text-blue-300">const</span>
+                <span className="text-gray-300"> a </span>
+                <span className="text-gray-500">= </span>
+                <span className="text-gray-300">{"{ x: "}</span>
+                <span className="text-orange-300">1</span>
+                <span className="text-gray-300">{" };"}</span>
+              </p>
+              <p>
+                <span className="text-blue-300">const</span>
+                <span className="text-gray-300"> b </span>
+                <span className="text-gray-500">= </span>
+                <span className="text-gray-300">a;</span>
+                <span className="text-gray-600 ml-2">{"// 参照のコピー"}</span>
+              </p>
+              <p>
+                <span className="text-gray-300">b.x </span>
+                <span className="text-gray-500">= </span>
+                <span className="text-orange-300">2</span>
+                <span className="text-gray-300">;</span>
+              </p>
+              <p className="mt-1">
+                <span className="text-gray-500">{"// a.x は？ → "}</span>
+                <span className="text-red-300">2</span>
+                <span className="text-gray-500">{"  ← a も変わってしまう！"}</span>
+              </p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-3">
+            オブジェクトを別変数に入れても「同じ箱の住所を書き写しただけ」。スプレッド構文などでディープコピーが必要。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図F：TDZ（一時的デッドゾーン）とホイスティング"
+          description="変数はスコープ開始と同時に「存在はする」。ただし宣言の行まで触るとエラー。"
+          accentColor="yellow"
+        >
+          <div className="space-y-3">
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4 text-center">
+                スコープ開始 → 宣言行 → スコープ終了
+              </p>
+
+              <div className="space-y-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-xs font-bold text-red-300 font-mono w-12">var</span>
+                    <div className="flex-1 flex rounded overflow-hidden h-6 text-xs">
+                      <div
+                        className="flex items-center justify-center flex-1 text-gray-300"
+                        style={{ backgroundColor: "rgba(239,68,68,0.15)", borderRight: "1px solid rgba(239,68,68,0.3)" }}
+                      >
+                        undefined（アクセス可）
+                      </div>
+                      <div
+                        className="flex items-center justify-center flex-1 text-gray-300"
+                        style={{ backgroundColor: "rgba(239,68,68,0.08)" }}
+                      >
+                        正常アクセス可
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-600 ml-14">ホイスティング + undefined 初期化。宣言前でもエラーにならない（バグの温床）</p>
+                </div>
+
+                <div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-xs font-bold text-yellow-300 font-mono w-12">let</span>
+                    <div className="flex-1 flex rounded overflow-hidden h-6 text-xs">
+                      <div
+                        className="flex items-center justify-center flex-1 text-red-300 font-semibold"
+                        style={{ backgroundColor: "rgba(239,68,68,0.2)", borderRight: "2px solid rgba(239,68,68,0.5)" }}
+                      >
+                        TDZ — ReferenceError
+                      </div>
+                      <div
+                        className="flex items-center justify-center flex-1 text-gray-300"
+                        style={{ backgroundColor: "rgba(234,179,8,0.08)" }}
+                      >
+                        正常アクセス可
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-600 ml-14">ホイスティングあり（未初期化）。TDZ中にアクセスするとReferenceError</p>
+                </div>
+
+                <div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-xs font-bold text-yellow-300 font-mono w-12">const</span>
+                    <div className="flex-1 flex rounded overflow-hidden h-6 text-xs">
+                      <div
+                        className="flex items-center justify-center flex-1 text-red-300 font-semibold"
+                        style={{ backgroundColor: "rgba(239,68,68,0.2)", borderRight: "2px solid rgba(239,68,68,0.5)" }}
+                      >
+                        TDZ — ReferenceError
+                      </div>
+                      <div
+                        className="flex items-center justify-center flex-1 text-gray-300"
+                        style={{ backgroundColor: "rgba(234,179,8,0.08)" }}
+                      >
+                        正常アクセス可
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-600 ml-14">let と同じTDZ動作。宣言と同時に必ず初期化が必要</p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className="rounded-lg border p-3"
+              style={{ backgroundColor: "rgba(234,179,8,0.05)", borderColor: "rgba(234,179,8,0.3)" }}
+            >
+              <p className="text-xs font-semibold text-yellow-300 mb-2">TDZ は「安全装置」</p>
+              <p className="text-xs text-gray-300 leading-relaxed">
+                var は宣言前に undefined を返すため「初期化し忘れ」に気づけない。
+                TDZ はそれを防ぐ設計。エラーが出るのは「バグが早期発見できている」サイン。
+              </p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-3">
+            「let / const のエラーは怖い」ではなく「var のサイレントな undefined の方が危険」。
+          </p>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">
@@ -354,11 +684,9 @@ console.log(age);  // → 20
 // ── なぜ var は危ないか ──
 // 宣言前に undefined が返っても気づきにくく、バグの原因になる`}
           />
-          <CorrectionCard
-            misconception="let / const はホイスティングされない（だからエラーになる）"
-            correction="let / const もホイスティングされる。ただし宣言の行に到達するまで TDZ（触れない期間）に入るためエラーになる"
-            reason="「巻き上げ」はすべての宣言に起きる。var との違いは「巻き上げ後に undefined で初期化するか、TDZ に入れるか」の違い。let / const のエラーは「巻き上げがない」のではなく「巻き上げはされたが、まだ使えない状態」というのが正確。"
-          />
+          <KeyPoint>
+            「let / const は巻き上げがない」という説明を見ることがあるが正確ではない。どちらもホイスティングはされる。ただし宣言行まではTDZ（触れない状態）に入るためエラーになる。「巻き上げがない」ではなく「巻き上げられたが、まだ使えない」が正確な表現。
+          </KeyPoint>
           <KeyPoint>
             「let / const は巻き上げられない」という説明をたまに見るが、正確には誤り。「巻き上げはされるが、宣言の行までは触ったらエラー」が正しい挙動。
           </KeyPoint>

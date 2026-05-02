@@ -280,6 +280,223 @@ export default function AsyncPage() {
             JS本体（コールスタック）はシングルスレッドのまま。重い処理はWeb APIに丸投げし、結果が来たらキュー経由で順次処理する。これが非同期の正体。
           </p>
         </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図E：Promiseチェーンのエラー伝播の仕組み"
+          description="チェーン途中でエラーが発生すると、後続の .then() はスキップされ、最後の .catch() に直接ジャンプする。"
+          accentColor="amber"
+        >
+          {/* A → B(エラー) → C の流れ */}
+          <div className="flex flex-col items-center gap-1 mb-5">
+            <div className="flex items-center gap-2">
+              <div
+                className="rounded-lg border px-4 py-2 text-center min-w-[110px]"
+                style={{ borderColor: "rgba(16,185,129,0.5)", backgroundColor: "rgba(16,185,129,0.08)" }}
+              >
+                <p className="text-xs font-bold text-emerald-300">ステップA</p>
+                <p className="text-xs text-gray-400 mt-0.5">成功</p>
+              </div>
+              <span className="text-gray-500 text-sm">→</span>
+              <div
+                className="rounded-lg border px-4 py-2 text-center min-w-[110px]"
+                style={{ borderColor: "rgba(239,68,68,0.5)", backgroundColor: "rgba(239,68,68,0.08)" }}
+              >
+                <p className="text-xs font-bold text-red-300">ステップB</p>
+                <p className="text-xs text-gray-400 mt-0.5">エラーを投げる</p>
+              </div>
+              <span className="text-gray-500 text-sm">→</span>
+              <div
+                className="rounded-lg border px-4 py-2 text-center min-w-[110px] opacity-40"
+                style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}
+              >
+                <p className="text-xs font-bold text-gray-400">ステップC</p>
+                <p className="text-xs text-gray-500 mt-0.5">スキップされる</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 mt-1">
+              <span className="text-xs text-gray-500 mr-2">Bのエラーが伝播</span>
+              <span className="text-red-400 text-base">↓</span>
+            </div>
+            <div
+              className="rounded-lg border px-5 py-2 text-center"
+              style={{ borderColor: "rgba(239,68,68,0.5)", backgroundColor: "rgba(239,68,68,0.08)" }}
+            >
+              <p className="text-xs font-bold text-red-300">.catch() — チェーン末尾に1つで全エラーを捕捉</p>
+            </div>
+          </div>
+
+          {/* .catch() の2つの振る舞い */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
+            <div
+              className="rounded-xl border p-3"
+              style={{ borderColor: "rgba(239,68,68,0.3)", backgroundColor: "rgba(239,68,68,0.05)" }}
+            >
+              <p className="text-xs font-semibold text-red-300 mb-1">.catch() の中で throw する</p>
+              <p className="text-xs text-gray-400 leading-relaxed">エラーを再スローすると、さらに下流の .catch() に伝わる。</p>
+              <pre className="text-xs font-mono mt-2 text-gray-300 leading-relaxed">{`.catch(err => {
+  throw err; // 次の .catch() へ
+})`}</pre>
+            </div>
+            <div
+              className="rounded-xl border p-3"
+              style={{ borderColor: "rgba(245,158,11,0.3)", backgroundColor: "rgba(245,158,11,0.05)" }}
+            >
+              <p className="text-xs font-semibold text-amber-300 mb-1">.catch() の中で値を return する</p>
+              <p className="text-xs text-gray-400 leading-relaxed">値を返すとチェーンが復活し、次の .then() が動く（リカバリー）。</p>
+              <pre className="text-xs font-mono mt-2 text-gray-300 leading-relaxed">{`.catch(err => {
+  return fallback; // チェーン継続
+})`}</pre>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            .catch() を末尾に1つ置くだけで、チェーン全体のエラーを一括で処理できる。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図F：async/await は Promise の糖衣構文"
+          description="async/await は Promise を置き換えるのではなく、同じ動作を読みやすく書けるようにしたもの。裏では必ず Promise が動いている。"
+          accentColor="amber"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-start gap-3">
+            {/* Promise 側 */}
+            <div
+              className="rounded-xl border p-4"
+              style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}
+            >
+              <p className="text-xs font-semibold text-gray-400 mb-3 text-center">Promise (.then) チェーン</p>
+              <pre className="text-xs font-mono leading-relaxed text-gray-300 overflow-x-auto">{`function loadUser() {
+  return fetch('/api/user')
+    .then(res => res.json())
+    .then(data => data.name)
+    .catch(err => null);
+}
+// 戻り値は Promise<string|null>`}</pre>
+              <div className="mt-3 space-y-1">
+                <p className="text-xs text-gray-500">関数は Promise を返す</p>
+                <p className="text-xs text-gray-500">.then() で値を取り出す</p>
+                <p className="text-xs text-gray-500">.catch() でエラー処理</p>
+                <p className="text-xs text-gray-500">並列は Promise.all()</p>
+              </div>
+            </div>
+
+            <div className="flex md:flex-col items-center justify-center gap-1 text-amber-400 py-2">
+              <span className="text-xs font-semibold whitespace-nowrap">同じ動作</span>
+              <span className="text-lg leading-none">↕</span>
+            </div>
+
+            {/* async/await 側 */}
+            <div
+              className="rounded-xl border p-4"
+              style={{ borderColor: "rgba(245,158,11,0.4)", backgroundColor: "rgba(245,158,11,0.05)" }}
+            >
+              <p className="text-xs font-semibold text-amber-400 mb-3 text-center">async / await</p>
+              <pre className="text-xs font-mono leading-relaxed text-gray-300 overflow-x-auto">{`async function loadUser() {
+  try {
+    const res  = await fetch('/api/user');
+    const data = await res.json();
+    return data.name;
+  } catch {
+    return null;
+  }
+}
+// 戻り値は Promise<string|null>`}</pre>
+              <div className="mt-3 space-y-1">
+                <p className="text-xs text-amber-300/70">async 関数は必ず Promise を返す</p>
+                <p className="text-xs text-amber-300/70">await で Promise の値を取り出す</p>
+                <p className="text-xs text-amber-300/70">try/catch でエラー処理</p>
+                <p className="text-xs text-amber-300/70">並列は Promise.all() をそのまま使う</p>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            戻り値の型・エラー伝播・並列処理の仕組みは同じ。書き方だけが変わる。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図G：非同期処理の進化：コールバック → Promise → async/await"
+          description="同じ操作（ユーザー取得 → 投稿取得 → コメント取得）を3世代の書き方で並べる。"
+          accentColor="amber"
+        >
+          <div className="grid grid-cols-1 gap-4">
+            {/* コールバック地獄 */}
+            <div
+              className="rounded-xl border p-4"
+              style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-bold text-gray-400">① コールバック地獄（〜ES5）</p>
+                <span
+                  className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                  style={{ backgroundColor: "rgba(239,68,68,0.1)", color: "#fca5a5" }}
+                >
+                  可読性：低
+                </span>
+              </div>
+              <pre className="text-xs font-mono leading-relaxed text-gray-400 overflow-x-auto">{`getUser(id, function(user) {
+  getPosts(user.id, function(posts) {
+    getComments(posts[0].id, function(comments) {
+      console.log(comments);
+    }, function(err) { /* エラー処理3 */ });
+  }, function(err) { /* エラー処理2 */ });
+}, function(err) { /* エラー処理1 */ });`}</pre>
+              <p className="text-xs text-gray-600 mt-2">ネストが深くなるほど追えなくなる。エラー処理を各段で書かなければならない。</p>
+            </div>
+
+            {/* Promise チェーン */}
+            <div
+              className="rounded-xl border p-4"
+              style={{ borderColor: "rgba(245,158,11,0.2)", backgroundColor: "rgba(245,158,11,0.03)" }}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-bold text-amber-400/70">② Promiseチェーン（ES2015）</p>
+                <span
+                  className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                  style={{ backgroundColor: "rgba(245,158,11,0.1)", color: "#fde68a" }}
+                >
+                  可読性：中
+                </span>
+              </div>
+              <pre className="text-xs font-mono leading-relaxed text-gray-300 overflow-x-auto">{`getUser(id)
+  .then(user    => getPosts(user.id))
+  .then(posts   => getComments(posts[0].id))
+  .then(comments => console.log(comments))
+  .catch(err    => console.error(err));`}</pre>
+              <p className="text-xs text-gray-600 mt-2">ネストは解消。.catch() 1つでまとめてエラー処理できる。ただし .then() の連鎖は横に広がりがち。</p>
+            </div>
+
+            {/* async/await */}
+            <div
+              className="rounded-xl border p-4"
+              style={{ borderColor: "rgba(16,185,129,0.3)", backgroundColor: "rgba(16,185,129,0.05)" }}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-bold text-emerald-400">③ async / await（ES2017）</p>
+                <span
+                  className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                  style={{ backgroundColor: "rgba(16,185,129,0.1)", color: "#6ee7b7" }}
+                >
+                  可読性：高
+                </span>
+              </div>
+              <pre className="text-xs font-mono leading-relaxed text-gray-300 overflow-x-auto">{`async function load(id) {
+  try {
+    const user     = await getUser(id);
+    const posts    = await getPosts(user.id);
+    const comments = await getComments(posts[0].id);
+    console.log(comments);
+  } catch (err) {
+    console.error(err);
+  }
+}`}</pre>
+              <p className="text-xs text-emerald-300/60 mt-2">同期コードと同じ読み方ができる。try/catch でエラーを一括処理。変数に名前がつくので追いやすい。</p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            3世代とも「やっていること」は同じ。進化のたびに「読み書きのしやすさ」が上がってきた。
+          </p>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">
@@ -503,11 +720,9 @@ console.log('② 終了');
             </code>
             で捕まえられる。
           </p>
-          <CorrectionCard
-            misconception="fetch('/api/user') が 404 や 500 を返したら、自動的に catch に飛んでくれる"
-            correction="fetch はネットワーク障害以外では reject しない。404・500 でも Promise は fulfilled になる"
-            reason="HTTPステータスは自分で res.ok（または res.status）を確認し、エラーなら手動で throw する必要がある。これを知らないと「エラーなのに catch が動かない」バグに悩まされる。"
-          />
+          <KeyPoint>
+            fetchは404・500でもrejectしない。ネットワーク障害以外はPromiseがfullfilledになるため、res.okで手動チェックしてthrowする必要がある。これを知らないと「エラーなのにcatchが動かない」バグに悩まされる。
+          </KeyPoint>
           <CodeBlock
             title="async-error-handling.js"
             language="javascript"

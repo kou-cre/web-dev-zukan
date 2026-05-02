@@ -165,6 +165,141 @@ export default function FetchPage() {
             「fetch は HTTPエラーで自動rejectされない」が最大の落とし穴。axiosが好まれる最大の理由でもある。
           </p>
         </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図D：HTTPメソッドの役割と使い分け"
+          description="REST APIで使う5つのHTTPメソッド。URLは「リソース」、メソッドは「動詞」を表す。"
+          accentColor="cyan"
+        >
+          <div className="flex flex-col gap-2">
+            {[
+              { method: "GET", color: "text-cyan-400", border: "border-cyan-500/30", bg: "bg-cyan-500/10", desc: "データ取得。bodyなし・ブックマーク可・キャッシュ可", example: "GET /users" },
+              { method: "POST", color: "text-violet-400", border: "border-violet-500/30", bg: "bg-violet-500/10", desc: "データ作成。bodyあり・叩くたびに新リソースが生まれる", example: "POST /users" },
+              { method: "PUT", color: "text-amber-400", border: "border-amber-500/30", bg: "bg-amber-500/10", desc: "データ全体更新。同じIDに送ると丸ごと上書きされる", example: "PUT /users/1" },
+              { method: "PATCH", color: "text-emerald-400", border: "border-emerald-500/30", bg: "bg-emerald-500/10", desc: "データ一部更新。指定フィールドだけ変更する", example: "PATCH /users/1" },
+              { method: "DELETE", color: "text-rose-400", border: "border-rose-500/30", bg: "bg-rose-500/10", desc: "データ削除。URLで対象を指定するだけ", example: "DELETE /users/1" },
+            ].map(({ method, color, border, bg, desc, example }) => (
+              <div
+                key={method}
+                className={`flex items-center gap-3 rounded-lg border p-3 ${border} ${bg}`}
+              >
+                <span className={`text-xs font-bold font-mono w-14 shrink-0 ${color}`}>{method}</span>
+                <span className="text-xs text-gray-300 flex-1">{desc}</span>
+                <span className={`text-xs font-mono ${color} opacity-70 shrink-0`}>{example}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            GETとPOSTだけ覚えて始め、PUT/PATCH/DELETEはREST APIを触り始めてから身につければよい。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図E：fetch()のResponseオブジェクトを正しく処理する"
+          description="fetch()はPromise{`<Response>`}を返す。Responseの中身を取り出すには2段階のawaitが必要。"
+          accentColor="cyan"
+        >
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch gap-2">
+              <div className="flex-1 rounded-lg border p-3" style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}>
+                <p className="text-xs font-semibold text-cyan-400 mb-2">① fetch() の戻り値</p>
+                <p className="text-xs font-mono text-gray-300">Promise{"<Response>"}</p>
+                <p className="text-xs text-gray-500 mt-1">awaitすると Responseが手に入る</p>
+              </div>
+              <div className="flex items-center justify-center text-gray-600 text-xs px-1">→</div>
+              <div className="flex-1 rounded-lg border p-3" style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}>
+                <p className="text-xs font-semibold text-cyan-400 mb-2">② Response のプロパティ</p>
+                <ul className="text-xs text-gray-400 space-y-0.5">
+                  <li><span className="text-gray-300">status</span> — 200 / 404 / 500</li>
+                  <li><span className="text-gray-300">ok</span> — status 200〜299 なら true</li>
+                  <li><span className="text-gray-300">headers</span> — レスポンスヘッダー</li>
+                </ul>
+              </div>
+              <div className="flex items-center justify-center text-gray-600 text-xs px-1">→</div>
+              <div className="flex-1 rounded-lg border p-3" style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}>
+                <p className="text-xs font-semibold text-cyan-400 mb-2">③ body取り出しメソッド</p>
+                <ul className="text-xs text-gray-400 space-y-0.5">
+                  <li><span className="text-cyan-300 font-mono">.json()</span> — JSONデータ</li>
+                  <li><span className="text-sky-300 font-mono">.text()</span> — 文字列</li>
+                  <li><span className="text-violet-300 font-mono">.blob()</span> — 画像・PDF</li>
+                  <li><span className="text-amber-300 font-mono">.arrayBuffer()</span> — バイト列</li>
+                </ul>
+              </div>
+            </div>
+            <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
+              <p className="text-xs font-semibold text-amber-400 mb-1">注意：bodyメソッドは非同期かつ1回しか呼べない</p>
+              <p className="text-xs text-gray-300">.json() や .text() は Promise を返すので await が必要。同じ Response に2度呼ぶとエラーになる。</p>
+            </div>
+            <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-3">
+              <p className="text-xs font-semibold text-rose-400 mb-1">エラー処理の要点</p>
+              <ul className="text-xs text-gray-300 space-y-0.5">
+                <li>・ネットワークエラー → fetch() 自体が throw する</li>
+                <li>・4xx / 5xx → throw <span className="text-rose-300">されない</span>。response.ok を自分で確認する</li>
+              </ul>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            「2段階のawait」と「response.okの手動チェック」がfetch処理の2大ポイント。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図F：CORS（クロスオリジンリソース共有）の仕組み"
+          description="なぜブラウザは別のドメインへのfetchをブロックするのか？ オリジンの定義から理解する。"
+          accentColor="cyan"
+        >
+          <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3">
+                <p className="text-xs font-semibold text-emerald-400 mb-2">同一オリジン — OK</p>
+                <p className="text-xs font-mono text-gray-300 mb-1">myapp.com → myapp.com/api</p>
+                <p className="text-xs text-gray-400">プロトコル・ドメイン・ポートが同じ → 制限なし</p>
+              </div>
+              <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-3">
+                <p className="text-xs font-semibold text-rose-400 mb-2">クロスオリジン — ブロック</p>
+                <p className="text-xs font-mono text-gray-300 mb-1">myapp.com → api.other.com</p>
+                <p className="text-xs text-gray-400">ドメインが違う → ブラウザがレスポンスを破棄</p>
+              </div>
+            </div>
+            <div className="rounded-lg border p-3" style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}>
+              <p className="text-xs font-semibold text-gray-300 mb-2">オリジン = プロトコル + ドメイン + ポート</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 text-xs">
+                <div className="rounded border border-rose-500/30 bg-rose-500/10 p-2 text-center">
+                  <p className="font-mono text-rose-300">http://</p>
+                  <p className="text-gray-400 mt-0.5">vs https:// → 別オリジン</p>
+                </div>
+                <div className="rounded border border-rose-500/30 bg-rose-500/10 p-2 text-center">
+                  <p className="font-mono text-rose-300">api.myapp.com</p>
+                  <p className="text-gray-400 mt-0.5">vs myapp.com → 別オリジン</p>
+                </div>
+                <div className="rounded border border-rose-500/30 bg-rose-500/10 p-2 text-center">
+                  <p className="font-mono text-rose-300">:3000</p>
+                  <p className="text-gray-400 mt-0.5">vs :8080 → 別オリジン</p>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-lg border border-cyan-500/30 bg-cyan-500/10 p-3">
+              <p className="text-xs font-semibold text-cyan-400 mb-2">プリフライトリクエスト（OPTIONS）</p>
+              <p className="text-xs text-gray-300">POSTやカスタムヘッダーを送る前にブラウザが自動でOPTIONSリクエストを送り、サーバーに「これ送っていい？」と確認する。</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="rounded-lg border p-3" style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}>
+                <p className="text-xs font-semibold text-gray-300 mb-1">サーバーが返すべきヘッダー</p>
+                <ul className="text-xs font-mono text-gray-400 space-y-0.5">
+                  <li><span className="text-cyan-300">Access-Control-Allow-Origin</span></li>
+                  <li><span className="text-cyan-300">Access-Control-Allow-Methods</span></li>
+                </ul>
+              </div>
+              <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
+                <p className="text-xs font-semibold text-amber-400 mb-1">CORSはブラウザの機能</p>
+                <p className="text-xs text-gray-300">curlやサーバー間通信はCORSの影響を受けない。フロントのコードをいくら直しても解決しない。サーバー側の設定が必要。</p>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            CORSエラーが出たら「サーバー側のヘッダー設定」を確認する。フロント側では解決できない。
+          </p>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">
@@ -424,11 +559,9 @@ const data = await fetch('/api/users').then(r => r.json());`}
           <p>
             <strong className="text-white">CORS（Cross-Origin Resource Sharing）</strong>は、ブラウザが備えているセキュリティの仕組み。「別オリジン（別ドメイン・別ポート・別プロトコル）のサーバーから取得したレスポンスは、サーバー側が明示的に許可しない限りJavaScriptに渡さない」というルール。
           </p>
-          <CorrectionCard
-            misconception="CORSエラーはフロントエンドのコードを修正すれば直せる"
-            correction="CORSはブラウザの制限であり、解決するにはサーバー側でAccess-Control-Allow-Originヘッダーを返す必要がある"
-            reason="フロントのfetchの書き方をいくら変えてもCORSエラーは消えない。サーバー側（Express・Next.js API Routesなど）でCORSの許可設定を追加するか、同一オリジンのプロキシ経由で叩く必要がある。"
-          />
+          <KeyPoint>
+            CORSエラーはブラウザによる制限なので、フロントのコードをいくら変えても解消しない。サーバー側でAccess-Control-Allow-Originヘッダーを返すか、同一オリジンのプロキシ経由でAPIを叩く必要がある。
+          </KeyPoint>
           <p>
             たとえば{" "}
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>https://myapp.com</code>{" "}

@@ -154,6 +154,132 @@ export default function PropsPage() {
             デフォルト値があれば「渡されなかった場合」の挙動を安全にコントロールできる。
           </p>
         </ConceptDiagram>
+
+        {/* 図D: Props型定義とデフォルト値 */}
+        <ConceptDiagram
+          title="概念図D：TypeScriptでのProps型定義とデフォルト値の設定"
+          description="typeエイリアスで全Propsを一覧化し、オプションにはデフォルト値を分割代入で設定する。TypeScriptは型不一致をコンパイル時に検出する。"
+          accentColor="sky"
+        >
+          <div className="space-y-3">
+            <StackLayer
+              Icon={FileType}
+              title="型エイリアスで全Propsを定義"
+              subtitle="type ButtonProps = { label: string; variant?: 'primary' | 'secondary'; size?: 'sm' | 'md' | 'lg'; onClick?: () => void; disabled?: boolean; }"
+              iconColor="text-sky-400"
+            />
+            <StackLayer
+              Icon={Code2}
+              title="分割代入でデフォルト値を設定"
+              subtitle="function Button({ label, variant = 'primary', size = 'md', disabled = false }: ButtonProps)"
+              iconColor="text-violet-400"
+            />
+            <StackLayer
+              Icon={ShieldCheck}
+              title="TypeScriptのコンパイル時エラー検出"
+              subtitle="必須のlabelを渡し忘れ → エラー。variant に 'large' を渡す → エラー。型が守られた状態のみ動く。"
+              iconColor="text-red-400"
+              showArrow={false}
+            />
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <div className="rounded-lg p-3 text-xs" style={{ backgroundColor: "#0f1117", border: "1px solid #2d3048" }}>
+              <p className="text-sky-400 font-semibold mb-1">必須 Props（?なし）</p>
+              <p className="text-gray-300">label: string</p>
+              <p className="text-gray-500 mt-1">渡し忘れると即エラー</p>
+            </div>
+            <div className="rounded-lg p-3 text-xs" style={{ backgroundColor: "#0f1117", border: "1px solid #2d3048" }}>
+              <p className="text-yellow-400 font-semibold mb-1">オプション Props（?あり）</p>
+              <p className="text-gray-300">variant?: {'\'primary\' | \'secondary\''}</p>
+              <p className="text-gray-500 mt-1">省略するとデフォルト値が使われる</p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-3">
+            typeとinterfaceどちらでも定義できるが、Union型を使う場合はtypeが必須。
+          </p>
+        </ConceptDiagram>
+
+        {/* 図E: スプレッドPropsのパターン */}
+        <ConceptDiagram
+          title="概念図E：スプレッドPropsのパターンと注意点"
+          description="スプレッド構文でオブジェクトのすべてのプロパティをPropsとして一括展開できる。便利な反面、不要なpropsがDOMに渡るリスクがある。"
+          accentColor="sky"
+        >
+          <div className="space-y-3">
+            <StackLayer
+              Icon={Package}
+              title="スプレッドで一括展開"
+              subtitle="const inputProps = { type: 'email', placeholder: 'メールを入力', required: true }  →  <Input {...inputProps} />"
+              iconColor="text-sky-400"
+            />
+            <StackLayer
+              Icon={Layers}
+              title="HOCパターン：内側のコンポーネントへ転送"
+              subtitle="function Wrapper(props) { return <InnerComponent {...props} /> }  — propsをそのまま内部に委譲する高階コンポーネント"
+              iconColor="text-violet-400"
+            />
+            <StackLayer
+              Icon={ShieldCheck}
+              title="危険：不要なpropsがDOMに渡るケース"
+              subtitle="<div specialProp={...} /> → console warning: unknown prop on DOM element. ブラウザが認識しない属性は渡さない。"
+              iconColor="text-red-400"
+            />
+            <StackLayer
+              Icon={Workflow}
+              title="安全なrestプロパティパターン"
+              subtitle="const { specialProp, ...rest } = props;  →  <div {...rest} />  — 専用propsを抜き取ってからDOMへ展開"
+              iconColor="text-emerald-400"
+              showArrow={false}
+            />
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-3">
+            スプレッドPropsは便利だが「何を渡しているか」が見えにくくなる。restパターンで明示的に制御する。
+          </p>
+        </ConceptDiagram>
+
+        {/* 図F: children propの構造 */}
+        <ConceptDiagram
+          title="概念図F：children propの仕組みとパターン"
+          description="childrenはコンポーネントタグで囲んだ内容が自動的に渡される特殊なProp。テキスト・JSX要素・関数など多様な値を受け取れる。"
+          accentColor="sky"
+        >
+          <div className="space-y-3">
+            <StackLayer
+              Icon={FileCode}
+              title="childrenの基本：タグで囲んだものが渡される"
+              subtitle="<Card>ここがchildren</Card>  →  function Card({ children }: { children: React.ReactNode })"
+              iconColor="text-sky-400"
+            />
+            <StackLayer
+              Icon={Layers}
+              title="childrenに渡せる型（React.ReactNode）"
+              subtitle="テキスト / JSX要素 / コンポーネント / 配列 / フラグメント / null — すべてReactNodeで受け取れる"
+              iconColor="text-violet-400"
+            />
+            <StackLayer
+              Icon={Package}
+              title="Compound Componentパターン"
+              subtitle="<Card><Card.Header /><Card.Body /><Card.Footer /></Card>  — 関連コンポーネントをネームスペースでグループ化"
+              iconColor="text-amber-400"
+            />
+            <StackLayer
+              Icon={ArrowRight}
+              title="Render Propsパターン"
+              subtitle="<DataFetcher render={(data) => <Table data={data} />} />  — renderという名のPropに関数を渡してレンダリングを委譲"
+              iconColor="text-emerald-400"
+            />
+            <StackLayer
+              Icon={Workflow}
+              title="Children as Functionパターン"
+              subtitle="<Toggle>{(isOn) => <Button>{isOn ? 'ON' : 'OFF'}</Button>}</Toggle>  — childrenそのものを関数にする高度な手法"
+              iconColor="text-rose-400"
+              showArrow={false}
+            />
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-3">
+            レイアウト系コンポーネント（Modal・Card・Layoutなど）はchildrenを使うと「中身は使う側が決める」柔軟な設計になる。
+          </p>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">

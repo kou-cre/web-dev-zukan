@@ -250,6 +250,222 @@ export default function BaasPage() {
             </div>
           </div>
         </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図E：Firebase認証の詳細フロー"
+          description="ユーザーがログインしてからAPIアクセスが許可されるまでの一連の流れ。JWTトークンがどう発行・使用・検証されるかを追う。"
+        >
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+              <FlowCard
+                Icon={KeyRound}
+                title="ユーザー入力"
+                subtitle="メール/パスワード入力"
+              />
+              <FlowArrow label="SDK呼び出し" direction="right" />
+              <FlowCard
+                Icon={Cloud}
+                title="Firebase Auth SDK"
+                subtitle="クライアント側ライブラリ"
+                highlight
+                accentColor="blue"
+              />
+              <FlowArrow label="送信" direction="right" />
+              <FlowCard
+                Icon={Server}
+                title="Firebase Authサーバー"
+                subtitle="Googleのクラウドで検証"
+              />
+            </div>
+            <div className="flex justify-center">
+              <FlowArrow label="JWTトークン発行" direction="down" />
+            </div>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+              <FlowCard
+                Icon={HardDrive}
+                title="クライアントに保存"
+                subtitle="localStorageまたはメモリ"
+              />
+              <FlowArrow label="リクエスト時に添付" direction="right" />
+              <FlowCard
+                Icon={Database}
+                title="Firestore / Functions"
+                subtitle="トークンを自動検証"
+                highlight
+                accentColor="blue"
+              />
+              <FlowArrow label="検証OK" direction="right" />
+              <FlowCard
+                Icon={Zap}
+                title="アクセス許可"
+                subtitle="データ取得・書き込みが可能に"
+              />
+            </div>
+          </div>
+          <div
+            className="mt-4 rounded-lg border p-3"
+            style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}
+          >
+            <p className="text-xs font-bold text-blue-300 mb-1">onAuthStateChanged — オブザーバーパターン</p>
+            <p className="text-xs text-gray-400 leading-relaxed">
+              {`Firebase Auth はログイン状態の変化を監視する onAuthStateChanged() を提供する。ページ再読み込み後も自動的にセッションを復元し、ログアウト時には即座に UI を更新できる。「状態を毎回チェックする」のではなく「変化があったら通知される」設計。`}
+            </p>
+          </div>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図F：Firestoreのドキュメント/コレクション構造"
+          description="Firestoreのデータはコレクション → ドキュメント → フィールドの階層で管理される。SQLのテーブル構造との対比で理解する。"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div
+              className="rounded-xl border-2 border-dashed border-blue-700/50 p-4"
+            >
+              <p className="text-xs font-semibold text-blue-400 text-center mb-3 tracking-wide uppercase">
+                Firestore（NoSQL）
+              </p>
+              <StackLayer
+                Icon={Database}
+                title="Collection: users"
+                subtitle="ドキュメントをまとめる入れ物"
+                iconColor="text-blue-400"
+              />
+              <StackLayer
+                Icon={HardDrive}
+                title="Document: userId"
+                subtitle="1ユーザー分のデータのまとまり"
+                iconColor="text-sky-400"
+              />
+              <StackLayer
+                Icon={Layers}
+                title="Fields: name / email / createdAt"
+                subtitle="キーと値のペア。型は自由"
+                iconColor="text-cyan-400"
+              />
+              <StackLayer
+                Icon={Database}
+                title="SubCollection: posts"
+                subtitle="ドキュメントの中にさらにコレクション"
+                iconColor="text-blue-400"
+              />
+              <StackLayer
+                Icon={HardDrive}
+                title="Document: postId"
+                subtitle="1投稿分のフィールドを持つ"
+                iconColor="text-sky-400"
+                showArrow={false}
+              />
+            </div>
+            <div
+              className="rounded-xl border-2 border-dashed border-gray-600/50 p-4"
+            >
+              <p className="text-xs font-semibold text-gray-400 text-center mb-3 tracking-wide uppercase">
+                SQL（RDB）との対応
+              </p>
+              <div className="space-y-2">
+                {[
+                  { firestore: "Collection", sql: "Table（テーブル）" },
+                  { firestore: "Document", sql: "Row（行・レコード）" },
+                  { firestore: "Field", sql: "Column（列）" },
+                  { firestore: "SubCollection", sql: "関連テーブル（JOIN）" },
+                ].map((row, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center justify-between rounded-lg border px-3 py-2"
+                    style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}
+                  >
+                    <span className="text-xs text-blue-300 font-medium">{row.firestore}</span>
+                    <span className="text-xs text-gray-500">→</span>
+                    <span className="text-xs text-gray-400">{row.sql}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-gray-500 mt-3 leading-relaxed">
+                NoSQLはスキーマレス（型・構造が自由）。柔軟な反面、設計をさぼると後で読み取りが困難になる。
+              </p>
+            </div>
+          </div>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図G：BaaSを使うと何が不要になるか"
+          description="フルスタック自前構築と比較して、BaaSが肩代わりしてくれる作業を可視化する。担当範囲の差が圧倒的。"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div
+              className="rounded-xl border-2 border-dashed border-gray-600/50 p-4"
+            >
+              <p className="text-xs font-semibold text-gray-400 text-center mb-3 tracking-wide uppercase">
+                フルスタック自前構築
+              </p>
+              <div className="space-y-1.5">
+                {[
+                  { label: "サーバー構築", muted: false },
+                  { label: "OS管理・セキュリティパッチ", muted: false },
+                  { label: "DBセットアップ・チューニング", muted: false },
+                  { label: "認証実装（ハッシュ化・OAuth）", muted: false },
+                  { label: "SSL証明書の設定・更新", muted: false },
+                  { label: "スケーリング設定・負荷対応", muted: false },
+                  { label: "バックアップ設定・障害対応", muted: false },
+                  { label: "フロントエンド実装", muted: true },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className={`flex items-center gap-2 rounded-lg border px-3 py-1.5 ${item.muted ? "opacity-40" : ""}`}
+                    style={{
+                      borderColor: item.muted ? "#2d3048" : "#ef444440",
+                      backgroundColor: item.muted ? "#0f1117" : "#ef44440d",
+                    }}
+                  >
+                    <Wrench size={12} className={item.muted ? "text-gray-600" : "text-red-400"} />
+                    <span className={`text-xs ${item.muted ? "text-gray-600" : "text-red-300"}`}>{item.label}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-gray-500 text-center mt-3">自分が担当: 8項目</p>
+            </div>
+            <div
+              className="rounded-xl border-2 border-dashed border-blue-700/50 p-4"
+            >
+              <p className="text-xs font-semibold text-blue-400 text-center mb-3 tracking-wide uppercase">
+                BaaS（Firebase / Supabase）
+              </p>
+              <div className="space-y-1.5">
+                {[
+                  { label: "サーバー構築", baas: true },
+                  { label: "OS管理・セキュリティパッチ", baas: true },
+                  { label: "DBセットアップ・チューニング", baas: true },
+                  { label: "認証実装（ハッシュ化・OAuth）", baas: true },
+                  { label: "SSL証明書の設定・更新", baas: true },
+                  { label: "スケーリング設定・負荷対応", baas: true },
+                  { label: "バックアップ設定・障害対応", baas: true },
+                  { label: "フロントエンド実装", baas: false },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 rounded-lg border px-3 py-1.5"
+                    style={{
+                      borderColor: item.baas ? "#2d3048" : "#3b82f640",
+                      backgroundColor: item.baas ? "#0f1117" : "#3b82f60d",
+                    }}
+                  >
+                    <Cloud size={12} className={item.baas ? "text-gray-600" : "text-blue-400"} />
+                    <span className={`text-xs ${item.baas ? "text-gray-600 line-through" : "text-blue-300 font-medium"}`}>
+                      {item.label}
+                    </span>
+                    {item.baas && (
+                      <span className="ml-auto text-xs text-gray-600">BaaSが対応</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-blue-400 text-center mt-3">自分が担当: 1項目のみ</p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-500 text-center mt-3">
+            BaaSを使うと「インフラ7項目」がまるごと不要になる。残るのはフロントエンドだけ。
+          </p>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">
@@ -443,11 +659,9 @@ export default function BaasPage() {
               accentColor: "orange",
             },
           ]} />
-          <CorrectionCard
-            misconception="BaaS を使えばコストも設計もすべておまかせでよい"
-            correction="BaaS は「インフラ管理」を肩代わりしてくれるが、データ設計・クエリ設計・コスト管理は自分の責任"
-            reason="特に Firestore は「先に読み取りパターンを想定したデータ設計」が必要。後から構造を変えると全データ移行が必要になるケースもある。便利な分だけ、設計上の制約を受け入れる前提で使う道具。"
-          />
+          <KeyPoint>
+            BaaSはインフラ管理を代行してくれるが、データ設計・クエリ設計・コスト管理は自分の責任。特にFirestoreは「読み取りパターンを先に想定したデータ設計」が必要で、後から構造を変えると全データ移行が必要になることがある。
+          </KeyPoint>
           <KeyPoint>
             BaaSは「最短で動かす」には最適。ただし「何が苦手か」を知った上で選ぶこと。
           </KeyPoint>

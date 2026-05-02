@@ -232,6 +232,340 @@ export default function ErrorPage() {
             どこにも catch がないとブラウザ／Node.js のトップレベルまで届き、最悪「画面真っ白」になる。
           </p>
         </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図D：JavaScriptのErrorオブジェクト継承階層"
+          description="JavaScript の組み込みエラーはすべて Error クラスを継承している。カスタムエラーも同様に extends Error で作ることで instanceof 判別が使えるようになる。"
+          accentColor="red"
+        >
+          <div className="space-y-4">
+            {/* 継承ツリー */}
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-red-400 mb-3 uppercase tracking-wide">
+                継承ツリー
+              </p>
+              {/* 基底クラス */}
+              <div className="flex flex-col items-center gap-1">
+                <div
+                  className="rounded-lg border border-red-500/50 bg-red-500/10 px-4 py-2 text-center w-fit"
+                >
+                  <p className="text-xs font-bold text-red-300">Error</p>
+                  <p className="text-xs text-gray-400">基底クラス</p>
+                </div>
+                <div className="w-px h-4 bg-red-500/40" />
+                {/* 子クラス一覧 */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full">
+                  {[
+                    { name: "RangeError", desc: "数値が範囲外" },
+                    { name: "ReferenceError", desc: "未定義変数を参照" },
+                    { name: "SyntaxError", desc: "構文エラー" },
+                    { name: "TypeError", desc: "型が不正" },
+                    { name: "URIError", desc: "URI処理エラー" },
+                    { name: "EvalError", desc: "eval関連エラー" },
+                  ].map(({ name, desc }) => (
+                    <div
+                      key={name}
+                      className="rounded-lg border px-3 py-2 text-center"
+                      style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+                    >
+                      <p className="text-xs font-semibold text-gray-200">{name}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Errorオブジェクトのプロパティ */}
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">
+                Error オブジェクトの主なプロパティ
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { prop: "name", desc: "エラー種別名" },
+                  { prop: "message", desc: "説明文" },
+                  { prop: "stack", desc: "呼び出し履歴" },
+                ].map(({ prop, desc }) => (
+                  <div
+                    key={prop}
+                    className="rounded-lg border px-3 py-2 text-center"
+                    style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+                  >
+                    <code className="text-xs font-mono text-emerald-400">{prop}</code>
+                    <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* カスタムエラーの作り方 */}
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">
+                カスタムエラーの作り方
+              </p>
+              <pre
+                className="text-xs font-mono leading-relaxed rounded-lg px-3 py-2 overflow-x-auto"
+                style={{ backgroundColor: "#1a1d2a", color: "#9ca3af" }}
+              >{`class CustomError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'CustomError';
+  }
+}
+
+// catch 側で instanceof 判別が可能になる
+catch (e) {
+  if (e instanceof CustomError) { ... }
+}`}</pre>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-3">
+            extends Error で作ることで instanceof による種別判別が機能する。必ず super(message) と this.name を設定すること。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図E：非同期処理のエラーハンドリング3パターン比較"
+          description="非同期処理のエラーハンドリングにはコールバック・Promise・async/await の3パターンがある。現代のコードでは async/await に統一するのが最もわかりやすい。"
+          accentColor="red"
+        >
+          <div className="space-y-3">
+            {/* 3パターン比較 */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* パターン1: コールバック */}
+              <div
+                className="rounded-xl border p-3 flex flex-col gap-2"
+                style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+              >
+                <p className="text-xs font-bold text-gray-300">
+                  1. コールバック
+                </p>
+                <p className="text-xs text-gray-400 leading-tight">
+                  エラーファーストパターン。第1引数がエラー、第2引数がデータ。
+                </p>
+                <pre
+                  className="text-xs font-mono leading-relaxed rounded px-2 py-1.5 mt-auto"
+                  style={{ backgroundColor: "#1a1d2a", color: "#9ca3af" }}
+                >{`fs.readFile(path,
+  (err, data) => {
+    if (err) {
+      // エラー処理
+      return;
+    }
+    // 正常処理
+  }
+);`}</pre>
+                <div
+                  className="rounded px-2 py-1 text-center"
+                  style={{ backgroundColor: "#1a1d2a" }}
+                >
+                  <p className="text-xs text-amber-400">err が null でないときエラー</p>
+                </div>
+              </div>
+
+              {/* パターン2: Promise */}
+              <div
+                className="rounded-xl border p-3 flex flex-col gap-2"
+                style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+              >
+                <p className="text-xs font-bold text-gray-300">
+                  2. Promise
+                </p>
+                <p className="text-xs text-gray-400 leading-tight">
+                  .catch() チェーンでエラーを処理する。.catch() の書き忘れに注意。
+                </p>
+                <pre
+                  className="text-xs font-mono leading-relaxed rounded px-2 py-1.5 mt-auto"
+                  style={{ backgroundColor: "#1a1d2a", color: "#9ca3af" }}
+                >{`fetchUser(id)
+  .then((user) => {
+    // 正常処理
+  })
+  .catch((err) => {
+    // エラー処理
+  })
+  .finally(() => {
+    // 後処理
+  });`}</pre>
+                <div
+                  className="rounded px-2 py-1 text-center"
+                  style={{ backgroundColor: "#1a1d2a" }}
+                >
+                  <p className="text-xs text-amber-400">.catch() 忘れで握りつぶし</p>
+                </div>
+              </div>
+
+              {/* パターン3: async/await */}
+              <div
+                className="rounded-xl border border-red-500/40 p-3 flex flex-col gap-2"
+                style={{ backgroundColor: "#0f1117" }}
+              >
+                <div className="flex items-center gap-1.5">
+                  <p className="text-xs font-bold text-red-300">
+                    3. async / await
+                  </p>
+                  <span className="text-xs bg-red-500/10 text-red-400 px-1.5 py-0.5 rounded">
+                    推奨
+                  </span>
+                </div>
+                <p className="text-xs text-gray-400 leading-tight">
+                  try-catch-finally で同期コードと同じ感覚で書ける。
+                </p>
+                <pre
+                  className="text-xs font-mono leading-relaxed rounded px-2 py-1.5 mt-auto"
+                  style={{ backgroundColor: "#1a1d2a", color: "#9ca3af" }}
+                >{`async function load() {
+  try {
+    const user =
+      await fetchUser(id);
+    // 正常処理
+  } catch (err) {
+    // エラー処理
+  } finally {
+    // 後処理
+  }
+}`}</pre>
+                <div
+                  className="rounded px-2 py-1 text-center"
+                  style={{ backgroundColor: "#1a1d2a" }}
+                >
+                  <p className="text-xs text-emerald-400">最も直感的で見通しが良い</p>
+                </div>
+              </div>
+            </div>
+
+            {/* 未処理のPromiseリジェクション */}
+            <div
+              className="rounded-xl border border-red-500/40 bg-red-500/5 p-3"
+            >
+              <p className="text-xs font-semibold text-red-400 mb-2">
+                未処理のPromiseリジェクション（要注意）
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    .catch() も await も書き忘れると Promise が reject されてもエラーが届かず、アプリが無言で壊れる。
+                  </p>
+                </div>
+                <pre
+                  className="text-xs font-mono leading-relaxed rounded px-2 py-1.5 flex-1"
+                  style={{ backgroundColor: "#1a1d2a", color: "#9ca3af" }}
+                >{`// 安全網として設置する
+window.addEventListener(
+  'unhandledrejection',
+  (event) => {
+    console.error(event.reason);
+    // Sentry等に送る
+  }
+);`}</pre>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-3">
+            新規コードでは async/await に統一するのが最善。window.addEventListener の unhandledrejection は最後の安全網として必ず設置する。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図F：エラーの再スロー・ラッピング・変換パターン"
+          description="エラーを catch したあとの処理には「再スロー」「ラッピング」「変換」という3つの定石パターンがある。状況に応じて使い分ける。"
+          accentColor="red"
+        >
+          <div className="space-y-3">
+            {[
+              {
+                label: "1. 再スロー",
+                color: "text-amber-400",
+                borderColor: "border-amber-500/30",
+                when: "ログだけ取って処理は上位に任せたいとき",
+                code: `catch (e) {
+  // ログだけ記録して、そのまま上位へ投げる
+  logger.error(e);
+  throw e; // 再スロー
+}`,
+                note: "自分では対処できないが記録は必要なとき。エラーを隠蔽しない。",
+              },
+              {
+                label: "2. エラーラッピング",
+                color: "text-violet-400",
+                borderColor: "border-violet-500/30",
+                when: "低レベルエラーをビジネスエラーに変換して意味を付与したいとき",
+                code: `catch (e) {
+  // 低レベルエラーをビジネスエラーにラップ
+  // ES2022の cause で元エラーを保持できる
+  throw new AppError(
+    'ユーザーが見つかりません',
+    { cause: e }
+  );
+}`,
+                note: "呼び出し元に意味のあるエラー名を渡せる。error.cause で元エラーを追跡可能（ES2022）。",
+              },
+              {
+                label: "3. エラー変換",
+                color: "text-sky-400",
+                borderColor: "border-sky-500/30",
+                when: "HTTPエラーをアプリ固有エラーに変換してUIに渡したいとき",
+                code: `catch (e) {
+  if (e instanceof HttpError) {
+    if (e.status === 404) {
+      throw new NotFoundError();
+    }
+    if (e.status === 401) {
+      throw new UnauthorizedError();
+    }
+  }
+  throw e;
+}`,
+                note: "インフラ層のエラーをアプリ層の言葉に変換する。UIはHTTPを意識しなくて済む。",
+              },
+            ].map(({ label, color, borderColor, when, code, note }) => (
+              <div
+                key={label}
+                className={`rounded-xl border ${borderColor} p-3`}
+                style={{ backgroundColor: "#0f1117" }}
+              >
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="sm:w-1/3 flex flex-col gap-1.5">
+                    <p className={`text-xs font-bold ${color}`}>{label}</p>
+                    <p className="text-xs text-gray-400 leading-relaxed">{when}</p>
+                    <p className="text-xs text-gray-600 leading-relaxed mt-auto">{note}</p>
+                  </div>
+                  <pre
+                    className="text-xs font-mono leading-relaxed rounded px-3 py-2 flex-1 overflow-x-auto"
+                    style={{ backgroundColor: "#1a1d2a", color: "#9ca3af" }}
+                  >{code}</pre>
+                </div>
+              </div>
+            ))}
+
+            {/* error.cause の補足 */}
+            <div
+              className="rounded-xl border p-3"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-gray-400 mb-1.5">
+                error.cause（ES2022）——エラーチェーン
+              </p>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                {"new Error('msg', { cause: originalError }) で元のエラーを新しいエラーに紐付けられる。"}
+                スタックトレースを追いやすくなり、ラッピング後も根本原因が分かる。
+              </p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-3">
+            再スロー→記録だけして上位に委ねる。ラッピング→意味を付与して投げ直す。変換→インフラ層をアプリ層の言語に翻訳する。
+          </p>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">
@@ -419,11 +753,9 @@ async function processOrder(userId: number, itemId: string) {
   }
 }`}
           />
-          <CorrectionCard
-            misconception="catch (e) の e は常に Error クラスのインスタンスで、e.message で安全にメッセージを読める"
-            correction="JavaScript では何でも throw できるので、e は文字列や数値の場合もある。TypeScript の catch 節では e の型は unknown になる"
-            reason="instanceof Error でガードしてから e.message を読むのが安全な書き方。カスタムエラーも extends Error で作ると instanceof による判別が確実に機能する。"
-          />
+          <KeyPoint>
+            JavaScriptではどんな値もthrowできるため、catch節のeが必ずErrorインスタンスとは限らない。TypeScriptではeの型はunknownになる。安全に扱うには instanceof Error でガードしてから e.message を読む。
+          </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading="6.3 非同期エラーの罠（未処理のPromiseリジェクション）">

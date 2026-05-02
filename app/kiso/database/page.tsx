@@ -15,6 +15,16 @@ import {
   ShieldCheck,
   BookOpen,
   Layers,
+  Code2,
+  Cpu,
+  Zap,
+  RefreshCw,
+  CheckCircle2,
+  XCircle,
+  Lock,
+  List,
+  AlertTriangle,
+  TrendingDown,
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
@@ -24,6 +34,7 @@ import {
   FlowCard,
   FlowArrow,
   StackLayer,
+  ContrastBar,
 } from "@/components/ConceptDiagram";
 import { ComparisonTable } from "@/components/ComparisonTable";
 import { MajiDialogue } from "@/components/MajiDialogue";
@@ -195,6 +206,314 @@ export default function DatabasePage() {
             どんなアプリも、結局はこの4つの組み合わせで動いている。SNSの投稿も、ECの注文も、家計簿アプリも。
           </p>
         </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図D：SQLクエリが実行されるまでの流れ"
+          description="アプリがSQLを書いてからDBが結果を返すまでに、内部で複数のステップが走っている。"
+        >
+          {/* 実行フロー */}
+          <div className="flex flex-col gap-1 mb-5">
+            {[
+              { step: "1", label: "アプリコード", sub: "SQLクエリ文字列を組み立てる", Icon: Code2 },
+              { step: "2", label: "DBエンジンへ送信", sub: "ネットワーク越しにクエリを転送", Icon: Zap },
+              { step: "3", label: "パーサー（構文解析）", sub: "SQLの文法が正しいか検証する", Icon: Search },
+              { step: "4", label: "オプティマイザー", sub: "最速の実行計画を自動で生成する", Icon: Cpu },
+              { step: "5", label: "エグゼキューター", sub: "実際にデータを検索・操作する", Icon: Database, highlight: true },
+              { step: "6", label: "結果返却", sub: "アプリが受け取って画面に反映", Icon: Monitor },
+            ].map(({ step, label, sub, Icon, highlight }, i, arr) => (
+              <div key={step} className="flex flex-col items-center">
+                <div
+                  className="w-full flex items-center gap-3 rounded-lg border px-4 py-2.5"
+                  style={
+                    highlight
+                      ? { backgroundColor: "rgba(139,92,246,0.08)", borderColor: "rgba(139,92,246,0.5)" }
+                      : { backgroundColor: "#0f1117", borderColor: "#2d3048" }
+                  }
+                >
+                  <span
+                    className="text-xs font-mono font-bold w-5 text-center flex-shrink-0"
+                    style={{ color: highlight ? "#a78bfa" : "#6b7280" }}
+                  >
+                    {step}
+                  </span>
+                  <Icon
+                    className="w-4 h-4 flex-shrink-0"
+                    style={{ color: highlight ? "#a78bfa" : "#9ca3af" }}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className="text-xs font-semibold"
+                      style={{ color: highlight ? "#c4b5fd" : "#ffffff" }}
+                    >
+                      {label}
+                    </p>
+                    <p className="text-xs text-gray-400 leading-tight">{sub}</p>
+                  </div>
+                </div>
+                {i < arr.length - 1 && (
+                  <div className="w-0.5 h-3 bg-gray-700 my-0.5" />
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* CRUD コマンド一覧 */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+            {[
+              { cmd: "SELECT", desc: "データを取得する", color: "#60a5fa" },
+              { cmd: "INSERT", desc: "新しい行を追加する", color: "#34d399" },
+              { cmd: "UPDATE", desc: "既存の行を書き換える", color: "#fbbf24" },
+              { cmd: "DELETE", desc: "行を削除する", color: "#f87171" },
+            ].map(({ cmd, desc, color }) => (
+              <div
+                key={cmd}
+                className="rounded-lg border px-3 py-2 text-center"
+                style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+              >
+                <p className="text-xs font-mono font-bold mb-0.5" style={{ color }}>{cmd}</p>
+                <p className="text-xs text-gray-400 leading-tight">{desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* WHERE 句の補足 */}
+          <div
+            className="rounded-lg border px-4 py-3"
+            style={{ backgroundColor: "rgba(139,92,246,0.06)", borderColor: "rgba(139,92,246,0.3)" }}
+          >
+            <p className="text-xs font-semibold text-violet-300 mb-1">WHERE句とオプティマイザーの関係</p>
+            <p className="text-xs text-gray-300 leading-relaxed">
+              {"WHERE email = 'user@example.com' のような条件をオプティマイザーが分析し、インデックスが使えるかどうかを判断して実行計画を決定する。条件の書き方ひとつで検索速度が大きく変わる。"}
+            </p>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            ORMやFirestoreのAPIを使う場合も、内部では同じフローでDBエンジンが動いている。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図E：トランザクションとACID特性"
+          description="複数の操作をひとまとめにして「全部成功か全部失敗か」を保証する仕組みがトランザクション。"
+        >
+          {/* 銀行振込の例 */}
+          <div className="mb-5">
+            <p className="text-xs font-semibold text-gray-300 mb-2">例：A口座からB口座への振込</p>
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-3 rounded-lg border px-4 py-2.5" style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}>
+                <span className="text-xs font-mono text-violet-400 font-bold flex-shrink-0">1</span>
+                <TrendingDown className="w-4 h-4 text-rose-400 flex-shrink-0" />
+                <div>
+                  <p className="text-xs font-semibold text-white">A口座から10,000円を引き落とす</p>
+                  <p className="text-xs text-gray-400">UPDATE accounts SET balance = balance - 10000 WHERE id = A</p>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <div className="w-0.5 h-3 bg-gray-700" />
+              </div>
+              <div className="flex items-center gap-3 rounded-lg border px-4 py-2.5" style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}>
+                <span className="text-xs font-mono text-violet-400 font-bold flex-shrink-0">2</span>
+                <Zap className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <div>
+                  <p className="text-xs font-semibold text-white">B口座に10,000円を入金する</p>
+                  <p className="text-xs text-gray-400">UPDATE accounts SET balance = balance + 10000 WHERE id = B</p>
+                </div>
+              </div>
+              <div className="flex justify-center">
+                <div className="w-0.5 h-3 bg-gray-700" />
+              </div>
+              <div
+                className="flex items-center gap-3 rounded-lg border px-4 py-2.5"
+                style={{ backgroundColor: "rgba(139,92,246,0.08)", borderColor: "rgba(139,92,246,0.4)" }}
+              >
+                <Lock className="w-4 h-4 text-violet-400 flex-shrink-0" />
+                <p className="text-xs text-violet-300">
+                  この2つがひとつのトランザクション。1が成功して2が失敗すると「お金が消える」ので、必ず両方成功か両方失敗にする。
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* ACID特性 */}
+          <p className="text-xs font-semibold text-gray-300 mb-2">ACID特性</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5">
+            {[
+              {
+                letter: "A",
+                name: "Atomicity（原子性）",
+                desc: "全ての操作が成功するか、全て失敗するか。中途半端な状態は絶対に残らない。",
+                color: "#a78bfa",
+              },
+              {
+                letter: "C",
+                name: "Consistency（整合性）",
+                desc: "トランザクション前後で、DBのルール（制約）が必ず守られた状態になる。",
+                color: "#60a5fa",
+              },
+              {
+                letter: "I",
+                name: "Isolation（分離性）",
+                desc: "同時に実行中の別トランザクションの途中結果は見えない。互いに干渉しない。",
+                color: "#34d399",
+              },
+              {
+                letter: "D",
+                name: "Durability（永続性）",
+                desc: "COMMITしたデータはクラッシュしても消えない。ディスクに確実に書き込まれる。",
+                color: "#fbbf24",
+              },
+            ].map(({ letter, name, desc, color }) => (
+              <div
+                key={letter}
+                className="rounded-lg border px-3 py-3"
+                style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-sm font-black" style={{ color }}>{letter}</span>
+                  <p className="text-xs font-semibold text-white leading-tight">{name}</p>
+                </div>
+                <p className="text-xs text-gray-400 leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* COMMIT / ROLLBACK */}
+          <div className="grid grid-cols-2 gap-2">
+            <div
+              className="rounded-lg border px-3 py-3 flex items-start gap-2"
+              style={{ backgroundColor: "rgba(16,185,129,0.06)", borderColor: "rgba(16,185,129,0.4)" }}
+            >
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-xs font-semibold text-emerald-300 mb-0.5">COMMIT</p>
+                <p className="text-xs text-gray-400 leading-tight">全操作が成功。変更をDBに確定する。</p>
+              </div>
+            </div>
+            <div
+              className="rounded-lg border px-3 py-3 flex items-start gap-2"
+              style={{ backgroundColor: "rgba(239,68,68,0.06)", borderColor: "rgba(239,68,68,0.4)" }}
+            >
+              <XCircle className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-xs font-semibold text-rose-300 mb-0.5">ROLLBACK</p>
+                <p className="text-xs text-gray-400 leading-tight">途中でエラー発生。全変更を取り消して元に戻す。</p>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            Firestoreにもトランザクション機能がある。複数ドキュメントをまたぐ整合性が必要なときに使う。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図F：インデックスありとなしの検索速度比較"
+          description="インデックスとは「目次」のようなもの。あるかないかで検索速度が劇的に変わる。"
+        >
+          {/* 比較カード */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+            {/* インデックスなし */}
+            <div className="rounded-xl border p-4" style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}>
+              <div className="flex items-center gap-2 mb-3">
+                <List className="w-4 h-4 text-rose-400" />
+                <p className="text-xs font-semibold text-rose-300">インデックスなし</p>
+              </div>
+              <p className="text-xs text-gray-400 mb-2 leading-relaxed">
+                全行を先頭から順番にスキャンする（フルテーブルスキャン）。
+              </p>
+              <div className="space-y-1 mb-3">
+                {["row 1", "row 2", "row 3", "・・・", "row 1,000,000"].map((r, i) => (
+                  <div
+                    key={i}
+                    className="text-xs font-mono px-2 py-1 rounded text-center"
+                    style={{
+                      backgroundColor: i === 4 ? "rgba(239,68,68,0.15)" : "#1a1d2a",
+                      color: i === 4 ? "#fca5a5" : "#6b7280",
+                      border: i === 4 ? "1px solid rgba(239,68,68,0.4)" : "1px solid #2d3048",
+                    }}
+                  >
+                    {r}
+                  </div>
+                ))}
+              </div>
+              <div className="rounded-md px-3 py-2 text-center" style={{ backgroundColor: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.3)" }}>
+                <p className="text-xs font-semibold text-rose-300">計算量: O(n)</p>
+                <p className="text-xs text-gray-400">100万行あれば最大100万回チェック</p>
+              </div>
+            </div>
+
+            {/* インデックスあり */}
+            <div className="rounded-xl border p-4" style={{ backgroundColor: "#0f1117", borderColor: "rgba(139,92,246,0.4)" }}>
+              <div className="flex items-center gap-2 mb-3">
+                <Zap className="w-4 h-4 text-violet-400" />
+                <p className="text-xs font-semibold text-violet-300">インデックスあり（B-Tree）</p>
+              </div>
+              <p className="text-xs text-gray-400 mb-2 leading-relaxed">
+                B-Tree構造の索引で一気に絞り込む。
+              </p>
+              <div className="flex flex-col items-center gap-1 mb-3">
+                <div className="flex gap-1">
+                  <div className="text-xs font-mono px-3 py-1 rounded text-center" style={{ backgroundColor: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.4)", color: "#c4b5fd" }}>root</div>
+                </div>
+                <div className="w-0.5 h-2 bg-gray-700" />
+                <div className="flex gap-1">
+                  {["A-M", "N-Z"].map((n) => (
+                    <div key={n} className="text-xs font-mono px-2 py-1 rounded" style={{ backgroundColor: "#1a1d2a", border: "1px solid #2d3048", color: "#9ca3af" }}>{n}</div>
+                  ))}
+                </div>
+                <div className="w-0.5 h-2 bg-gray-700" />
+                <div className="flex gap-1">
+                  {["user@..."].map((n) => (
+                    <div key={n} className="text-xs font-mono px-2 py-1 rounded" style={{ backgroundColor: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.5)", color: "#c4b5fd" }}>{n}</div>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-md px-3 py-2 text-center" style={{ backgroundColor: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.3)" }}>
+                <p className="text-xs font-semibold text-violet-300">計算量: O(log n)</p>
+                <p className="text-xs text-gray-400">100万行でも約20回で到達</p>
+              </div>
+            </div>
+          </div>
+
+          {/* 具体例 */}
+          <div
+            className="rounded-lg border px-4 py-3 mb-4"
+            style={{ backgroundColor: "rgba(139,92,246,0.06)", borderColor: "rgba(139,92,246,0.3)" }}
+          >
+            <p className="text-xs font-semibold text-violet-300 mb-1">具体例：100万行のusersテーブルからemail検索</p>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <p className="text-gray-400 mb-0.5">インデックスなし</p>
+                <p className="text-rose-300 font-mono">{"~"} 500ms</p>
+              </div>
+              <div>
+                <p className="text-gray-400 mb-0.5">インデックスあり</p>
+                <p className="text-violet-300 font-mono">{"~"} 1ms</p>
+              </div>
+            </div>
+          </div>
+
+          {/* インデックスを使わない方がいい場合 */}
+          <div className="rounded-lg border px-4 py-3" style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}>
+            <div className="flex items-center gap-2 mb-2">
+              <AlertTriangle className="w-4 h-4 text-amber-400" />
+              <p className="text-xs font-semibold text-amber-300">インデックスを貼りすぎない方がいいケース</p>
+            </div>
+            <ul className="space-y-1">
+              {[
+                "更新が多いカラム — INSERT/UPDATE のたびにインデックスの再構築コストがかかる",
+                "カーディナリティが低いカラム — 性別（男/女）など値の種類が少ない列は効果が薄い",
+                "小さなテーブル — 行数が少なければフルスキャンの方が速いことも多い",
+              ].map((item, i) => (
+                <li key={i} className="flex items-start gap-2 text-xs text-gray-400">
+                  <span className="text-amber-500 flex-shrink-0 mt-0.5">•</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            インデックスはよく検索するカラム・外部キーに貼るのが基本。貼りすぎると書き込みが遅くなる。
+          </p>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">
@@ -343,11 +662,9 @@ export default function DatabasePage() {
               accentColor: "violet",
             },
           ]} />
-          <CorrectionCard
-            misconception="NoSQLはRDBより「新しくて優れている」から、NoSQLを選んでおけば間違いない"
-            correction="どちらが優れているわけではなく、データの形と要求次第で使い分ける"
-            reason="リアルタイム同期・スキーマの柔軟性が必要ならNoSQL、関係性の厳密な管理・複雑な集計が必要ならRDBが適している。初学者の個人開発では、学習コストの低いFirestoreから入るのが現実的。"
-          />
+          <KeyPoint>
+            NoSQLとRDBはどちらが優れているわけではなく、データの形と要求次第で使い分ける。リアルタイム同期や柔軟なスキーマが必要ならNoSQL、複雑な集計や厳密な関係性管理が必要ならRDBが適している。
+          </KeyPoint>
           <KeyPoint>
             初学者が個人開発でアプリを最短で動かすなら、Firestore（NoSQL）から入るのがおすすめ。SQLを書かずに済み、リアルタイム同期も標準でついてくる。
           </KeyPoint>

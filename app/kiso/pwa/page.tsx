@@ -274,6 +274,259 @@ export default function PwaPage() {
             />
           </div>
         </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図E：Service Workerのライフサイクル"
+          description="Service Worker は登録されてから破棄されるまで、決まった順序で状態を遷移する。"
+          accentColor="rose"
+        >
+          <div className="flex flex-col gap-2">
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "rgba(244,63,94,0.06)", borderColor: "rgba(244,63,94,0.4)" }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <RefreshCw className="w-4 h-4 text-rose-400" />
+                <p className="text-xs font-bold text-rose-300">① インストール（install event）</p>
+              </div>
+              <p className="text-xs text-gray-300 leading-relaxed">
+                初回登録時に1回だけ発火。静的アセットを事前キャッシュするのがここ。
+              </p>
+            </div>
+            <div className="flex justify-center">
+              <div className="w-px h-5 bg-gray-600" />
+            </div>
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <WifiOff className="w-4 h-4 text-yellow-400" />
+                <p className="text-xs font-bold text-yellow-300">② 待機（waiting）</p>
+              </div>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                古いService Workerが動いているタブが残っている間は待機。
+                <span className="text-rose-300 font-mono"> self.skipWaiting()</span> を呼ぶと即座に次へ進む。
+              </p>
+            </div>
+            <div className="flex justify-center">
+              <div className="w-px h-5 bg-gray-600" />
+            </div>
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <Cog className="w-4 h-4 text-emerald-400" />
+                <p className="text-xs font-bold text-emerald-300">③ アクティベート（activate event）</p>
+              </div>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                古いキャッシュを削除してクリーンアップ。
+                <span className="text-rose-300 font-mono"> clients.claim()</span> で開いているタブを即座に制御下に置ける。
+              </p>
+            </div>
+            <div className="flex justify-center">
+              <div className="w-px h-5 bg-gray-600" />
+            </div>
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <Network className="w-4 h-4 text-blue-400" />
+                <p className="text-xs font-bold text-blue-300">④ 実行中（fetch event をインターセプト）</p>
+              </div>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                全リクエストをインターセプトし、キャッシュ戦略に従って返す。
+                最も頻繁に呼ばれるイベント。
+              </p>
+            </div>
+            <div className="flex justify-center">
+              <div className="w-px h-5 bg-gray-600" />
+            </div>
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <RotateCcw className="w-4 h-4 text-violet-400" />
+                <p className="text-xs font-bold text-violet-300">⑤ 更新（新しいSWファイルが検出されたとき）</p>
+              </div>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                デプロイのたびにブラウザが新バージョンを検知し、①インストールから再スタート。
+                古いSWは②待機に入る。
+              </p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            skipWaiting() と clients.claim() はライフサイクルを短縮したいときに使うが、
+            キャッシュの不整合に注意が必要。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図F：Cache FirstとNetwork Firstの使い分け"
+          description="何をキャッシュするかより『どの戦略を当てるか』が設計の要。速度と鮮度はトレードオフになる。"
+          accentColor="rose"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div
+              className="rounded-xl border p-4 flex flex-col gap-2"
+              style={{ backgroundColor: "rgba(16,185,129,0.06)", borderColor: "rgba(16,185,129,0.35)" }}
+            >
+              <div className="flex items-center gap-2">
+                <Zap className="w-4 h-4 text-emerald-400" />
+                <p className="text-xs font-bold text-emerald-300">Cache First</p>
+              </div>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                キャッシュ優先。なければネットワークへ。
+              </p>
+              <div className="flex gap-2 text-xs mt-1">
+                <span className="text-emerald-400 font-semibold">速度◎</span>
+                <span className="text-gray-500">鮮度△</span>
+              </div>
+              <div
+                className="rounded-lg p-2 mt-1"
+                style={{ backgroundColor: "#0f1117" }}
+              >
+                <p className="text-xs text-gray-400">CSS / JS / 画像 / フォント</p>
+                <p className="text-xs text-gray-600">変化しない静的アセット向け</p>
+              </div>
+            </div>
+            <div
+              className="rounded-xl border p-4 flex flex-col gap-2"
+              style={{ backgroundColor: "rgba(59,130,246,0.06)", borderColor: "rgba(59,130,246,0.35)" }}
+            >
+              <div className="flex items-center gap-2">
+                <Network className="w-4 h-4 text-blue-400" />
+                <p className="text-xs font-bold text-blue-300">Network First</p>
+              </div>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                ネットワーク優先。失敗したらキャッシュへフォールバック。
+              </p>
+              <div className="flex gap-2 text-xs mt-1">
+                <span className="text-gray-500">速度△</span>
+                <span className="text-blue-400 font-semibold">鮮度◎</span>
+              </div>
+              <div
+                className="rounded-lg p-2 mt-1"
+                style={{ backgroundColor: "#0f1117" }}
+              >
+                <p className="text-xs text-gray-400">APIレスポンス / HTML</p>
+                <p className="text-xs text-gray-600">最新情報が重要なリソース向け</p>
+              </div>
+            </div>
+            <div
+              className="rounded-xl border p-4 flex flex-col gap-2"
+              style={{ backgroundColor: "rgba(245,158,11,0.06)", borderColor: "rgba(245,158,11,0.35)" }}
+            >
+              <div className="flex items-center gap-2">
+                <RotateCcw className="w-4 h-4 text-amber-400" />
+                <p className="text-xs font-bold text-amber-300">Stale While Revalidate</p>
+              </div>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                まずキャッシュを返し、裏でネットワークから最新を取得して更新。
+              </p>
+              <div className="flex gap-2 text-xs mt-1">
+                <span className="text-amber-400 font-semibold">速度◎</span>
+                <span className="text-gray-500">鮮度△</span>
+              </div>
+              <div
+                className="rounded-lg p-2 mt-1"
+                style={{ backgroundColor: "#0f1117" }}
+              >
+                <p className="text-xs text-gray-400">記事一覧 / アバター画像</p>
+                <p className="text-xs text-gray-600">速度重視・多少古くてもよいもの向け</p>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            リソースの種類ごとに最適な戦略を組み合わせることで、速さと鮮度を両立できる。
+          </p>
+        </ConceptDiagram>
+
+        <ConceptDiagram
+          title="概念図G：PWAがホーム画面に追加されるまで"
+          description="ブラウザがインストールプロンプトを表示するには、4つの条件をすべて満たす必要がある。"
+          accentColor="rose"
+        >
+          <div className="mb-4">
+            <p className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wide">
+              インストール可能になる条件
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div
+                className="flex items-start gap-3 rounded-lg border p-3"
+                style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+              >
+                <CheckCircle2 className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs font-bold text-gray-200">HTTPSで配信されている</p>
+                  <p className="text-xs text-gray-500">Vercelならデプロイするだけで自動クリア</p>
+                </div>
+              </div>
+              <div
+                className="flex items-start gap-3 rounded-lg border p-3"
+                style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+              >
+                <CheckCircle2 className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs font-bold text-gray-200">Web App Manifestが存在する</p>
+                  <p className="text-xs text-gray-500">name / icons / start_url / display が必須</p>
+                </div>
+              </div>
+              <div
+                className="flex items-start gap-3 rounded-lg border p-3"
+                style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+              >
+                <CheckCircle2 className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs font-bold text-gray-200">Service Workerが登録されている</p>
+                  <p className="text-xs text-gray-500">fetch イベントを処理していること</p>
+                </div>
+              </div>
+              <div
+                className="flex items-start gap-3 rounded-lg border p-3"
+                style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+              >
+                <CheckCircle2 className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs font-bold text-gray-200">訪問条件を満たす</p>
+                  <p className="text-xs text-gray-500">2日以内に2回以上の訪問など（Chromeの場合）</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 my-4">
+            <div className="flex-1 h-px bg-gray-700" />
+            <p className="text-xs text-gray-500 whitespace-nowrap">条件クリア後</p>
+            <div className="flex-1 h-px bg-gray-700" />
+          </div>
+          <div className="flex flex-col sm:flex-row items-center gap-2">
+            <FlowCard
+              Icon={Bell}
+              title="インストール提案"
+              subtitle="ブラウザがプロンプトを表示"
+            />
+            <FlowArrow label="追加" direction="right" />
+            <FlowCard
+              Icon={Smartphone}
+              title="ホーム画面アイコン"
+              subtitle="アプリストア不要で追加完了"
+              highlight
+              accentColor="rose"
+            />
+            <FlowArrow label="起動" direction="right" />
+            <FlowCard
+              Icon={Maximize}
+              title="スタンドアロン起動"
+              subtitle="アドレスバーなし・全画面表示"
+            />
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            iOSではプロンプトの自動表示はなく、Safariのメニューからホーム画面に追加する形になる。
+          </p>
+        </ConceptDiagram>
       </section>
 
       <section className="mb-10">
@@ -523,11 +776,9 @@ export default function PwaPage() {
               accentColor: "emerald",
             },
           ]} />
-          <CorrectionCard
-            misconception="Service Worker は難しいので、自分でゼロから書かなければならない"
-            correction="next-pwa や @serwist/next を使えば、Service Worker の生成・登録・キャッシュ設定はほぼ自動で行われる"
-            reason="個人開発の初期段階では、ライブラリに任せて manifest.json とアイコンを置くだけで十分。Service Worker の内部構造は、PWA体験をカスタムしたくなったタイミングで深掘りすれば良い。"
-          />
+          <KeyPoint>
+            next-pwa や @serwist/next を使えばService Workerの生成・登録・キャッシュ設定はほぼ自動。個人開発の初期はライブラリに任せて manifest.json とアイコンを置くだけで十分。内部構造の深掘りはPWA体験をカスタムしたくなったタイミングで。
+          </KeyPoint>
           <KeyPoint>
             Vercelにデプロイする場合、HTTPSは自動で設定されるのでPWAの前提条件はクリア済み。あとは manifest.json と Service Worker を載せるだけで、いつでもアプリ化できる状態にある。
           </KeyPoint>
@@ -564,11 +815,9 @@ export default function PwaPage() {
               accentColor: "orange",
             },
           ]} />
-          <CorrectionCard
-            misconception="PWAにすれば、ネイティブアプリと完全に同じことができる"
-            correction="PWAはWeb技術の範囲内でアプリ体験を拡張する技術。iOSのデバイスAPI制限など、ネイティブにしかできないことは今もある"
-            reason="特にiOSではAndroidに比べてPWAのサポートが限定的。プッシュ通知もiOS 16.4以降でようやく対応。すべての機能が両プラットフォームで同じように動くわけではない。"
-          />
+          <KeyPoint>
+            PWAはWeb技術の範囲内でアプリ体験を拡張する技術で、ネイティブアプリと完全に同等ではない。特にiOSではAndroidより対応が限定的で、プッシュ通知はiOS 16.4以降でようやく対応。「Web技術で十分なものをアプリ体験に近づける道具」として使うのが現実的。
+          </KeyPoint>
           <KeyPoint>
             PWAは『どんなアプリも置き換える銀の弾丸』ではない。Web技術で十分なものをアプリ体験に近づける道具、と捉えるのが現実的。
           </KeyPoint>

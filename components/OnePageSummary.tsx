@@ -26,7 +26,7 @@ export function OnePageSummary({ keyMessage, metaphorTitle, metaphorPoints, defi
         className="rounded-xl border p-5 mb-4"
         style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
       >
-        <p className="text-base text-gray-300 leading-relaxed">{keyMessage}</p>
+        <p className="text-sm text-gray-300 leading-relaxed">{keyMessage}</p>
       </div>
 
       {/* Metaphor — ストーリーフロー */}

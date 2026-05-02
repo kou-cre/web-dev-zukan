@@ -38,9 +38,9 @@
 | ページサブタイトル | `text-lg font-medium` | 18px | Hero subtitle |
 | セクション見出し（H2） | `text-xs font-semibold text-gray-500 uppercase tracking-widest` | 12px | DETAIL / DIAGRAM 等のラベル |
 | ブロック見出し（H3） | `text-base font-semibold text-white` | 16px | DetailBlock heading |
-| **本文（最重要）** | `text-base leading-relaxed` | **16px** | すべての説明文・吹き出し・解説 |
-| 補助テキスト | `text-sm` | 14px | タグ・バッジ・キャプション |
-| 極小テキスト | `text-xs` | 12px | メタ情報・ラベルのみ |
+| **本文（最重要）** | `text-sm leading-relaxed` | **14px** | すべての説明文・吹き出し・解説 |
+| カード説明文 | `text-xs leading-relaxed` | 12px | カード内の補足説明 |
+| 極小テキスト | `text-[10px]` / `text-[11px]` | 10–11px | メタ情報・タグ・バッジのみ |
 
 ### 行間ルール（日本語）
 - 本文: `leading-relaxed`（1.625）— グローバル適用済み（layout.tsx）
@@ -48,7 +48,8 @@
 
 ### 禁止パターン
 - **H2 < 本文サイズ** はアンチパターン（セクションラベルは text-xs で意図的に小さい設計）
-- 本文に `text-sm`（14px）を使わない
+- 本文に `text-base`（16px）を使わない（H3見出しのみ text-base）
+- 本文に `text-xs`（12px）を使わない（カード説明文専用）
 - `leading-tight` / `leading-none` を本文に使わない
 
 ---
@@ -99,17 +100,17 @@
 - [ ] yellow/amber/lime の accentColor: `bg 0.10 / border 0.7`（他は `0.06 / 0.6`）
 
 ### DetailSection
-- [ ] DetailBlock 本文: `text-base leading-relaxed`
-- [ ] KeyPoint: `text-base text-amber-300`
-- [ ] WarningPoint: `text-base text-red-300`
+- [ ] DetailBlock 本文: `text-sm leading-relaxed`
+- [ ] KeyPoint: `text-sm text-amber-300`
+- [ ] WarningPoint: `text-sm text-red-300`
 - [ ] ブロック間隔: `space-y-5`、本文内間隔: `space-y-3`
 
 ### MajiDialogue
-- [ ] 吹き出し本文: `text-base leading-relaxed`
+- [ ] 吹き出し本文: `text-sm leading-relaxed`
 - [ ] ターン間隔: 十分な `gap-4` 以上
 
 ### PageDrill
-- [ ] 選択肢ボタン: `text-base`（14px にしない）
+- [ ] 選択肢ボタン: `text-sm`（text-xs にしない）
 - [ ] キーボードヒント kbd: `bg #1e2130 / border #4b5280 / text-gray-300`
 - [ ] useCallback で handleSubmit をメモ化
 

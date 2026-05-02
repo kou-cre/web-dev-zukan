@@ -179,11 +179,11 @@ npm_config_cache=/tmp/npm-cache npm run dev
 ```
 □ Hero の accentColor がページカラーと一致している
 □ FlowCard highlight に accentColor を渡している
-□ 本文テキストが text-base（16px）になっている
+□ 本文テキストが text-sm（14px）になっている（H3見出しのみ text-base）
 □ gray-500以下のテキストが本文・補助文に使われていない
 □ yellow/amber/lime の背景が 0.10/ボーダー 0.7 になっている
-□ DetailBlock 本文が text-base leading-relaxed になっている
-□ PageDrill 選択肢が text-base になっている
+□ DetailBlock 本文が text-sm leading-relaxed になっている
+□ PageDrill 選択肢が text-sm になっている
 □ 矢印・ラベルが text-gray-400 以上になっている
 ```
 

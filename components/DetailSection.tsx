@@ -29,14 +29,14 @@ export function DetailBlock({ heading, children }: DetailBlockProps) {
       style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
     >
       <h3 className="text-base font-semibold text-white mb-3">{heading}</h3>
-      <div className="text-base text-gray-300 leading-relaxed space-y-3">{children}</div>
+      <div className="text-sm text-gray-300 leading-relaxed space-y-3">{children}</div>
     </div>
   );
 }
 
 export function KeyPoint({ children }: { children: ReactNode }) {
   return (
-    <div className="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-base text-amber-300">
+    <div className="flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 px-4 py-3 text-sm text-amber-300">
       <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" />
       <span>{children}</span>
     </div>
@@ -45,7 +45,7 @@ export function KeyPoint({ children }: { children: ReactNode }) {
 
 export function WarningPoint({ children }: { children: ReactNode }) {
   return (
-    <div className="flex items-start gap-2 rounded-lg border border-red-500/30 bg-red-500/5 px-4 py-3 text-base text-red-300">
+    <div className="flex items-start gap-2 rounded-lg border border-red-500/30 bg-red-500/5 px-4 py-3 text-sm text-red-300">
       <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
       <span>{children}</span>
     </div>

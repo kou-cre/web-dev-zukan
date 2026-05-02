@@ -81,7 +81,7 @@ export function MajiDialogue({ turns }: MajiDialogueProps) {
               {/* Bubble */}
               <div className="flex-1 max-w-[82%]">
                 <div
-                  className="rounded-2xl px-4 py-3 text-base text-gray-200 leading-relaxed"
+                  className="rounded-2xl px-4 py-3 text-sm text-gray-200 leading-relaxed"
                   style={{
                     backgroundColor: isMaji ? "#1a1d2a" : "#1a2e20",
                     border: `1px solid ${isMaji ? "#2d3048" : "#1e4a30"}`,

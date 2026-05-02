@@ -9,6 +9,7 @@ import {
   HardDrive,
   Layers,
   Cloud,
+  Users,
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
@@ -25,6 +26,9 @@ import { MajiDialogue } from "@/components/MajiDialogue";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { DetailSection, DetailBlock, KeyPoint } from "@/components/DetailSection";
+import { CorrectionCard } from "@/components/CorrectionCard";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { Timeline } from "@/components/Timeline";
 import { serverQuestions } from "@/content/questions/kiso/server";
 
 export const metadata = {
@@ -282,50 +286,100 @@ export default function ServerPage() {
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>server</code>{" "}
             は英語の{" "}
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>serve</code>（給仕する・奉仕する）から来ている。
-            レストランで料理を運ぶ人を server と呼ぶのと同じ語感。コンピューター用語としても本質は同じで、「依頼を受けて何かを差し出す側の存在」を指す。
+            コンピューター用語としても本質は同じで、「依頼を受けて何かを差し出す側の存在」を指す。
           </p>
-          <p>
-            反対側、依頼する側は{" "}
-            <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>client</code>（顧客）。
-            「クライアント・サーバー型」という言葉は、要するに「お客さんと給仕係の関係」と読み替えてOK。
-          </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: Server,
+              title: "server（サーバー）",
+              subtitle: "serve = 給仕する・奉仕する",
+              description: "依頼を受けて何かを差し出す側。レストランで料理を運ぶ「給仕係」と同じ語源。",
+              accentColor: "emerald",
+            },
+            {
+              Icon: Users,
+              title: "client（クライアント）",
+              subtitle: "client = 顧客・依頼人",
+              description: "サービスを受ける・依頼する側。ブラウザはサーバーに「お願いする存在」。",
+              accentColor: "blue",
+            },
+          ]} />
         </DetailBlock>
 
         <DetailBlock heading="6.2 物理サーバーと仮想サーバー">
-          <p>
-            <strong className="text-white">物理サーバー</strong>：実在する鉄の箱。データセンターのラックマウント型コンピューター。電源・冷却・回線まで自分で面倒を見る必要がある。
-          </p>
-          <p>
-            <strong className="text-white">仮想サーバー（VM）</strong>：1台の物理サーバーをソフトウェア的に分割し、複数台のサーバーに見せかけたもの。AWS EC2 やさくらのVPSはこの方式。借りる側からすれば「1台のサーバーを借りた」感覚で扱える。
-          </p>
-          <KeyPoint>個人開発者が「サーバーを借りる」と言うとき、それはほぼ仮想サーバーかクラウドのこと。物理サーバーを物理で買う場面はかなり少ない。</KeyPoint>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: HardDrive,
+              title: "物理サーバー",
+              subtitle: "実在する鉄の箱",
+              description: "データセンターのラックマウント型コンピューター。電源・冷却・回線まで自分で面倒を見る必要がある。",
+              accentColor: "orange",
+            },
+            {
+              Icon: Layers,
+              title: "仮想サーバー（VM）",
+              subtitle: "ソフトウェアで分割した区画",
+              description: "1台の物理サーバーを分割し複数台に見せかけたもの。AWS EC2・さくらVPSはこの方式。",
+              accentColor: "violet",
+            },
+          ]} />
+          <CorrectionCard
+            misconception="VPSを借りた = 専用のコンピューターが1台まるごと自分のもの"
+            correction="実際は1台の物理マシンをソフトウェアで分割した区画のひとつを使っている"
+            reason="個人開発者が「サーバーを借りる」と言うとき、それはほぼ仮想サーバーかクラウドのこと。物理サーバーを物理で買う場面はかなり少ない。"
+          />
         </DetailBlock>
 
         <DetailBlock heading="6.3 「クラウド」は誰かのサーバー">
-          <p>
-            「クラウド（Cloud）」という言葉は曖昧で、雲のようにフワッとどこかにある印象を持たれがち。実態は「他人が建てたデータセンターの中の物理サーバー（または仮想サーバー）を、ネット経由で借りているだけ」。
-          </p>
-          <KeyPoint>There is no cloud — it&apos;s just someone else&apos;s computer. Vercel も Firebase も Supabase も、最終的には誰かのデータセンターの物理サーバー上で動いている。</KeyPoint>
+          <CorrectionCard
+            misconception="クラウドは「雲の中」に漂う、実体のない何かである"
+            correction="他人が建てたデータセンターの物理サーバー（または仮想サーバー）を、ネット経由で借りているだけ"
+            reason={"There is no cloud — it's just someone else's computer. VercelもFirebaseもSupabaseも、最終的には誰かのデータセンターのラックに刺さっているサーバーが動いている。"}
+          />
         </DetailBlock>
 
         <DetailBlock heading="6.4 フロントエンドとバックエンドの分業">
-          <p>
-            <strong className="text-white">フロントエンド</strong>：ブラウザの中で動く側。HTML・CSS・JavaScript・React など。ユーザーの目に直接触れる。
-          </p>
-          <p>
-            <strong className="text-white">バックエンド</strong>：サーバーの中で動く側。API・DB操作・認証・課金・メール送信など。ユーザーには見えないが、データの安全と整合性を守る。
-          </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: Monitor,
+              title: "フロントエンド",
+              subtitle: "ブラウザの中で動く",
+              description: "HTML・CSS・JavaScript・React。ユーザーの目に直接触れる表示層。",
+              accentColor: "sky",
+            },
+            {
+              Icon: Server,
+              title: "バックエンド（サーバー）",
+              subtitle: "サーバーの中で動く",
+              description: "API・DB操作・認証・課金・メール送信。ユーザーには見えないが、データの安全と整合性を守る。",
+              accentColor: "emerald",
+            },
+          ]} />
           <p>このページでいう「サーバー」は、ほぼバックエンドの実行場所のこと。フロントエンドの世界しか知らなかった人は、ここで初めて「裏側」を意識する。</p>
         </DetailBlock>
 
         <DetailBlock heading="6.5 自前サーバーをいつ学ぶか">
-          <p>
-            <strong className="text-white">最初のステップ</strong>：BaaS（Firebase または Supabase）+ Vercel の組み合わせで始めるのが一般的。自前サーバーの構築は不要で、フロントエンドと組み合わせるだけでアプリが動く。
-          </p>
-          <p>
-            <strong className="text-white">次のステップ</strong>：BaaSの制約にぶつかったとき、または案件で自前実装が必要になったタイミングで、Express / Hono / Next.js API Routes / コンテナ・VPS に踏み込む。
-          </p>
-          <KeyPoint>重要なのは「BaaSの裏で何が起きているか」を想像できるレベルにしておくこと。Firestoreのクエリも、SupabaseのRow Level Securityも、概念図Bで描いた「HTTPサーバー＋処理ロジック＋DB接続」の組み合わせがクラウド側で動いているだけだと理解しておけば、後で自前サーバーを学ぶときの地続き感が違う。</KeyPoint>
+          <Timeline items={[
+            {
+              year: "Stage 1",
+              label: "BaaS で始める",
+              description: "Firebase / Supabase + Vercel の組み合わせ。自前サーバー不要。フロントから直接DBを叩く感覚で開発できる。",
+              accentColor: "emerald",
+            },
+            {
+              year: "Stage 2",
+              label: "BaaSの壁にぶつかる",
+              description: "複雑なビジネスロジック・定期実行・サードパーティ連携など、BaaSだけでは対応しにくい要件が出てくる。",
+              accentColor: "amber",
+            },
+            {
+              year: "Stage 3",
+              label: "自前サーバーへ踏み込む",
+              description: "Express / Hono / Next.js API Routes / コンテナ・VPS へ。概念図Bで描いた「HTTPサーバー＋処理ロジック＋DB接続」の構造が地続きで活きる。",
+              accentColor: "violet",
+            },
+          ]} />
+          <KeyPoint>重要なのは「BaaSの裏で何が起きているか」を想像できるレベルにしておくこと。そのイメージがあれば、自前サーバーを学ぶときの地続き感がまったく違う。</KeyPoint>
         </DetailBlock>
       </DetailSection>
 

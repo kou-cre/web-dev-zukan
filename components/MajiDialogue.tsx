@@ -24,19 +24,24 @@ function getImageSrc(speaker: "maji" | "master", emotion?: MajiEmotion | MasterE
 }
 
 function renderText(text: string) {
-  return text.split("`").map((part, pi) =>
-    pi % 2 === 0 ? (
-      <span key={pi}>{part}</span>
-    ) : (
-      <code
-        key={pi}
-        className="px-1.5 py-0.5 rounded text-xs font-mono"
-        style={{ backgroundColor: "#0f1117", color: "#34d399" }}
-      >
-        {part}
-      </code>
-    )
-  );
+  return text.split("\n").map((line, li) => (
+    <span key={li}>
+      {li > 0 && <br />}
+      {line.split("`").map((part, pi) =>
+        pi % 2 === 0 ? (
+          <span key={pi}>{part}</span>
+        ) : (
+          <code
+            key={pi}
+            className="px-1.5 py-0.5 rounded text-xs font-mono"
+            style={{ backgroundColor: "#0f1117", color: "#34d399" }}
+          >
+            {part}
+          </code>
+        )
+      )}
+    </span>
+  ));
 }
 
 export function MajiDialogue({ turns }: MajiDialogueProps) {

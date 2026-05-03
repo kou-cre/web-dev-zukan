@@ -19,6 +19,7 @@ interface ConceptDiagramProps {
   title: string;
   description?: string;
   children: ReactNode;
+  accentColor?: string;
 }
 
 export function ConceptDiagram({ title, description, children }: ConceptDiagramProps) {

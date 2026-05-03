@@ -303,7 +303,7 @@ export default function ContextPage() {
           {
             speaker: "master",
             emotion: "explain",
-            text: "比喩としてはいい線ですよ、マジさん。上の階から下の階へ「Propsをドリルで穴あけしながら通す」状態です。3階建ての建物で、3階の情報を地下1階に届けるためにわざわざ1階・2階を経由させる非効率さのことです。",
+            text: "比喩としてはいい線ですよ、マジさん。上の階から下の階へ「Propsをドリルで穴あけしながら通す」状態です。\n3階建ての建物で、3階の情報を地下1階に届けるためにわざわざ1階・2階を経由させる非効率さのことです。",
           },
           {
             speaker: "maji",
@@ -313,7 +313,7 @@ export default function ContextPage() {
           {
             speaker: "master",
             emotion: "standard",
-            text: "ほぼ正解です。正確には「Providerで包んだ範囲の中であれば、どのコンポーネントでも受け取れる」です。全館放送が届くエリアを設定するイメージですね。Providerの外にいるコンポーネントには届きません、マジさん。",
+            text: "ほぼ正解です。正確には「Providerで包んだ範囲の中であれば、どのコンポーネントでも受け取れる」です。\n全館放送が届くエリアを設定するイメージですね。Providerの外にいるコンポーネントには届きません、マジさん。",
           },
           {
             speaker: "maji",
@@ -323,7 +323,7 @@ export default function ContextPage() {
           {
             speaker: "master",
             emotion: "thinking",
-            text: "鋭い懸念です。Contextの値が変わると、useContextを使っているコンポーネント全体が再レンダリングされます。だから「更新頻度の高い値」にContextを使うと、大量の再レンダリングが起きてパフォーマンスに影響します。テーマや認証情報のような「あまり変わらない値」に使うのがベストプラクティスですよ、マジさん。",
+            text: "鋭い懸念です。Contextの値が変わると、useContextを使っているコンポーネント全体が再レンダリングされます。\nだから「更新頻度の高い値」にContextを使うと、大量の再レンダリングが起きてパフォーマンスに影響します。\nテーマや認証情報のような「あまり変わらない値」に使うのがベストプラクティスですよ、マジさん。",
           },
           {
             speaker: "maji",
@@ -333,7 +333,7 @@ export default function ContextPage() {
           {
             speaker: "master",
             emotion: "explain",
-            text: "その場合はZustandやReduxといった外部のState管理ライブラリが選択肢になります。ただし、Next.jsやReactを始めたばかりなら、まずはContextとuseStateの組み合わせで十分です。複雑さを持ち込む前に、シンプルな手段で解決できないか考える習慣が大切ですよ、マジさん。",
+            text: "その場合はZustandやReduxといった外部のState管理ライブラリが選択肢になります。\nただし、Next.jsやReactを始めたばかりなら、まずはContextとuseStateの組み合わせで十分です。\n複雑さを持ち込む前に、シンプルな手段で解決できないか考える習慣が大切ですよ、マジさん。",
           },
         ]}
       />

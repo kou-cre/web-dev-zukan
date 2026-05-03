@@ -290,7 +290,7 @@ export default function FetchPage() {
           {
             speaker: "master",
             emotion: "explain",
-            text: "イメージは案外悪くないですよ、マジさん。私はいつも宅急便の集荷依頼にたとえています。`fetch(url)` で「この住所のサーバーから荷物を取ってきて」と依頼すると、配達員（ブラウザ）が出発する。受付番号にあたるのが Promise です。荷物（データ）が届くまでの間、あなたの手元には番号だけがある状態ですね。",
+            text: "イメージは案外悪くないですよ、マジさん。私はいつも宅急便の集荷依頼にたとえています。\n`fetch(url)` で「この住所のサーバーから荷物を取ってきて」と依頼すると、配達員（ブラウザ）が出発する。\n受付番号にあたるのが Promise です。\n荷物（データ）が届くまでの間、あなたの手元には番号だけがある状態ですね。",
           },
           {
             speaker: "maji",
@@ -300,7 +300,7 @@ export default function FetchPage() {
           {
             speaker: "master",
             emotion: "standard",
-            text: "ここがfetchの最大の落とし穴です。404や500が返ってきても、fetchの世界では「通信は成功した」扱いになる。配達員は荷物を持ち帰ってきた、ただし中身は「品切れのお詫び状」だった、というイメージですね。なので `if (!response.ok) throw new Error(...)` と自分で例外を投げる必要があります。axiosが好まれるのは、ここを自動でやってくれるからなんですよ。",
+            text: "ここがfetchの最大の落とし穴です。404や500が返ってきても、fetchの世界では「通信は成功した」扱いになる。\n配達員は荷物を持ち帰ってきた、ただし中身は「品切れのお詫び状」だった、というイメージですね。\nなので `if (!response.ok) throw new Error(...)` と自分で例外を投げる必要があります。\naxiosが好まれるのは、ここを自動でやってくれるからなんですよ。",
           },
           {
             speaker: "maji",
@@ -310,7 +310,7 @@ export default function FetchPage() {
           {
             speaker: "master",
             emotion: "thinking",
-            text: "落ち着いてください、マジさん。これは引っ越しの梱包と同じで、毎回やることは決まっています。① 段ボールに入れる（`JSON.stringify`）、② 中身ラベルを貼る（`Content-Type: application/json`）、③ 配送伝票を書く（`method: 'POST'`）。この3点セットを覚えれば、あとは中身が変わるだけ。一度書いたものをコピペして使い回しても全く問題ありません。",
+            text: "落ち着いてください、マジさん。これは引っ越しの梱包と同じで、毎回やることは決まっています。\n① 段ボールに入れる（`JSON.stringify`）、\n② 中身ラベルを貼る（`Content-Type: application/json`）、\n③ 配送伝票を書く（`method: 'POST'`）。\nこの3点セットを覚えれば、あとは中身が変わるだけ。\n一度書いたものをコピペして使い回しても全く問題ありません。",
           },
           {
             speaker: "maji",
@@ -320,7 +320,7 @@ export default function FetchPage() {
           {
             speaker: "master",
             emotion: "explain",
-            text: "その通りです、マジさん。さらに言えば、Firebaseや SupabaseのSDK も、内部では結局このfetchを呼んでいます。実務では直接fetchを書く機会が減るかもしれませんが、裏で何が起きているか分かっていれば、エラーが出た時の解像度が全く違う。「市場を知っている料理人」と同じです。今日のところは「fetchはHTTP通信の本体、Promiseで返ってくる、エラーは3層」、これだけ持ち帰ってください。",
+            text: "その通りです、マジさん。さらに言えば、FirebaseやSupabaseのSDK も、内部では結局このfetchを呼んでいます。\n実務では直接fetchを書く機会が減るかもしれませんが、裏で何が起きているか分かっていれば、エラーが出た時の解像度が全く違う。\n「市場を知っている料理人」と同じです。\n今日のところは「fetchはHTTP通信の本体、Promiseで返ってくる、エラーは3層」、これだけ持ち帰ってください。",
           },
         ]}
       />

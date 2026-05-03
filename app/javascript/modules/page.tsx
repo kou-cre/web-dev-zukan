@@ -290,7 +290,7 @@ console.log(greet('マジ'));`}</code>
             speaker: "master",
             emotion: "explain",
             text:
-              "正直でよろしいですよ、マジさん。家電量販店を想像してください。各フロアに専門の売り場があって、テレビ売り場・冷蔵庫売り場・照明売り場に分かれていますよね。それぞれの売り場が JavaScript ファイル1個に相当します。`export` は「この商品を売り場に陳列する」こと、`import` は「他のフロアから必要な商品を買いに行く」こと。これだけです。",
+              "正直でよろしいですよ、マジさん。家電量販店を想像してください。\n各フロアに専門の売り場があって、テレビ売り場・冷蔵庫売り場・照明売り場に分かれていますよね。\nそれぞれの売り場が JavaScript ファイル1個に相当します。\n`export` は「この商品を売り場に陳列する」こと、`import` は「他のフロアから必要な商品を買いに行く」こと。\nこれだけです。",
           },
           {
             speaker: "maji",
@@ -302,7 +302,7 @@ console.log(greet('マジ'));`}</code>
             speaker: "master",
             emotion: "standard",
             text:
-              "落ち着いてください。default export は「その売り場の看板商品」、named export は「個別商品」だと思っていただければ十分です。React コンポーネントは default export、`add` や `formatDate` のようなユーティリティ関数は named export で書く慣習が多いですね。プロジェクトのコードを少し読めば、その現場の流儀がすぐに掴めますよ。",
+              "落ち着いてください。default export は「その売り場の看板商品」、named export は「個別商品」だと思っていただければ十分です。\nReact コンポーネントは default export、`add` や `formatDate` のようなユーティリティ関数は named export で書く慣習が多いですね。\nプロジェクトのコードを少し読めば、その現場の流儀がすぐに掴めますよ。",
           },
           {
             speaker: "maji",
@@ -314,7 +314,7 @@ console.log(greet('マジ'));`}</code>
             speaker: "master",
             emotion: "thinking",
             text:
-              "落ち着いて、マジさん。Tree Shaking は「使っていない枝（コード）を揺り落とす」最適化のことです。たとえば `utils.js` から `add` だけを import したとき、ビルドツールが「あ、`subtract` は誰も使っていないな」と気付いて本番のJSから削除してくれる。バンドルサイズが小さくなり、ユーザーのページ読み込みが速くなる。これができるのは ESModules が静的解析できる構文だからこそで、CommonJS の require では難しいんです。",
+              "落ち着いて、マジさん。Tree Shaking は「使っていない枝（コード）を揺り落とす」最適化のことです。\nたとえば `utils.js` から `add` だけを import したとき、ビルドツールが「あ、`subtract` は誰も使っていないな」と気付いて本番のJSから削除してくれる。\nバンドルサイズが小さくなり、ユーザーのページ読み込みが速くなる。\nこれができるのは ESModules が静的解析できる構文だからこそで、CommonJS の require では難しいんです。",
           },
           {
             speaker: "maji",
@@ -326,7 +326,7 @@ console.log(greet('マジ'));`}</code>
             speaker: "master",
             emotion: "explain",
             text:
-              "ご名答です、マジさん。Next.js では全ファイルが ESモジュール前提で動いていて、`@/components/Button` のようなパスエイリアスもこの仕組みの上に成り立っています。「ファイルは小さく分けて、必要な部品だけを取り寄せる」——これだけ覚えていれば、import / export で迷うことはほぼなくなりますよ。",
+              "ご名答です、マジさん。Next.js では全ファイルが ESモジュール前提で動いていて、`@/components/Button` のようなパスエイリアスもこの仕組みの上に成り立っています。\n「ファイルは小さく分けて、必要な部品だけを取り寄せる」——これだけ覚えていれば、import / export で迷うことはほぼなくなりますよ。",
           },
         ]}
       />

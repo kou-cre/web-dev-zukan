@@ -295,7 +295,7 @@ export function Counter() {
           {
             speaker: "master",
             emotion: "explain",
-            text: "命名規則には意味があるんです、マジさん。useから始まる関数はReactが「Hookのルールを適用すべき関数」として認識します。普通の関数の中でuseState等を呼ぶとエラーになりますが、use始まりにすることで「この中にHooksがある」とReactとESLintが分かってくれる。ラベルの貼り方が違うだけで、中身は全く同じ関数ですよ。",
+            text: "命名規則には意味があるんです、マジさん。useから始まる関数はReactが「Hookのルールを適用すべき関数」として認識します。\n普通の関数の中でuseState等を呼ぶとエラーになりますが、use始まりにすることで「この中にHooksがある」とReactとESLintが分かってくれる。\nラベルの貼り方が違うだけで、中身は全く同じ関数ですよ。",
           },
           {
             speaker: "maji",
@@ -305,7 +305,7 @@ export function Counter() {
           {
             speaker: "master",
             emotion: "standard",
-            text: "それは逆ですね、マジさん。Hooksはifやforやネストされたコールバックの中では呼べません。でも「カスタムHooksの中で別のHooksを呼ぶ」のは全く問題ない。useFetchの中でuseStateとuseEffectを両方使う、というのが典型的なパターンです。",
+            text: "それは逆ですね、マジさん。Hooksはifやforやネストされたコールバックの中では呼べません。\nでも「カスタムHooksの中で別のHooksを呼ぶ」のは全く問題ない。\nuseFetchの中でuseStateとuseEffectを両方使う、というのが典型的なパターンです。",
           },
           {
             speaker: "maji",
@@ -315,7 +315,7 @@ export function Counter() {
           {
             speaker: "master",
             emotion: "thinking",
-            text: "まさにそれが最もカスタムHooksが活きる場面です。loading・error・dataの3つのStateと、useEffectでのfetch処理を useFetch(url) としてまとめれば、使う側は1行で済む。「同じロジックを2か所以上書いた瞬間がカスタムHooks化のサイン」と覚えておいてください、マジさん。",
+            text: "まさにそれが最もカスタムHooksが活きる場面です。\nloading・error・dataの3つのStateと、useEffectでのfetch処理を useFetch(url) としてまとめれば、使う側は1行で済む。\n「同じロジックを2か所以上書いた瞬間がカスタムHooks化のサイン」と覚えておいてください、マジさん。",
           },
           {
             speaker: "maji",
@@ -325,7 +325,7 @@ export function Counter() {
           {
             speaker: "master",
             emotion: "explain",
-            text: "その理解で完璧です。テストの観点でも、UIロジックを分離したHooksは単体テストが書きやすくなります。「見た目」と「動き」を分けることで、どちらも変更しやすくなる——これがReactにおける設計の醍醐味ですよ、マジさん。",
+            text: "その理解で完璧です。テストの観点でも、UIロジックを分離したHooksは単体テストが書きやすくなります。\n「見た目」と「動き」を分けることで、どちらも変更しやすくなる——これがReactにおける設計の醍醐味ですよ、マジさん。",
           },
         ]}
       />

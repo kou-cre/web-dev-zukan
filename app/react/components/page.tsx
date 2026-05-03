@@ -323,7 +323,7 @@ export default function ComponentsPage() {
           {
             speaker: "master",
             emotion: "explain",
-            text: "LINEのトーク画面を想像してみてください。あの吹き出しが一つひとつコンポーネントです、マジさん。自分の吹き出しと相手の吹き出し、形は違いますが、同じ「吹き出しコンポーネント」を使い回しているだけ。HTMLだと毎回同じ構造を手で書き直しますが、コンポーネントは一度定義すれば何度でも呼び出せます。",
+            text: "LINEのトーク画面を想像してみてください。\nあの吹き出しが一つひとつコンポーネントです、マジさん。\n自分の吹き出しと相手の吹き出し、形は違いますが、同じ「吹き出しコンポーネント」を使い回しているだけ。\nHTMLだと毎回同じ構造を手で書き直しますが、コンポーネントは一度定義すれば何度でも呼び出せます。",
           },
           {
             speaker: "maji",
@@ -333,7 +333,7 @@ export default function ComponentsPage() {
           {
             speaker: "master",
             emotion: "standard",
-            text: "JSXはJavaScriptの中にHTMLのような記法で書ける構文です。料理レシピに「絵で書ける欄」が追加されたようなイメージ。見た目はHTMLそっくりですが、最終的にはJavaScriptに変換されます。だから class ではなく className を使うなど、細かい違いがあります。",
+            text: "JSXはJavaScriptの中にHTMLのような記法で書ける構文です。\n料理レシピに「絵で書ける欄」が追加されたようなイメージ。\n見た目はHTMLそっくりですが、最終的にはJavaScriptに変換されます。\nだから class ではなく className を使うなど、細かい違いがあります。",
           },
           {
             speaker: "maji",
@@ -343,7 +343,7 @@ export default function ComponentsPage() {
           {
             speaker: "master",
             emotion: "thinking",
-            text: "積み木で大正解ですよ、マジさん。大きな積み木（App）の中に中くらいの積み木（Header）があって、さらにその中に小さな積み木（Button）が入っている。この入れ子構造でどんな複雑なUIも作れます。家で言えば、壁・床・屋根という部品が組み合わさって「家」になるのと同じです。",
+            text: "積み木で大正解ですよ、マジさん。\n大きな積み木（App）の中に中くらいの積み木（Header）があって、さらにその中に小さな積み木（Button）が入っている。\nこの入れ子構造でどんな複雑なUIも作れます。\n家で言えば、壁・床・屋根という部品が組み合わさって「家」になるのと同じです。",
           },
           {
             speaker: "maji",
@@ -353,7 +353,7 @@ export default function ComponentsPage() {
           {
             speaker: "master",
             emotion: "explain",
-            text: "完璧な整理です。「再利用性」と「責務の分離」がコンポーネント設計の2大利点です。一つのコンポーネントに詰め込みすぎず、適切な粒度に分けるセンスがReactエンジニアの腕の見せ所ですよ、マジさん。",
+            text: "完璧な整理です。\n「再利用性」と「責務の分離」がコンポーネント設計の2大利点です。\n一つのコンポーネントに詰め込みすぎず、適切な粒度に分けるセンスがReactエンジニアの腕の見せ所ですよ、マジさん。",
           },
         ]}
       />

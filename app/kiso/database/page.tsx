@@ -28,6 +28,9 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
+import { TermNote } from "@/components/TermNote";
+import { SectionDivider } from "@/components/SectionDivider";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -64,6 +67,24 @@ export default function DatabasePage() {
         accentColor="violet"
       />
 
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "データベースとは何か（変数と何が違うのか）",
+          "RDB（テーブル型）と NoSQL（ドキュメント型）の違い",
+          "Firestore のデータモデルがどんな NoSQL か",
+        ]}
+        prerequisites={[
+          "データを「保存したい」という課題感がある",
+          "JSON の形式（{'{'}key: value{'}'} ）を見たことがある",
+        ]}
+        outOfScope={[
+          "SQL の書き方（SELECT / JOIN など）（応用編で扱う）",
+          "インデックスとクエリ最適化の詳細（応用編で扱う）",
+          "ACID トランザクションの詳細な仕組み（応用編で扱う）",
+        ]}
+      />
+
       <OnePageSummary
         keyMessage="データベースとは「データを整理して保存し、必要なときに素早く取り出せる仕組み」のこと。アプリが「ユーザーを覚えている」「投稿が消えない」「ログインしたら自分のデータが出てくる」と感じるのは、地球のどこかのDBが、電源を切ってもデータを保持し、誰がアクセスしても同じ答えを返してくれているから。"
         metaphorTitle="超優秀な司書がいる図書館"
@@ -76,11 +97,35 @@ export default function DatabasePage() {
         definition="データベースとは、データをルールに従って保存・検索・更新・削除できる仕組みの総称。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ─────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
+        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+          まずは「データベースがどこに位置するか」と「RDB と NoSQL の持ち方の違い」「CRUD の4操作」を図で確認しましょう。
+        </p>
+
+        {/* TermNote: 概念図Aに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "データベース（DB）",
+              definition: "データをルールに従って保存・取り出しできる仕組みの総称。変数と違い、電源を切ってもデータが消えない。",
+            },
+            {
+              word: "クエリ",
+              definition: "データベースへの「問い合わせ」。「このユーザーのデータを取ってきて」という命令のこと。",
+            },
+            {
+              word: "BaaS",
+              definition: "Firebase/Supabaseなど、DBを含むバックエンド機能をまるごと提供するクラウドサービス。詳しくは『BaaSって何？』ページを参照。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図A: データの流れ ── */}
         <ConceptDiagram
           title="概念図A"
           description="ブラウザに表示されているデータは、どこから来ているのか？"
@@ -97,6 +142,30 @@ export default function DatabasePage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          DB がどこに位置するかが分かりました。次は「DB には大きく2種類ある」ことを見ていきます。
+        </p>
+
+        {/* TermNote: 概念図Bに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "RDB（リレーショナルデータベース）",
+              definition: "データをExcelのような「表（テーブル）」で管理するDB。SQL という言語で操作する。例: PostgreSQL・MySQL・Supabase。",
+            },
+            {
+              word: "NoSQL",
+              definition: "表以外の形式でデータを持つDB の総称。ドキュメント型・グラフ型など種類がある。例: Firestore・MongoDB。",
+            },
+            {
+              word: "スキーマ",
+              definition: "データの「型と構造の設計図」。RDB は事前に決めた構造に厳密に従い、NoSQL は自由に後から変えられる。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図B: RDB vs NoSQL ── */}
         <ConceptDiagram
           title="概念図B"
           description="DBには大きく2つの流派がある。データの持ち方が根本から違う。"
@@ -173,6 +242,22 @@ export default function DatabasePage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          RDB と NoSQL の違いが分かりました。次は「DB に対する操作は4種類しかない」という CRUD の話に進みます。
+        </p>
+
+        {/* TermNote: 概念図Cに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "CRUD",
+              definition: "Create（作成）・Read（取得）・Update（更新）・Delete（削除）の頭文字。DB への操作はこの4種類だけ。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図C: CRUD ── */}
         <ConceptDiagram
           title="概念図C — CRUD"
           description="DBに対する操作は、たった4種類しかない。これを CRUD と呼ぶ。"
@@ -206,7 +291,146 @@ export default function DatabasePage() {
             どんなアプリも、結局はこの4つの組み合わせで動いている。SNSの投稿も、ECの注文も、家計簿アプリも。
           </p>
         </ConceptDiagram>
+      </section>
 
+      {/* ── MajiDialogue（基礎編 — 概念図Cの直後） ────────── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "マスター、データベースって、結局Excelとどう違うんですか？ ボクの中ではどっちも「表に値を書き込んでいくやつ」というイメージで、正直あまり区別がついていません……。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "とても自然な疑問ですよ、マジさん。例えるなら、Excelは「自分の机の引き出しに入れたノート」、データベースは「街の図書館にいる超優秀な司書」です。Excelは自分しか開けず、ファイルを誰かに送らないと共有できません。司書（DB）は、世界中のお客様から同時に「あの本を出して」「これを差し替えて」と言われても、混乱せず順番にさばいてくれます。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "マジ？\nじゃあ Firebase の Firestore というのも、その「司書」にあたるってことですか？ 名前だけは聞いたことあるんですけど、何者なのかさっぱりで……。",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "その通りです。FirestoreはBaaSを使う構成の主役のひとつで、NoSQL型のデータベースです。構造は「引き出しの中に、さらに引き出しが入っている」イメージで、`users` というコレクション（大きな引き出し）の中に、ユーザー1人ずつのドキュメント（小さな引き出し）が並んでいる、と覚えていただければ十分です。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "うっ……でも、ボクSQLっていう謎の呪文みたいなのも聞いたことがあります。これは絶対にマスターしないとデータベースは使えないんですよね？ もしそうならボクの開発人生はここで終わってしまいます、これは完全に革命的な絶望です……！",
+          },
+          {
+            speaker: "master",
+            emotion: "thinking",
+            text: "落ち着いてください、マジさん。Firestore を使うなら、SQLは1行も書きません。Firestore には独自のAPI（`addDoc` / `getDocs` / `updateDoc` / `deleteDoc`）が用意されていて、これがSQLの `INSERT` / `SELECT` / `UPDATE` / `DELETE` に1対1で対応しています。「概念だけ知っておく」レベルで今は十分です。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なるほど……つまりCRUDという言葉は、Create・Read・Update・Delete の頭文字で、どんなDBでもこの4つしか操作の種類がない、ということですね。これは革命的に整理されました。ボクこの4つだけ覚えればいいんですか！",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "本質的にはその4つです。SNSの投稿も、ECの注文も、家計簿アプリも、結局はCRUDの組み合わせでできています。データベースを知れば、アプリが何を覚えていて、何を忘れていて、どこから取り出しているのかが見えてきますよ、マジさん。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={[
+            "RDB（Supabase / PostgreSQL）",
+            "NoSQL（Firestore / MongoDB）",
+          ]}
+          rows={[
+            {
+              label: "データ構造",
+              cells: [
+                "テーブル（行と列）",
+                "ドキュメント（JSONオブジェクト）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "クエリ言語",
+              cells: [
+                "SQL（SELECT * FROM users WHERE ...）",
+                "独自API（collection().where(...)）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "スキーマ",
+              cells: [
+                "厳格（後から列を増やすのは慎重に）",
+                "柔軟（後から項目を追加しやすい）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "リアルタイム同期",
+              cells: [
+                "別途設定が必要（Realtime機能などを有効化）",
+                "標準対応（onSnapshot で即反映）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "よく選ばれる場面",
+              cells: [
+                "スキーマを厳密に管理したい・SQL経験がある場合",
+                "最短で動かしたい・リアルタイム同期が必要な場合",
+              ],
+              highlightCol: 1,
+            },
+          ]}
+          note="どちらが優れているという話ではなく、データの形と要求次第で選ぶ。「行と列でカチッと管理したい」ならRDB、「とりあえず動かして後から育てたい」ならNoSQL、というざっくりした目安でまずは十分。"
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ────────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下は「SQL の実行フロー」「トランザクションと ACID」「インデックス」などの発展内容です。まず基礎を掴みたい方は詳細解説（6.1）まで進んでください。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ─────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — SQL クエリの実行フロー
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-5">
+          SQL を書いてから DB が結果を返すまでに、内部で複数のステップが走っています。
+          「なぜ DB は速いのか」「遅くなるのはどこか」が見えてきます。
+        </p>
+
+        {/* TermNote: 概念図Dに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "オプティマイザー",
+              definition: "DB エンジンの中にある「最速の実行計画を考える頭脳」。同じ結果を得るのに何通りもある方法の中から、最も速い手順を自動で選ぶ。",
+            },
+            {
+              word: "SQL",
+              definition: "Structured Query Language の略。RDB を操作するための言語。SELECT（取得）・INSERT（追加）・UPDATE（更新）・DELETE（削除）の4つが基本。",
+            },
+            {
+              word: "WHERE句",
+              definition: "SQLで『〜の条件に合う行だけ取り出す』ための絞り込み命令。例：WHERE email = 'user@example.com' はemailが一致する行だけを取得する。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図D: SQLクエリが実行されるまでの流れ ── */}
         <ConceptDiagram
           title="概念図D：SQLクエリが実行されるまでの流れ"
           description="アプリがSQLを書いてからDBが結果を返すまでに、内部で複数のステップが走っている。"
@@ -291,6 +515,34 @@ export default function DatabasePage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          SQL の実行フローが分かりました。次は「複数の操作をまとめて扱う」トランザクションの仕組みを見ていきます。
+        </p>
+
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
+          ADVANCED — トランザクションと ACID
+        </h2>
+
+        {/* TermNote: 概念図Eに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "トランザクション",
+              definition: "複数の DB 操作を「全部成功か全部失敗か」の1つのまとまりとして扱う仕組み。銀行振込のように「引き落としと入金がセット」の場面で使う。",
+            },
+            {
+              word: "COMMIT",
+              definition: "トランザクション内の全操作が成功したとき、変更を DB に確定する操作。",
+            },
+            {
+              word: "ROLLBACK",
+              definition: "トランザクション中にエラーが発生したとき、全変更を取り消して元に戻す操作。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図E: トランザクションとACID特性 ── */}
         <ConceptDiagram
           title="概念図E：トランザクションとACID特性"
           description="複数の操作をひとまとめにして「全部成功か全部失敗か」を保証する仕組みがトランザクション。"
@@ -352,7 +604,7 @@ export default function DatabasePage() {
               {
                 letter: "I",
                 name: "Isolation（分離性）",
-                desc: "同時に実行中の別トランザクションの途中結果は見えない。互いに干渉しない。",
+                desc: "同時に実行中の別トランザクションの途中結果は見えない。互いに干渉しない。例：2人が同時に同じ在庫を確認して購入処理をしたとき、片方の変更が終わるまで相手に見えないようにする。",
                 color: "#34d399",
               },
               {
@@ -404,6 +656,30 @@ export default function DatabasePage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          トランザクションが分かりました。最後に「インデックスがあるとなぜ検索が速くなるか」を見ていきます。
+        </p>
+
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
+          ADVANCED — インデックス
+        </h2>
+
+        {/* TermNote: 概念図Fに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "インデックス",
+              definition: "DB の「目次」。よく検索するカラムにあらかじめ索引を作っておくことで、全データをなめなくても一瞬で見つけられる。",
+            },
+            {
+              word: "フルテーブルスキャン",
+              definition: "インデックスなしの検索。先頭の行から順番に全件チェックする。行数が多いほど時間がかかる。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図F: インデックスありとなしの検索速度比較 ── */}
         <ConceptDiagram
           title="概念図F：インデックスありとなしの検索速度比較"
           description="インデックスとは「目次」のようなもの。あるかないかで検索速度が劇的に変わる。"
@@ -516,107 +792,9 @@ export default function DatabasePage() {
         </ConceptDiagram>
       </section>
 
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={[
-            "RDB（Supabase / PostgreSQL）",
-            "NoSQL（Firestore / MongoDB）",
-          ]}
-          rows={[
-            {
-              label: "データ構造",
-              cells: [
-                "テーブル（行と列）",
-                "ドキュメント（JSONオブジェクト）",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "クエリ言語",
-              cells: [
-                "SQL（SELECT * FROM users WHERE ...）",
-                "独自API（collection().where(...)）",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "スキーマ",
-              cells: [
-                "厳格（後から列を増やすのは慎重に）",
-                "柔軟（後から項目を追加しやすい）",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "リアルタイム同期",
-              cells: [
-                "別途設定が必要（Realtime機能などを有効化）",
-                "標準対応（onSnapshot で即反映）",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "よく選ばれる場面",
-              cells: [
-                "スキーマを厳密に管理したい・SQL経験がある場合",
-                "最短で動かしたい・リアルタイム同期が必要な場合",
-              ],
-              highlightCol: 1,
-            },
-          ]}
-          note="どちらが優れているという話ではなく、データの形と要求次第で選ぶ。「行と列でカチッと管理したい」ならRDB、「とりあえず動かして後から育てたい」ならNoSQL、というざっくりした目安でまずは十分。"
-        />
-      </section>
-
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "マスター、データベースって、結局Excelとどう違うんですか？ ボクの中ではどっちも「表に値を書き込んでいくやつ」というイメージで、正直あまり区別がついていません……。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "とても自然な疑問ですよ、マジさん。例えるなら、Excelは「自分の机の引き出しに入れたノート」、データベースは「街の図書館にいる超優秀な司書」です。Excelは自分しか開けず、ファイルを誰かに送らないと共有できません。司書（DB）は、世界中のお客様から同時に「あの本を出して」「これを差し替えて」と言われても、混乱せず順番にさばいてくれます。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text: "マジ？\nじゃあ Firebase の Firestore というのも、その「司書」にあたるってことですか？ 名前だけは聞いたことあるんですけど、何者なのかさっぱりで……。",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text: "その通りです。FirestoreはBaaSを使う構成の主役のひとつで、NoSQL型のデータベースです。構造は「引き出しの中に、さらに引き出しが入っている」イメージで、`users` というコレクション（大きな引き出し）の中に、ユーザー1人ずつのドキュメント（小さな引き出し）が並んでいる、と覚えていただければ十分です。",
-          },
-          {
-            speaker: "maji",
-            emotion: "worried",
-            text: "うっ……でも、ボクSQLっていう謎の呪文みたいなのも聞いたことがあります。これは絶対にマスターしないとデータベースは使えないんですよね？ もしそうならボクの開発人生はここで終わってしまいます、これは完全に革命的な絶望です……！",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text: "落ち着いてください、マジさん。Firestore を使うなら、SQLは1行も書きません。Firestore には独自のAPI（`addDoc` / `getDocs` / `updateDoc` / `deleteDoc`）が用意されていて、これがSQLの `INSERT` / `SELECT` / `UPDATE` / `DELETE` に1対1で対応しています。「概念だけ知っておく」レベルで今は十分です。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "なるほど……つまりCRUDという言葉は、Create・Read・Update・Delete の頭文字で、どんなDBでもこの4つしか操作の種類がない、ということですね。これは革命的に整理されました。ボクこの4つだけ覚えればいいんですか！",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "本質的にはその4つです。SNSの投稿も、ECの注文も、家計簿アプリも、結局はCRUDの組み合わせでできています。データベースを知れば、アプリが何を覚えていて、何を忘れていて、どこから取り出しているのかが見えてきますよ、マジさん。",
-          },
-        ]}
-      />
-
+      {/* ── 詳細解説 ─────────────────────────────────────────── */}
       <DetailSection title="詳細解説">
+        {/* 6.1 なぜDBが必要か（最も実用的なので先頭へ） */}
         <DetailBlock heading="6.1 なぜDBが必要か — 「変数」では足りない理由">
           <UseCaseGrid cols={2} items={[
             {
@@ -809,7 +987,7 @@ await deleteDoc(doc(db, "posts", docRef.id));`}
           {
             href: "/kiso/vercel",
             title: "Vercelって何？",
-            description: "Next.jsアプリのデプロイ先として広く使われるサービス",
+            description: "DBと組み合わせてアプリを公開するデプロイ先",
             icon: "Triangle",
           },
         ]}

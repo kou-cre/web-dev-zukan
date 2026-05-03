@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -28,6 +29,8 @@ import { CorrectionCard } from "@/components/CorrectionCard";
 import { UseCaseGrid } from "@/components/UseCaseGrid";
 import { Timeline } from "@/components/Timeline";
 import { CodeBlock } from "@/components/CodeBlock";
+import { SectionDivider } from "@/components/SectionDivider";
+import { TermNote } from "@/components/TermNote";
 import { modulesQuestions } from "@/content/questions/javascript/modules";
 
 export const metadata = {
@@ -49,6 +52,26 @@ export default function ModulesPage() {
           "1ファイルに全部書くのではなく、役割ごとにファイルを分けて、必要な部品だけを取り寄せて使う。"
         }
         accentColor="orange"
+      />
+
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "ESモジュールとは何か（ファイルを分けてコードを管理する仕組み）",
+          "import / export の書き方と使い分け",
+          "なぜファイルを分けるのか（モチベーション）",
+          "default export と named export の違い",
+        ]}
+        prerequisites={[
+          "「1ファイルに全部書くと長くなって管理が大変」という感覚がある",
+          "関数を書いて呼び出せること（function / arrow function）",
+        ]}
+        outOfScope={[
+          "動的import()による遅延ロード（応用編で扱う）",
+          "CommonJSとの細かい仕様差（応用編で扱う）",
+          "Tree shakingの詳細な最適化アルゴリズム（概念はMajiDialogueで触れる）",
+          "バンドラー（Webpack/Vite）の設定方法（応用編で扱う）",
+        ]}
       />
 
       <OnePageSummary
@@ -79,11 +102,38 @@ export default function ModulesPage() {
         definition="ESモジュールとは、JavaScriptのコードをファイル分割し、import/export で機能を共有する仕組み。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
+        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+          まず「なぜファイルを分けるのか」という出発点を確認してから、import / export の具体的な使い方を見ていきます。
+        </p>
+
+        {/* TermNote: 概念図Aに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "モジュール",
+              definition:
+                "独立した機能をまとめたファイル1つのこと。「ユーザー操作の関数をまとめたファイル」「API通信の関数をまとめたファイル」のように役割ごとに分けて作る。",
+            },
+            {
+              word: "export",
+              definition:
+                "「このファイルのこの関数・変数を外から使えるようにする」という宣言。exportしていないものは他のファイルから見えない。",
+            },
+            {
+              word: "import",
+              definition:
+                "他のファイルからexportされた関数・変数を「使いたい」と宣言すること。必要なものだけを名指しで取り寄せられる。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図A: exportとimportの対応 ── */}
         <ConceptDiagram
           title="概念図A"
           description="export 側のファイルと import 側のファイルは、どう対応しているのか？"
@@ -121,6 +171,27 @@ export default function ModulesPage() {
             export していない関数・変数は、そのファイルの中だけで完結する「私物」。外からは存在しないのと同じ扱いになる。
           </p>
         </ConceptDiagram>
+
+        {/* bridge A→B */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          export と import の基本の流れが分かりました。次は「exportの2種類の書き方（default export と named export）」の違いを見ていきます。
+        </p>
+
+        {/* TermNote: 概念図Bに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "named export",
+              definition:
+                "名前付きexport。1ファイルに複数書ける。import側は { add } のように波かっこで正確な名前を指定して取り寄せる。",
+            },
+            {
+              word: "default export",
+              definition:
+                "デフォルトexport。1ファイルに1つだけ書ける「看板商品」。import側は波かっこなしで好きな名前で取り寄せられる。",
+            },
+          ]}
+        />
 
         <ConceptDiagram
           title="概念図B"
@@ -183,6 +254,173 @@ export default function ModulesPage() {
           </p>
         </ConceptDiagram>
 
+        <div className="rounded-lg border p-4 mb-6" style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}>
+          <p className="text-xs text-gray-500 mb-3">実際に書くとこうなります</p>
+          <pre className="text-sm text-gray-300 leading-relaxed font-mono whitespace-pre">
+            <code>{`// utils.js（named export）
+export const add = (a, b) => a + b;
+export const multiply = (a, b) => a * b;
+
+// main.js（named import）
+import { add } from './utils.js';
+console.log(add(2, 3)); // 5
+
+// greeting.js（default export）
+export default function greet(name) {
+  return \`こんにちは、\${name}！\`;
+}
+
+// main.js（default import）
+import greet from './greeting.js';
+console.log(greet('マジ'));`}</code>
+          </pre>
+        </div>
+      </section>
+
+      {/* ── MajiDialogue（基礎編 — ComparisonTableより前） ── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text:
+              "マスター、`import` って React のコードでよく書くんですけど、あれって実際には何をしているんですか？ ボク、なんとなく真似して書いているだけで……。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text:
+              "正直でよろしいですよ、マジさん。家電量販店を想像してください。各フロアに専門の売り場があって、テレビ売り場・冷蔵庫売り場・照明売り場に分かれていますよね。それぞれの売り場が JavaScript ファイル1個に相当します。`export` は「この商品を売り場に陳列する」こと、`import` は「他のフロアから必要な商品を買いに行く」こと。これだけです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text:
+              "マジ？\nじゃあ default export と named export って、両方あるんですか？ どっちを使えばいいんですか！？ ボクもうそれだけで頭が爆発しそうです！",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text:
+              "落ち着いてください。default export は「その売り場の看板商品」、named export は「個別商品」だと思っていただければ十分です。React コンポーネントは default export、`add` や `formatDate` のようなユーティリティ関数は named export で書く慣習が多いですね。プロジェクトのコードを少し読めば、その現場の流儀がすぐに掴めますよ。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text:
+              "あと「Tree Shaking」って言葉も聞いたんですけど！ 木を揺らすんですか！？ ボクの import が地震で揺れてしまうんですか！？ 大変なことになっているのでは！？",
+          },
+          {
+            speaker: "master",
+            emotion: "thinking",
+            text:
+              "落ち着いて、マジさん。Tree Shaking は「使っていない枝（コード）を揺り落とす」最適化のことです。たとえば `utils.js` から `add` だけを import したとき、ビルドツールが「あ、`subtract` は誰も使っていないな」と気付いて本番のJSから削除してくれる。バンドルサイズが小さくなり、ユーザーのページ読み込みが速くなる。これができるのは ESModules が静的解析できる構文だからこそで、CommonJS の require では難しいんです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text:
+              "なるほど……。export で公開して、import で取り寄せて、使っていないものはビルド時に削られる。だからファイル分割しても本番のサイズは膨らまないんですね。腑に落ちました！",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text:
+              "ご名答です、マジさん。Next.js では全ファイルが ESモジュール前提で動いていて、`@/components/Button` のようなパスエイリアスもこの仕組みの上に成り立っています。「ファイルは小さく分けて、必要な部品だけを取り寄せる」——これだけ覚えていれば、import / export で迷うことはほぼなくなりますよ。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ──────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["CommonJS (require)", "ESModules (import)"]}
+          rows={[
+            {
+              label: "構文",
+              cells: [
+                "const x = require('./x')",
+                "import x from './x'",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "実行タイミング",
+              cells: [
+                "実行時に動的読み込み",
+                "静的解析（ビルド時に依存関係が判明）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "Tree Shaking",
+              cells: [
+                "非対応（未使用コードが残る）",
+                "対応（未使用コードを削除可）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "使用環境",
+              cells: [
+                "Node.js（旧来のコードベース）",
+                "モダンブラウザ・Next.js・現代のフロントエンド",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "現在の推奨",
+              cells: [
+                "Node.js の古いコードで遭遇する程度",
+                "基本これを使う",
+              ],
+              highlightCol: 1,
+            },
+          ]}
+          note="Node.js も現在は ESModules（.mjs / package.json の type: module）に対応している。新規プロジェクトでは ESModules で書き始めるのが安全。｜Tree Shaking = 使われていないコードをビルド時に削除する最適化。MajiDialogueで詳しく説明しています。"
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ──────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下はバンドラーの仕組み・動的import・循環依存など、実務でプロジェクトの規模が大きくなったときに戻ってくるための内容です。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — バンドラーと動的import
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+          開発中はファイルを自由に分割できますが、本番環境ではブラウザが少ないリクエストで受け取れるよう「バンドル（統合）」が必要です。その仕組みを見ていきます。
+        </p>
+
+        {/* TermNote: 概念図Cに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "バンドル",
+              definition:
+                "複数のJavaScriptファイルを1つ（または少数）にまとめる作業。WebpackやViteが自動でやってくれる。",
+            },
+            {
+              word: "Tree shaking",
+              definition:
+                "バンドル時に「どこからもimportされていないexport」を自動で削除する最適化。使っていないコードを本番ファイルに含めないことでファイルサイズを小さく保てる。",
+            },
+            {
+              word: "バンドラー",
+              definition:
+                "Webpack・Vite・Turbopackなど、複数のファイルをバンドルするツールの総称。Next.jsではTurbopack（またはWebpack）が内蔵されている。",
+            },
+          ]}
+        />
+
         <ConceptDiagram
           title="概念図C"
           description="開発中はファイル分割、本番配信時は1〜数ファイルに統合。間に挟まる「モジュールバンドラー」の役割。"
@@ -218,10 +456,14 @@ export default function ModulesPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge C→D */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          バンドラーの役割が分かりました。次は「ファイル間の依存関係（依存グラフ）」と、陥りやすい「循環依存の問題」を見ていきます。
+        </p>
+
         <ConceptDiagram
           title="概念図D：モジュールの依存グラフと循環依存の問題"
           description="バンドラーはファイル間の import/export をたどって依存グラフを構築する。循環があると問題が起きる。"
-          accentColor="orange"
         >
           {/* 通常の依存グラフ */}
           <p className="text-xs font-semibold text-orange-400 mb-3 uppercase tracking-wide">
@@ -338,10 +580,14 @@ export default function ModulesPage() {
           </div>
         </ConceptDiagram>
 
+        {/* bridge D→E */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          依存グラフの考え方が分かりました。次はバンドラーが内部でどのようなパイプラインでビルドを行うかを見ていきます。
+        </p>
+
         <ConceptDiagram
           title="概念図E：バンドラー（webpack/Rollup/Vite）が何をしているか"
           description="複数ファイルに分かれた ESM/CJS ソースを、ブラウザが受け取れる少数のファイルに変換する処理パイプライン。"
-          accentColor="orange"
         >
           {/* パイプライン */}
           <div className="space-y-2 mb-5">
@@ -432,10 +678,14 @@ export default function ModulesPage() {
           </div>
         </ConceptDiagram>
 
+        {/* bridge E→F */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          バンドラーの全体像が分かりました。次は「動的import()」という、必要なときだけファイルを読み込む手法を見ていきます。
+        </p>
+
         <ConceptDiagram
           title="概念図F：動的import()による遅延ロード（Lazy Loading）"
           description="全コードを最初に読み込まず、必要になったときだけ読み込む——初期JSを小さくしてページの表示を速くする手法。"
-          accentColor="orange"
         >
           {/* 静的 vs 動的 */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
@@ -536,113 +786,69 @@ export default function ModulesPage() {
         </ConceptDiagram>
       </section>
 
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={["CommonJS (require)", "ESModules (import)"]}
-          rows={[
-            {
-              label: "構文",
-              cells: [
-                "const x = require('./x')",
-                "import x from './x'",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "実行タイミング",
-              cells: [
-                "実行時に動的読み込み",
-                "静的解析（ビルド時に依存関係が判明）",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "Tree Shaking",
-              cells: [
-                "非対応（未使用コードが残る）",
-                "対応（未使用コードを削除可）",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "使用環境",
-              cells: [
-                "Node.js（旧来のコードベース）",
-                "モダンブラウザ・Next.js・現代のフロントエンド",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "現在の推奨",
-              cells: [
-                "Node.js の古いコードで遭遇する程度",
-                "基本これを使う",
-              ],
-              highlightCol: 1,
-            },
-          ]}
-          note="Node.js も現在は ESModules（.mjs / package.json の type: module）に対応している。新規プロジェクトでは ESModules で書き始めるのが安全。"
-        />
-      </section>
-
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text:
-              "マスター、`import` って React のコードでよく書くんですけど、あれって実際には何をしているんですか？ ボク、なんとなく真似して書いているだけで……。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text:
-              "正直でよろしいですよ、マジさん。家電量販店を想像してください。各フロアに専門の売り場があって、テレビ売り場・冷蔵庫売り場・照明売り場に分かれていますよね。それぞれの売り場が JavaScript ファイル1個に相当します。`export` は「この商品を売り場に陳列する」こと、`import` は「他のフロアから必要な商品を買いに行く」こと。これだけです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text:
-              "マジ？\nじゃあ default export と named export って、両方あるんですか？ どっちを使えばいいんですか！？ ボクもうそれだけで頭が爆発しそうです！",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text:
-              "落ち着いてください。default export は「その売り場の看板商品」、named export は「個別商品」だと思っていただければ十分です。React コンポーネントは default export、`add` や `formatDate` のようなユーティリティ関数は named export で書く慣習が多いですね。プロジェクトのコードを少し読めば、その現場の流儀がすぐに掴めますよ。",
-          },
-          {
-            speaker: "maji",
-            emotion: "worried",
-            text:
-              "あと「Tree Shaking」って言葉も聞いたんですけど！ 木を揺らすんですか！？ ボクの import が地震で揺れてしまうんですか！？ 大変なことになっているのでは！？",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text:
-              "落ち着いて、マジさん。Tree Shaking は「使っていない枝（コード）を揺り落とす」最適化のことです。たとえば `utils.js` から `add` だけを import したとき、ビルドツールが「あ、`subtract` は誰も使っていないな」と気付いて本番のJSから削除してくれる。バンドルサイズが小さくなり、ユーザーのページ読み込みが速くなる。これができるのは ESModules が静的解析できる構文だからこそで、CommonJS の require では難しいんです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text:
-              "なるほど……。export で公開して、import で取り寄せて、使っていないものはビルド時に削られる。だからファイル分割しても本番のサイズは膨らまないんですね。腑に落ちました！",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text:
-              "ご名答です、マジさん。Next.js では全ファイルが ESモジュール前提で動いていて、`@/components/Button` のようなパスエイリアスもこの仕組みの上に成り立っています。「ファイルは小さく分けて、必要な部品だけを取り寄せる」——これだけ覚えていれば、import / export で迷うことはほぼなくなりますよ。",
-          },
-        ]}
-      />
-
       <DetailSection title="詳細解説">
-        <DetailBlock heading="7.1 CommonJS と ESModules の歴史（なぜ2種類あるか）">
+        <DetailBlock heading="7.1 Next.js でのモジュール利用（@/components/ エイリアス）">
+          <p>
+            Next.js プロジェクトでよく見かける{" "}
+            <code
+              className="text-xs px-1.5 py-0.5 rounded font-mono"
+              style={{ backgroundColor: "#0f1117", color: "#fb923c" }}
+            >
+              {`import { Button } from '@/components/Button'`}
+            </code>{" "}
+            の{" "}
+            <code
+              className="text-xs px-1.5 py-0.5 rounded font-mono"
+              style={{ backgroundColor: "#0f1117", color: "#fb923c" }}
+            >
+              @/
+            </code>{" "}
+            は、tsconfig.json（または jsconfig.json）の{" "}
+            <code
+              className="text-xs px-1.5 py-0.5 rounded font-mono"
+              style={{ backgroundColor: "#0f1117", color: "#fb923c" }}
+            >
+              paths
+            </code>{" "}
+            設定で「プロジェクトルート（または src/）」にマッピングされたパスエイリアス。
+          </p>
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: ArrowRight,
+              title: "相対パス（エイリアスなし）",
+              subtitle: "import { Button } from '../../../components/Button'",
+              description: "ファイルの深さに応じて ../ が連続する。ファイルを移動すると全パスが壊れる。",
+              accentColor: "red",
+            },
+            {
+              Icon: FolderOpen,
+              title: "@/ エイリアス（Next.js 標準）",
+              subtitle: "import { Button } from '@/components/Button'",
+              description: "@/ がプロジェクトルートを指す。ファイルを移動しても import パスは変わらない。",
+              accentColor: "orange",
+            },
+          ]} />
+          <CodeBlock
+            title="tsconfig.json — @/ エイリアスの設定"
+            language="json"
+            code={`{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
+
+// create-next-app でプロジェクトを作ると自動生成される。
+// 手動追加の必要はほぼない。`}
+          />
+          <KeyPoint>
+            Next.js では「全ファイルが ESModules 前提」「`@/` でプロジェクトルートを指す」「default export のコンポーネントを named import / default import で取り寄せる」が当たり前。ここを押さえておけば、import 周りで詰まることはほぼなくなる。
+          </KeyPoint>
+        </DetailBlock>
+
+        <DetailBlock heading="7.2 CommonJS と ESModules の歴史（なぜ2種類あるか）">
           <p>
             JavaScript はもともとブラウザの中だけで動く言語だったため、長らく公式の「モジュール機能」を持っていなかった。Node.js が 2009 年に登場したとき、サーバーサイドでファイル分割が必要になり、独自に{" "}
             <code
@@ -720,7 +926,7 @@ export default greet;`}
           </KeyPoint>
         </DetailBlock>
 
-        <DetailBlock heading="7.2 循環参照の問題と回避方法">
+        <DetailBlock heading="7.3 循環参照の問題と回避方法">
           <p>
             A.js が B.js を import し、同時に B.js が A.js を import するような状態を「循環参照」と呼ぶ。ESモジュールは静的解析できる仕組みなので CommonJS よりはマシに動くが、それでも「片方の値がまだ初期化されていないタイミングで参照される」と{" "}
             <code
@@ -760,15 +966,12 @@ export function funcA() { return BASE_URL + '/a'; }
 import { BASE_URL } from './shared';
 export function funcB() { return BASE_URL + '/b'; }`}
           />
-          <p>
-            回避策は「共通の依存を別ファイル（types.ts / shared.ts など）に切り出す」のが基本。AとBの両方が必要としているものを第3のファイルに置けば、AとBの間に直接の参照が生まれず、循環が解消される。
-          </p>
           <KeyPoint>
             循環参照に気付くポイントは「import したはずの値が undefined」「クラスのインスタンス化で謎のエラー」。まず依存関係の図を描いてループを見つけ、共通部分を別ファイルに逃がす。
           </KeyPoint>
         </DetailBlock>
 
-        <DetailBlock heading="7.3 バレルファイル（index.ts）パターン">
+        <DetailBlock heading="7.4 バレルファイル（index.ts）パターン">
           <p>
             <code
               className="text-xs px-1.5 py-0.5 rounded font-mono"
@@ -813,77 +1016,6 @@ import { Button, Card } from '@/components';`}
           ]} />
           <KeyPoint>
             バレルファイルは便利だが、巨大化させすぎるとビルド時の解析コストが上がり、Tree Shaking が効きにくくなる場合もある。「カテゴリ単位でまとめる」程度に留めるのが無難。
-          </KeyPoint>
-        </DetailBlock>
-
-        <DetailBlock heading="7.4 Next.js でのモジュール利用（@/components/ エイリアス）">
-          <p>
-            Next.js プロジェクトでよく見かける{" "}
-            <code
-              className="text-xs px-1.5 py-0.5 rounded font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#fb923c" }}
-            >
-              {`import { Button } from '@/components/Button'`}
-            </code>{" "}
-            の{" "}
-            <code
-              className="text-xs px-1.5 py-0.5 rounded font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#fb923c" }}
-            >
-              @/
-            </code>{" "}
-            は、tsconfig.json（または jsconfig.json）の{" "}
-            <code
-              className="text-xs px-1.5 py-0.5 rounded font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#fb923c" }}
-            >
-              paths
-            </code>{" "}
-            設定で「プロジェクトルート（または src/）」にマッピングされたパスエイリアス。
-          </p>
-          <UseCaseGrid cols={2} items={[
-            {
-              Icon: ArrowRight,
-              title: "相対パス（エイリアスなし）",
-              subtitle: "import { Button } from '../../../components/Button'",
-              description: "ファイルの深さに応じて ../ が連続する。ファイルを移動すると全パスが壊れる。",
-              accentColor: "red",
-            },
-            {
-              Icon: FolderOpen,
-              title: "@/ エイリアス（Next.js 標準）",
-              subtitle: "import { Button } from '@/components/Button'",
-              description: "@/ がプロジェクトルートを指す。ファイルを移動しても import パスは変わらない。",
-              accentColor: "orange",
-            },
-          ]} />
-          <CodeBlock
-            title="tsconfig.json — @/ エイリアスの設定"
-            language="json"
-            code={`{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./*"]
-    }
-  }
-}
-
-// create-next-app でプロジェクトを作ると自動生成される。
-// 手動追加の必要はほぼない。`}
-          />
-          <p>
-            これがあると{" "}
-            <code
-              className="text-xs px-1.5 py-0.5 rounded font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#fb923c" }}
-            >
-              ../../../components/Button
-            </code>{" "}
-            のような相対パスの連打を書かずに済み、ファイルを別ディレクトリに移動してもパスが壊れにくくなる。Next.js では create-next-app の段階で標準で設定されている。
-          </p>
-          <KeyPoint>
-            Next.js では「全ファイルが ESModules 前提」「`@/` でプロジェクトルートを指す」「default export のコンポーネントを named import / default import で取り寄せる」が当たり前。ここを押さえておけば、import 周りで詰まることはほぼなくなる。
           </KeyPoint>
         </DetailBlock>
       </DetailSection>

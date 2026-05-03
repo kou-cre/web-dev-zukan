@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -23,6 +24,8 @@ import { MajiDialogue } from "@/components/MajiDialogue";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { DetailSection, DetailBlock, KeyPoint, WarningPoint } from "@/components/DetailSection";
+import { SectionDivider } from "@/components/SectionDivider";
+import { TermNote } from "@/components/TermNote";
 import { stateQuestions } from "@/content/questions/react/state";
 
 export const metadata = {
@@ -41,6 +44,25 @@ export default function StatePage() {
         accentColor="violet"
       />
 
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "Stateとは何か（コンポーネントが持つ「変わる値」）",
+          "useStateの基本的な書き方と使い方",
+          "stateが変わるとコンポーネントが再描画される理由",
+        ]}
+        prerequisites={[
+          "コンポーネントとJSXを知っている（/react/components を読んだ）",
+          "Propsを知っている（/react/props を読んだ）",
+          "配列の分割代入を知っている（const [a, b] = [1, 2] の形が分かる）",
+        ]}
+        outOfScope={[
+          "イミュータブル更新の詳細（スプレッド構文）（応用編で扱う）",
+          "useReducerとuseStateの使い分け（応用編で扱う）",
+          "Zustand / Redux などの外部状態管理（別ページで扱う）",
+        ]}
+      />
+
       <OnePageSummary
         keyMessage="StateはReactコンポーネントが内部に持つ「変わる値」。useStateはそのStateを扱うHook。setterで値を更新すると、Reactが自動的に再レンダリングを行い画面が変わる。直接代入ではなくsetter関数を使うことが必須のルール。"
         metaphorTitle="信号機の内部コントローラー"
@@ -53,52 +75,45 @@ export default function StatePage() {
         definition="Stateはコンポーネントが内部に持つ変更可能な値。useStateで宣言し、setter関数で更新するとReactが自動的に再描画する。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
-        <ConceptDiagram
-          title="概念図A"
-          description="useState の仕組み — setter を呼ぶと何が起きるのか？"
-        >
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 flex-wrap">
-            <FlowCard
-              Icon={Variable}
-              title="useState(0)"
-              subtitle="const [count, setCount]"
-              accentColor="violet"
-            />
-            <FlowArrow label="ユーザーがクリック" direction="right" />
-            <FlowCard
-              Icon={MousePointerClick}
-              title="setCount(count + 1)"
-              subtitle="setter関数を呼ぶ"
-              highlight
-              accentColor="violet"
-            />
-            <FlowArrow label="Reactに通知" direction="right" />
-            <FlowCard
-              Icon={RefreshCw}
-              title="再レンダリング"
-              subtitle="Reactがコンポーネントを再実行"
-              accentColor="violet"
-            />
-            <FlowArrow label="新しい値で" direction="right" />
-            <FlowCard
-              Icon={Layers}
-              title="画面更新"
-              subtitle="新しい count が表示される"
-              accentColor="violet"
-            />
-          </div>
-          <p className="text-xs text-gray-600 text-center mt-4">
-            setter を呼ぶ → React が検知 → 再レンダリング → 新しい値が画面に反映。この流れが State の本質。
-          </p>
-        </ConceptDiagram>
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          まず「なぜ普通の変数ではダメなのか」を理解してから、useStateの仕組みを順番に確認しましょう。
+        </p>
 
+        {/* TermNote: 基礎図に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "State（状態）",
+              definition: "コンポーネントが内部に持つ「変わる値」のこと。ボタンのクリック数・入力中の文字・モーダルの開閉状態などがStateの典型例。",
+            },
+            {
+              word: "useState",
+              definition: "ReactでStateを扱うための関数（Hook）。const [値, 更新関数] = useState(初期値) という形で使う。",
+            },
+            {
+              word: "フック（Hook）",
+              definition: "React が提供する特殊な関数のグループ。useState・useEffect などがある。コンポーネント関数のトップレベルでのみ呼べる。",
+            },
+            {
+              word: "再レンダリング",
+              definition: "コンポーネント関数を再度実行して画面を更新すること。Stateが変わったときにReactが自動で行う。",
+            },
+            {
+              word: "setter関数",
+              definition: "useState が返す2番目の値。この関数を呼ぶことでStateを更新し、Reactに再レンダリングを依頼できる。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図A: なぜ普通の変数ではダメなのか ── */}
         <ConceptDiagram
-          title="概念図B"
+          title="概念図A — なぜ普通の変数では画面が変わらないのか？"
           description="State vs 通常変数 — なぜ let count = 0 では動かないのか？"
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -162,11 +177,129 @@ export default function StatePage() {
               </div>
             </div>
           </div>
+          <div
+            className="rounded-lg border mt-4 p-3"
+            style={{ backgroundColor: "rgba(139,92,246,0.05)", borderColor: "rgba(139,92,246,0.3)" }}
+          >
+            <p className="text-xs font-semibold text-violet-300 mb-2">なぜ普通の変数ではダメか — まとめ</p>
+            <p className="text-sm text-gray-300 leading-relaxed">
+              普通の変数を書き換えてもReactは「変わった」ことを知らないため、画面を更新しません。
+              setter関数を通じて更新することで初めてReactに「再描画して」と伝えられます。
+            </p>
+          </div>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          普通の変数ではダメな理由が分かりました。次はuseStateを呼び出したときに内部で何が起きるかを流れ図で確認します。
+        </p>
+
+        {/* ── 概念図B: useStateの仕組み ── */}
         <ConceptDiagram
-          title="概念図C"
-          description="Stateの種類と用途 — 何でもStateに入れられる"
+          title="概念図B — useState の仕組み"
+          description="setter を呼ぶと何が起きるのか？ステップで確認する。"
+        >
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 flex-wrap">
+            <FlowCard
+              Icon={Variable}
+              title="useState(0)"
+              subtitle="const [count, setCount]"
+              accentColor="violet"
+            />
+            <FlowArrow label="ユーザーがクリック" direction="right" />
+            <FlowCard
+              Icon={MousePointerClick}
+              title="setCount(count + 1)"
+              subtitle="setter関数を呼ぶ"
+              highlight
+              accentColor="violet"
+            />
+            <FlowArrow label="Reactに通知" direction="right" />
+            <FlowCard
+              Icon={RefreshCw}
+              title="再レンダリング"
+              subtitle="Reactがコンポーネントを再実行"
+              accentColor="violet"
+            />
+            <FlowArrow label="新しい値で" direction="right" />
+            <FlowCard
+              Icon={Layers}
+              title="画面更新"
+              subtitle="新しい count が表示される"
+              accentColor="violet"
+            />
+          </div>
+          <div
+            className="rounded-lg border mt-5 p-4 font-mono text-xs leading-loose"
+            style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+          >
+            <p className="text-gray-500 mb-1">{"// useStateの基本的な使い方"}</p>
+            <p>
+              <span className="text-blue-300">import</span>
+              <span className="text-gray-300">{" { useState } "}</span>
+              <span className="text-blue-300">from</span>
+              <span className="text-green-300">{" 'react'"}</span>
+              <span className="text-gray-300">;</span>
+            </p>
+            <p className="mt-2">
+              <span className="text-blue-300">function</span>
+              <span className="text-yellow-300"> Counter</span>
+              <span className="text-gray-300">{"() {"}</span>
+            </p>
+            <p className="ml-4">
+              <span className="text-gray-500">{"// [現在の値, 更新関数] = useState(初期値)"}</span>
+            </p>
+            <p className="ml-4">
+              <span className="text-violet-300">const</span>
+              <span className="text-gray-300">{" [count, setCount] = "}</span>
+              <span className="text-yellow-300">useState</span>
+              <span className="text-gray-300">(</span>
+              <span className="text-orange-300">0</span>
+              <span className="text-gray-300">);</span>
+            </p>
+            <p className="ml-4 mt-2">
+              <span className="text-blue-300">return</span>
+              <span className="text-gray-300">{" ("}</span>
+            </p>
+            <p className="ml-8">
+              <span className="text-green-300">{"<button"}</span>
+              <span className="text-sky-300">{" onClick"}</span>
+              <span className="text-gray-300">{"={() => "}</span>
+              <span className="text-yellow-300">setCount</span>
+              <span className="text-gray-300">(count + </span>
+              <span className="text-orange-300">1</span>
+              <span className="text-gray-300">{")"}</span>
+              <span className="text-gray-300">{"}"}</span>
+              <span className="text-green-300">{">"}</span>
+            </p>
+            <p className="ml-10">
+              <span className="text-gray-300">クリック数: </span>
+              <span className="text-sky-300">{"{"}</span>
+              <span className="text-white">count</span>
+              <span className="text-sky-300">{"}"}</span>
+            </p>
+            <p className="ml-8">
+              <span className="text-green-300">{"</button>"}</span>
+            </p>
+            <p className="ml-4">
+              <span className="text-gray-300">);</span>
+            </p>
+            <p><span className="text-gray-300">{"}"}</span></p>
+          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            setter を呼ぶ → React が検知 → 再レンダリング → 新しい値が画面に反映。この流れが State の本質。
+          </p>
+        </ConceptDiagram>
+
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          useStateの基本的な流れが分かりました。次は「Stateにはどんな種類のデータを入れられるか」を確認します。
+        </p>
+
+        {/* ── 概念図C: Stateの種類 ── */}
+        <ConceptDiagram
+          title="概念図C — Stateの種類と用途"
+          description="何でもStateに入れられる — 典型的な使い方を確認する"
         >
           <StackLayer
             Icon={Type}
@@ -200,91 +333,209 @@ export default function StatePage() {
             showArrow={false}
           />
         </ConceptDiagram>
+      </section>
 
+      {/* ── MajiDialogue（基礎編 — ComparisonTableより前） ── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "useStateって見たことあるけど、変数と何が違うんですか？ボク、ただの変数でいいのでは……と思っていまして。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "信号機を想像してください。赤から青に変えるとき、普通の変数は「値のメモ」だけ書き換える。でもStateのsetter関数は「値を書き換えてReactに再描画を頼む」まで一緒にやってくれる。だから画面が自動的に変わるんです、マジさん。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "マジ？\nじゃあ直接 `count = count + 1` ってやったら何が起きるんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "値はメモリ上で変わりますが、Reactは「変わったよ」という通知を受け取れていないので再描画しません。画面は古いままです。セルフサービスのレジで支払いを済ませたのに、お知らせボタンを押し忘れた状態です。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "ボク、const [count, setCount] = useState(0) って書き方が少し気になっていて。左辺の [ ] って何ですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "これは「配列の分割代入」という構文です、マジさん。const [a, b] = [1, 2] と書くと a に 1、b に 2 が入ります。useState は [現在の値, 更新関数] という配列を返すので、分割代入で受け取っているだけです。名前は何でもOKですが、値とその更新関数という対で命名するのが習慣です。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なんとなく分かってきました。「Reactに知らせる」ためのルートがsetter関数だけ、ということですね。ボク、これさえ守れば大丈夫そうです。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その理解で完璧です。そしてStateが変わるたびに再レンダリングされるからこそ、「ボタンを押したらカウントが増える」「入力したら文字が表示される」というインタラクティブなUIが実現できる。Reactの魔法の正体はここにあるんです、マジさん。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ─────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["通常の変数（let）", "State（useState）"]}
+          rows={[
+            {
+              label: "値を変えると画面が変わる",
+              cells: ["変わらない", "自動で変わる（再レンダリング）"],
+              highlightCol: 1,
+            },
+            {
+              label: "コンポーネントをまたいで保持",
+              cells: ["再レンダリングで消える", "Reactが管理・保持する"],
+              highlightCol: 1,
+            },
+            {
+              label: "更新方法",
+              cells: ["直接代入（let x = 1）", "setter関数（setX(1)）"],
+              highlightCol: 1,
+            },
+            {
+              label: "推奨用途",
+              cells: ["計算の一時変数", "UIに反映が必要な値"],
+              highlightCol: 1,
+            },
+          ]}
+          note="結論：UIに反映が必要な値は useState で State として宣言する。計算で求められる値・一時変数はletで十分。setter以外での更新は禁止。"
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ──────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下はイミュータブル更新・useReducer・自動バッチングなど、より深い内容です。まずuseStateの基本を使いこなせるようになってから読んでください。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — イミュータブル更新とuseReducer
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          オブジェクトや配列のStateを扱う場合、「直接変更してはいけない」というルールがあります。なぜかを理解してから正しい書き方を覚えましょう。
+        </p>
+
+        {/* TermNote: 応用図に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "イミュータブル",
+              definition: "「変更できない」という意味。Reactでは「既存のオブジェクトを変更する」のではなく「新しいオブジェクトを作って渡す」ことを要求する。",
+            },
+            {
+              word: "スプレッド構文（...）",
+              definition: "配列やオブジェクトの内容を展開する構文。{ ...obj, key: value } で既存オブジェクトをコピーしながら一部を変更できる。",
+            },
+            {
+              word: "useReducer",
+              definition: "複雑なStateの更新ロジックを整理するためのHook。dispatch でアクションを送り、reducer 関数で新しいStateを返す設計にする。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図D: イミュータブル更新 ── */}
         <ConceptDiagram
-          title="概念図D：State更新のバッチング（React 18の自動バッチング）"
-          description="複数のsetState呼び出しをまとめて1回の再レンダリングに抑える仕組み"
+          title="概念図D：イミュータブル（不変）更新パターン"
+          description="Reactは参照比較でstate変化を検知する — 直接変更ではReactは気づけない"
           accentColor="violet"
         >
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div
-                className="rounded-xl border p-4"
-                style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
-              >
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3 text-center">
-                  React 17以前
-                </p>
-                <div className="space-y-1.5 text-xs text-gray-400 leading-relaxed mb-3">
-                  <div className="flex items-start gap-2">
-                    <AlertTriangle className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" />
-                    <span>setTimeout / fetchコールバック内では<br />1回のsetState = 1回の再レンダリング</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <AlertTriangle className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" />
-                    <span>3回setStateを呼ぶ = 3回再レンダリング</span>
-                  </div>
-                </div>
-                <div
-                  className="rounded-lg px-3 py-2 text-xs font-mono text-gray-500"
-                  style={{ backgroundColor: "#1a1d2a" }}
-                >
-                  <span className="text-gray-500">{"// setTimeout内では個別に再レンダリング"}</span><br />
-                  setCount(c + 1);<span className="text-red-400"> {"// 再レンダリング①"}</span><br />
-                  setName(<span className="text-amber-400">{"'Alice'"}</span>);<span className="text-red-400"> {"// 再レンダリング②"}</span><br />
-                  setVisible(<span className="text-sky-400">true</span>);<span className="text-red-400"> {"// 再レンダリング③"}</span>
-                </div>
-              </div>
+          <div
+            className="rounded-xl border border-amber-500/30 px-4 py-3 mb-4 flex items-start gap-3"
+            style={{ backgroundColor: "rgba(245,158,11,0.07)" }}
+          >
+            <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-gray-300 leading-relaxed">
+              Reactはオブジェクト・配列を<span className="text-amber-300 font-semibold">参照（アドレス）</span>で比較する。
+              中身を直接変更しても参照が同じなら<span className="text-red-400 font-semibold">変化を検知できず再レンダリングが起きない</span>。
+              必ず新しいオブジェクト・配列を作って渡す。
+            </p>
+          </div>
 
-              <div
-                className="rounded-xl border border-violet-500/40 p-4"
-                style={{ backgroundColor: "rgba(139,92,246,0.05)" }}
-              >
-                <p className="text-xs font-semibold text-violet-400 uppercase tracking-widest mb-3 text-center">
-                  React 18（自動バッチング）
-                </p>
-                <div className="space-y-1.5 text-xs text-gray-300 leading-relaxed mb-3">
-                  <div className="flex items-start gap-2">
-                    <RefreshCw className="w-3.5 h-3.5 text-violet-400 flex-shrink-0 mt-0.5" />
-                    <span>非同期コールバック内でも自動バッチング</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <RefreshCw className="w-3.5 h-3.5 text-violet-400 flex-shrink-0 mt-0.5" />
-                    <span>3回setStateを呼んでも1回しか再レンダリングしない</span>
-                  </div>
-                </div>
+          <div className="space-y-3">
+            <div
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
+                配列への追加
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
                 <div
-                  className="rounded-lg px-3 py-2 text-xs font-mono"
+                  className="rounded-lg px-3 py-2"
                   style={{ backgroundColor: "#1a1d2a" }}
                 >
-                  <span className="text-gray-500">{"// どこでも自動バッチング"}</span><br />
-                  setCount(c + 1);<br />
-                  setName(<span className="text-amber-400">{"'Alice'"}</span>);<br />
-                  setVisible(<span className="text-sky-400">true</span>);<br />
-                  <span className="text-violet-400">{"// ↑ まとめて1回の再レンダリング"}</span>
+                  <span className="text-red-400">{"// ❌ 直接変更（NG）"}</span><br />
+                  <span className="text-gray-400">state.push(item);</span>
+                </div>
+                <div
+                  className="rounded-lg px-3 py-2 border border-violet-500/30"
+                  style={{ backgroundColor: "rgba(139,92,246,0.05)" }}
+                >
+                  <span className="text-violet-400">{"// ✅ 新しい配列を作成"}</span><br />
+                  <span className="text-gray-300">[...state, item]</span>
                 </div>
               </div>
             </div>
 
             <div
-              className="rounded-xl border border-violet-500/20 px-4 py-3 flex items-center gap-3"
-              style={{ backgroundColor: "rgba(139,92,246,0.08)" }}
+              className="rounded-xl border p-4"
+              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
             >
-              <Layers className="w-4 h-4 text-violet-400 flex-shrink-0" />
-              <p className="text-xs text-gray-300">
-                パフォーマンス改善：N回の再レンダリング
-                <span className="mx-2 text-violet-400 font-bold">→</span>
-                1回の再レンダリング。不要なレンダリングが減りUIがスムーズになる。
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
+                オブジェクト更新
               </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+                <div
+                  className="rounded-lg px-3 py-2"
+                  style={{ backgroundColor: "#1a1d2a" }}
+                >
+                  <span className="text-red-400">{"// ❌ プロパティを直接変更"}</span><br />
+                  <span className="text-gray-400">state.name = <span className="text-amber-400">{"'new'"}</span>;</span>
+                </div>
+                <div
+                  className="rounded-lg px-3 py-2 border border-violet-500/30"
+                  style={{ backgroundColor: "rgba(139,92,246,0.05)" }}
+                >
+                  <span className="text-violet-400">{"// ✅ スプレッドでコピー"}</span><br />
+                  <span className="text-gray-300">{"{ ...state, name: "}<span className="text-amber-400">{"'new'"}</span>{" }"}</span>
+                </div>
+              </div>
             </div>
           </div>
+          <p className="text-xs text-gray-500 text-center mt-3">
+            「古い状態を変更する」のではなく「新しい状態を作って渡す」——これがイミュータビリティの原則。
+          </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          イミュータブル更新の原則が分かりました。次は「複数のStateが絡み合うような複雑な場合」にどう対応するかを見ていきます。
+        </p>
+
+        {/* ── 概念図E: useReducer ── */}
         <ConceptDiagram
           title="概念図E：useState と useReducer の使い分け"
           description="シンプルな値にはuseState、複雑なロジックにはuseReducer"
           accentColor="violet"
         >
+          <p className="text-xs text-gray-500 leading-relaxed mb-3 px-1">
+            useReducerのコード例はパターンを掴む程度でOK。詳細は別ページで扱います。
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div
               className="rounded-xl border p-4"
@@ -376,185 +627,10 @@ export default function StatePage() {
             </div>
           </div>
         </ConceptDiagram>
-
-        <ConceptDiagram
-          title="概念図F：イミュータブル（不変）更新パターン"
-          description="Reactは参照比較でstate変化を検知する — 直接変更ではReactは気づけない"
-          accentColor="violet"
-        >
-          <div
-            className="rounded-xl border border-amber-500/30 px-4 py-3 mb-4 flex items-start gap-3"
-            style={{ backgroundColor: "rgba(245,158,11,0.07)" }}
-          >
-            <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-gray-300 leading-relaxed">
-              Reactはオブジェクト・配列を<span className="text-amber-300 font-semibold">参照（アドレス）</span>で比較する。
-              中身を直接変更しても参照が同じなら<span className="text-red-400 font-semibold">変化を検知できず再レンダリングが起きない</span>。
-              必ず新しいオブジェクト・配列を作って渡す。
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <div
-              className="rounded-xl border p-4"
-              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
-            >
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
-                配列への追加
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
-                <div
-                  className="rounded-lg px-3 py-2"
-                  style={{ backgroundColor: "#1a1d2a" }}
-                >
-                  <span className="text-red-400">{"// ❌ 直接変更（NG）"}</span><br />
-                  <span className="text-gray-400">state.push(item);</span>
-                </div>
-                <div
-                  className="rounded-lg px-3 py-2 border border-violet-500/30"
-                  style={{ backgroundColor: "rgba(139,92,246,0.05)" }}
-                >
-                  <span className="text-violet-400">{"// ✅ 新しい配列を作成"}</span><br />
-                  <span className="text-gray-300">[...state, item]</span>
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="rounded-xl border p-4"
-              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
-            >
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
-                オブジェクト更新
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
-                <div
-                  className="rounded-lg px-3 py-2"
-                  style={{ backgroundColor: "#1a1d2a" }}
-                >
-                  <span className="text-red-400">{"// ❌ プロパティを直接変更"}</span><br />
-                  <span className="text-gray-400">state.name = <span className="text-amber-400">{"'new'"}</span>;</span>
-                </div>
-                <div
-                  className="rounded-lg px-3 py-2 border border-violet-500/30"
-                  style={{ backgroundColor: "rgba(139,92,246,0.05)" }}
-                >
-                  <span className="text-violet-400">{"// ✅ スプレッドでコピー"}</span><br />
-                  <span className="text-gray-300">{"{ ...state, name: "}<span className="text-amber-400">{"'new'"}</span>{" }"}</span>
-                </div>
-              </div>
-            </div>
-
-            <div
-              className="rounded-xl border p-4"
-              style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
-            >
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
-                ネストしたオブジェクトの更新
-              </p>
-              <div
-                className="rounded-lg px-3 py-2 border border-violet-500/30 text-xs font-mono"
-                style={{ backgroundColor: "rgba(139,92,246,0.05)" }}
-              >
-                <span className="text-violet-400">{"// ✅ 各レベルをスプレッドでコピー"}</span><br />
-                <span className="text-gray-300">
-                  {"{ ...state, user: { ...state.user, name: "}<span className="text-amber-400">{"'new'"}</span>{" } }"}
-                </span>
-              </div>
-            </div>
-
-            <div
-              className="rounded-xl border border-violet-500/20 px-4 py-3 flex items-start gap-3"
-              style={{ backgroundColor: "rgba(139,92,246,0.08)" }}
-            >
-              <Layers className="w-4 h-4 text-violet-400 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-gray-300 leading-relaxed">
-                ネストが深くなると冗長になる。
-                <span className="text-violet-300 font-semibold">Immer</span> ライブラリを使うと
-                直接変更するような直感的な書き方でイミュータブル更新が可能になる。
-              </p>
-            </div>
-          </div>
-        </ConceptDiagram>
       </section>
-
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={["通常の変数（let）", "State（useState）"]}
-          rows={[
-            {
-              label: "値を変えると画面が変わる",
-              cells: ["変わらない", "自動で変わる（再レンダリング）"],
-              highlightCol: 1,
-            },
-            {
-              label: "コンポーネントをまたいで保持",
-              cells: ["再レンダリングで消える", "Reactが管理・保持する"],
-              highlightCol: 1,
-            },
-            {
-              label: "更新方法",
-              cells: ["直接代入（let x = 1）", "setter関数（setX(1)）"],
-              highlightCol: 1,
-            },
-            {
-              label: "推奨用途",
-              cells: ["計算の一時変数", "UIに反映が必要な値"],
-              highlightCol: 1,
-            },
-          ]}
-        />
-      </section>
-
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "useStateって見たことあるけど、変数と何が違うんですか？ボク、ただの変数でいいのでは……と思っていまして。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "信号機を想像してください。赤から青に変えるとき、普通の変数は「値のメモ」だけ書き換える。でもStateのsetter関数は「値を書き換えてReactに再描画を頼む」まで一緒にやってくれる。だから画面が自動的に変わるんです、マジさん。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text: "マジ？\nじゃあ直接 `count = count + 1` ってやったら何が起きるんですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text: "値はメモリ上で変わりますが、Reactは「変わったよ」という通知を受け取れていないので再描画しません。画面は古いままです。セルフサービスのレジで支払いを済ませたのに、お知らせボタンを押し忘れた状態です。",
-          },
-          {
-            speaker: "maji",
-            emotion: "worried",
-            text: "ボク……Stateをオブジェクトにしたとき、`state.name = 'マジ'` って書いてはいけないのも同じ理由ですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text: "鋭い読みです、マジさん。オブジェクトを直接変更してもReactは検知できません。必ず `setState({ ...state, name: 'マジ' })` のようにスプレッド構文で新しいオブジェクトを作って渡す。「古い状態を変更する」のではなく「新しい状態を作って渡す」という不変性の考え方がReactの根本にあります。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "なんとなく分かってきました。「Reactに知らせる」ためのルートがsetter関数だけ、ということですね。ボク、これさえ守れば大丈夫そうです。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "その理解で完璧です。そしてStateが変わるたびに再レンダリングされるからこそ、「ボタンを押したらカウントが増える」「入力したら文字が表示される」というインタラクティブなUIが実現できる。Reactの魔法の正体はここにあるんです、マジさん。",
-          },
-        ]}
-      />
 
       <DetailSection title="詳細解説">
+        {/* 7.1 useStateの基本（最も実用的なので先頭へ） */}
         <DetailBlock heading="7.1 useState の宣言パターン">
           <p>
             基本の宣言は{" "}
@@ -640,15 +716,15 @@ export default function StatePage() {
             icon: "ArrowDownToLine",
           },
           {
-            href: "/react/useeffect",
-            title: "useEffect",
-            description: "Stateの変化を監視して副作用を実行する",
+            href: "/react/components",
+            title: "コンポーネント",
+            description: "Stateを持つコンポーネントの設計の基礎に戻る",
             icon: "Zap",
           },
           {
-            href: "/react/context",
-            title: "Context",
-            description: "Stateを複数コンポーネントで共有する方法",
+            href: "/react/props",
+            title: "Props",
+            description: "Stateと対になる、親から渡される読み取り専用の値",
             icon: "Share2",
           },
         ]}

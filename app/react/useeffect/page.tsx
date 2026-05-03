@@ -12,6 +12,9 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
+import { TermNote } from "@/components/TermNote";
+import { SectionDivider } from "@/components/SectionDivider";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -42,6 +45,25 @@ export default function UseEffectPage() {
         accentColor="cyan"
       />
 
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "useEffectとは何か（どんな処理に使うのか）",
+          "コンポーネントがマウントされたときに何かする方法",
+          "依存配列でいつ実行するかを制御する方法",
+        ]}
+        prerequisites={[
+          "useState を知っている（/react/state を読んだ）",
+          "async / await を知っている（/javascript/async を読んだ）",
+          "fetch を知っている（/javascript/fetch を読んだ）",
+        ]}
+        outOfScope={[
+          "クリーンアップ関数の詳細と実装パターン（概念は基礎編で紹介、詳細は応用編で扱う）",
+          "useLayoutEffect との違い（応用編で扱う）",
+          "Strict Mode での2回実行問題（応用編で扱う）",
+        ]}
+      />
+
       <OnePageSummary
         keyMessage="useEffectはReactのレンダリングサイクルの「外側」で副作用を実行するHook。データ取得・タイマー設定・DOMの直接操作・イベントリスナーの登録など、「レンダリングには直接関係ないが必要な処理」をまとめる場所。依存配列で「いつ実行するか」を制御する。"
         metaphorTitle="監視カメラの自動記録"
@@ -54,10 +76,41 @@ export default function UseEffectPage() {
         definition="useEffectはコンポーネントの外側（DOM操作・通信・タイマー）で動く処理を登録するHook。依存配列で実行タイミングを制御する。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          まずは「useEffectがいつ動くのか」と「依存配列で実行タイミングを変える方法」を図で確認します。
+        </p>
+
+        {/* TermNote: 基礎図に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "副作用（Side Effect）",
+              definition: "コンポーネントの「外の世界」に触ること。APIとの通信・タイマー設定・DOMの直接操作などが該当する。",
+            },
+            {
+              word: "useEffect",
+              definition: "副作用をまとめて書く場所。レンダリングが終わった後に自動で実行される。",
+            },
+            {
+              word: "依存配列（deps）",
+              definition: "useEffectの第2引数に渡す配列。「この値が変わったときだけ実行して」と指定する場所。",
+            },
+            {
+              word: "マウント",
+              definition: "コンポーネントが初めて画面に表示されること。このタイミングを「マウント時」という。",
+            },
+            {
+              word: "アンマウント",
+              definition: "コンポーネントが画面から消えること。ページ遷移や条件分岐で非表示になったとき。",
+            },
+          ]}
+        />
 
         {/* 図A: useEffectの実行タイミング */}
         <ConceptDiagram
@@ -90,13 +143,18 @@ export default function UseEffectPage() {
             <FlowCard
               Icon={Trash2}
               title="クリーンアップ実行"
-              subtitle="return ()=&gt;{} の中身が走る"
+              subtitle="return () =&gt; {} の中身が走る"
             />
           </div>
           <p className="text-xs text-gray-600 text-center mt-4">
             useEffectは必ずレンダリングの後に実行される。描画を邪魔しないのが設計上のポイント。
           </p>
         </ConceptDiagram>
+
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          useEffectがレンダリングの後に実行されることが分かりました。次は「どのタイミングで実行するか」を依存配列で制御する方法を見ていきます。
+        </p>
 
         {/* 図B: 依存配列の3パターン */}
         <ConceptDiagram
@@ -153,6 +211,121 @@ export default function UseEffectPage() {
             ))}
           </div>
         </ConceptDiagram>
+      </section>
+
+      {/* ── MajiDialogue（基礎編 — 概念図の直後） ─────────── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "useEffectって、どこで使うものなんですか？ ボク、コンポーネントの中でfetchしちゃダメなんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "レストランで例えましょう。コンポーネント本体はホールの接客、つまり「画面を組み立てる」仕事です。通信やタイマーは厨房の裏作業。接客中に急にサーバーにアクセスし始めたら混乱しますよね。useEffectはその「裏作業専用のエリア」なんです、マジさん。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "マジ？\n依存配列って何ですか？空のやつと値が入ったやつの違いが……ボク全然分かりません。",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "空の配列は「一度だけ」、値が入っていれば「その値が変わるたびに」実行します。監視カメラの設定みたいなもの。「常時録画」か「人が入ったときだけ」か「特定のエリアに入ったときだけ」を選ぶようなものです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "ボク、依存配列に書くべき値を書き忘れたり、書きすぎたりしてしまいそうです……どうやって判断するんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "thinking",
+            text: "多くのReactプロジェクトにはESLintというコード検査ツールが入っており、その`react-hooks/exhaustive-deps`というルールを使うと、書き忘れを自動で教えてくれます。手動で管理しなくていい。ツールに守ってもらうのが現代のベストプラクティスですよ、マジさん。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ───────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["依存配列なし", "[] （空）", "[value]（指定）"]}
+          rows={[
+            {
+              label: "実行タイミング",
+              cells: [
+                "毎レンダリング後",
+                "マウント時1回だけ",
+                "valueが変わるたびに",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "よくある用途",
+              cells: [
+                "デバッグログ",
+                "APIデータ取得",
+                "IDが変わったら再取得",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "注意点",
+              cells: [
+                "無限ループの危険",
+                "State更新は慎重に",
+                "依存配列の漏れに注意",
+              ],
+              highlightCol: 1,
+            },
+          ]}
+          note="「空の配列」が最も安全で使用頻度も高い。依存配列なしは意図的なケース以外では原則使わない。"
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ──────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下はクリーンアップ・データフェッチパターン・無限ループ回避など、実務で詰まったときに戻ってくる内容です。基本的な使い方を掴んだら読んでください。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — クリーンアップ
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          依存配列の次に理解したいのが「クリーンアップ関数」です。useEffectで登録したものは、コンポーネントが消えるときに自分で解除しないといけません。
+        </p>
+
+        {/* TermNote: 応用図に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "クリーンアップ関数",
+              definition: "useEffect内で return () => {} として返す関数。コンポーネントがアンマウントされるか、次のEffectが実行される直前に呼ばれる。",
+            },
+            {
+              word: "メモリリーク",
+              definition: "コンポーネントが消えた後も裏側で処理が動き続け、メモリを使い続けてしまう問題。クリーンアップを書かないと起きやすい。",
+            },
+            {
+              word: "クラスコンポーネント",
+              definition: "React 16以前の古い書き方。現在は関数コンポーネントが主流。",
+            },
+            {
+              word: "AbortController",
+              definition: "実行中のfetchリクエストをキャンセルできるブラウザの機能。new AbortController()でインスタンスを作り、abort()で中断を指示する。",
+            },
+          ]}
+        />
 
         {/* 図C: クリーンアップの役割 */}
         <ConceptDiagram
@@ -203,7 +376,14 @@ export default function UseEffectPage() {
           </div>
         </ConceptDiagram>
 
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          クリーンアップの概念が分かりました。次はクラスコンポーネントとの対応関係と、実務でよく使うデータフェッチパターンを見ていきます。
+        </p>
+
         {/* 図D: クラスライフサイクルとuseEffectの対応関係 */}
+        <p className="text-xs text-gray-500 leading-relaxed mb-3 px-1 border border-gray-700/50 rounded-lg p-3" style={{ backgroundColor: "#1a1d2a" }}>
+          以下はReact 16以前のクラスコンポーネント（古い書き方）から移行する方向けの対応表です。関数コンポーネントから始めた方は飛ばしてください。
+        </p>
         <ConceptDiagram
           title="概念図D"
           description="クラスコンポーネントのライフサイクルとuseEffectの対応関係。移行時の読み替えに使う。"
@@ -298,6 +478,10 @@ export default function UseEffectPage() {
           </p>
         </ConceptDiagram>
 
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          ライフサイクルとの対応が分かりました。次は実務でよく使う「データフェッチ」と「無限ループの回避」を見ていきます。
+        </p>
+
         {/* 図E: データフェッチの標準パターン */}
         <ConceptDiagram
           title="概念図E"
@@ -391,6 +575,10 @@ export default function UseEffectPage() {
           </div>
         </ConceptDiagram>
 
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          データフェッチのパターンが分かりました。最後に、よくはまる「無限ループ」の原因と回避策を確認しておきましょう。
+        </p>
+
         {/* 図F: 無限ループの原因と回避策 */}
         <ConceptDiagram
           title="概念図F"
@@ -461,90 +649,6 @@ export default function UseEffectPage() {
           </div>
         </ConceptDiagram>
       </section>
-
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={["依存配列なし", "[] （空）", "[value]（指定）"]}
-          rows={[
-            {
-              label: "実行タイミング",
-              cells: [
-                "毎レンダリング後",
-                "マウント時1回だけ",
-                "valueが変わるたびに",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "よくある用途",
-              cells: [
-                "デバッグログ",
-                "APIデータ取得",
-                "IDが変わったら再取得",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "注意点",
-              cells: [
-                "無限ループの危険",
-                "State更新は慎重に",
-                "依存配列の漏れに注意",
-              ],
-              highlightCol: 1,
-            },
-          ]}
-          note="「空の配列」が最も安全で使用頻度も高い。依存配列なしは意図的なケース以外では原則使わない。"
-        />
-      </section>
-
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "useEffectって、どこで使うものなんですか？ ボク、コンポーネントの中でfetchしちゃダメなんですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "レストランで例えましょう。コンポーネント本体はホールの接客、つまり「画面を組み立てる」仕事です。通信やタイマーは厨房の裏作業。接客中に急にサーバーにアクセスし始めたら混乱しますよね。useEffectはその「裏作業専用のエリア」なんです、マジさん。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text: "マジ？\n依存配列って何ですか？空のやつと値が入ったやつの違いが……ボク全然分かりません。",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text: "空の配列は「一度だけ」、値が入っていれば「その値が変わるたびに」実行します。監視カメラの設定みたいなもの。「常時録画」か「人が入ったときだけ」か「特定のエリアに入ったときだけ」を選ぶようなものです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "worried",
-            text: "ボク、依存配列に書くべき値を書き忘れたり、書きすぎたりしてしまいそうです……どうやって判断するんですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text: "ESLintの`react-hooks/exhaustive-deps`というルールを使うと、書き忘れを自動で教えてくれます。手動で管理しなくていい。ツールに守ってもらうのが現代のベストプラクティスですよ、マジさん。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "クリーンアップ関数って何ですか？`return () => {}` って書くやつのことですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "そうです。useEffect内で登録したイベントリスナーやタイマーは、コンポーネントが消えても自動的には止まりません。クリーンアップ関数でそれを止める処理を書く。閉店後に監視カメラを停止するようなものです。これを忘れるとメモリリークという「見えないゴミ」が積もっていきます、マジさん。",
-          },
-        ]}
-      />
 
       <DetailSection title="詳細解説">
         <DetailBlock heading="7.1 useEffectの基本構文">

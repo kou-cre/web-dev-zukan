@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -23,6 +24,8 @@ import { MajiDialogue } from "@/components/MajiDialogue";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { DetailSection, DetailBlock, KeyPoint } from "@/components/DetailSection";
+import { SectionDivider } from "@/components/SectionDivider";
+import { TermNote } from "@/components/TermNote";
 import { componentQuestions } from "@/content/questions/react/components";
 
 export const metadata = {
@@ -41,6 +44,25 @@ export default function ComponentsPage() {
         accentColor="blue"
       />
 
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "コンポーネントとは何か（画面を部品に分ける考え方）",
+          "JSXとは何か（JSの中にHTMLライクな記法を書く構文）",
+          "関数コンポーネントの基本的な書き方",
+          "なぜ画面をコンポーネントに分けるのか",
+        ]}
+        prerequisites={[
+          "HTML/CSSの基本を知っている（タグの入れ子構造が分かる）",
+          "JavaScriptの関数を書けること（function f() {} の形が分かる）",
+          "なぜReactを使うのか知っている（または /javascript を読んだ）",
+        ]}
+        outOfScope={[
+          "Virtual DOMとライフサイクルの詳細（応用編で扱う）",
+          "クラスコンポーネントの書き方（レガシー。新規では書かない）",
+        ]}
+      />
+
       <OnePageSummary
         keyMessage="Reactのコンポーネントとは「画面の一部を担当する独立した部品」のこと。HTMLとJavaScriptを組み合わせたJSXで書かれ、関数として定義する。コンポーネントを組み合わせてUIを構築するのがReactの基本的な考え方。"
         metaphorTitle="家の設計図と実際の家"
@@ -53,41 +75,124 @@ export default function ComponentsPage() {
         definition="コンポーネントとはUIの独立した部品。JSXで見た目を定義し、関数として作る。Reactはこの部品を組み合わせて画面を作る。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          まずは「なぜコンポーネントに分けるのか」という疑問から出発して、JSXの書き方とコンポーネントの組み合わせ方を順番に確認しましょう。
+        </p>
+
+        {/* TermNote: 基礎図に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "コンポーネント",
+              definition: "画面の一部を担当する「部品」のこと。1つの関数として書き、何度でも使い回せる。",
+            },
+            {
+              word: "JSX",
+              definition: "JavaScriptの中でHTMLのような記法が使える構文拡張。Reactがブラウザ用のコードに変換してくれる。",
+            },
+            {
+              word: "宣言的UI",
+              definition: "「画面をどう書き換えるか」ではなく「こういう状態ならこう見える」と宣言するだけでReactが差分を計算してくれるスタイル。",
+            },
+            {
+              word: "関数コンポーネント",
+              definition: "JSXを返す関数として書いたコンポーネント。現在のReactの標準的な書き方。",
+            },
+            {
+              word: "再利用",
+              definition: "同じコンポーネントを複数の場所で何度でも使うこと。修正が1箇所で済む。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図A: 関数コンポーネントの基本 ── */}
         <ConceptDiagram
-          title="概念図A — コンポーネントの構造"
-          description="JSXを書いてからブラウザに表示されるまでの流れ"
+          title="概念図A — 関数コンポーネントの基本形"
+          description="コンポーネントは「JSXを返す関数」。Propsを受け取り、画面の構造を返す。"
         >
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 flex-wrap">
-            <FlowCard
-              Icon={Code2}
-              title="JSX return"
-              subtitle="コンポーネント関数が返す構造"
-              highlight
-              accentColor="blue"
-            />
-            <FlowArrow label="Reactが解析" direction="right" />
-            <FlowCard
-              Icon={Layers}
-              title="Virtual DOM"
-              subtitle="Reactが管理する軽量コピー"
-            />
-            <FlowArrow label="差分だけ反映" direction="right" />
-            <FlowCard
-              Icon={Monitor}
-              title="Real DOM反映"
-              subtitle="ブラウザに実際に描画される"
-            />
+          <div
+            className="rounded-xl border p-4 mb-4"
+            style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
+          >
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              最もシンプルなコンポーネントの例
+            </p>
+            <div className="font-mono text-xs leading-loose">
+              <p>
+                <span className="text-blue-300">function</span>
+                <span className="text-yellow-300"> Greeting</span>
+                <span className="text-gray-300">{"() {"}</span>
+                <span className="text-gray-500 ml-2">{"// 関数として定義する"}</span>
+              </p>
+              <p className="ml-4">
+                <span className="text-blue-300">return</span>
+                <span className="text-gray-300"> (</span>
+              </p>
+              <p className="ml-8">
+                <span className="text-green-300">{"<p>"}</span>
+                <span className="text-gray-300">こんにちは！</span>
+                <span className="text-green-300">{"</p>"}</span>
+                <span className="text-gray-500 ml-2">{"// JSXを返す"}</span>
+              </p>
+              <p className="ml-4">
+                <span className="text-gray-300">);</span>
+              </p>
+              <p><span className="text-gray-300">{"}"}</span></p>
+              <p className="mt-3">
+                <span className="text-gray-500">{"// 呼び出し方（JSXとして使う）"}</span>
+              </p>
+              <p>
+                <span className="text-green-300">{"<Greeting />"}</span>
+                <span className="text-gray-500 ml-2">{"// → <p>こんにちは！</p> が表示される"}</span>
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div
+              className="rounded-lg border p-3"
+              style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-blue-300 mb-2">1. 関数として定義</p>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                大文字始まりの関数名にする。これがコンポーネントの本体。
+              </p>
+            </div>
+            <div
+              className="rounded-lg border p-3"
+              style={{ backgroundColor: "rgba(59,130,246,0.08)", borderColor: "rgba(59,130,246,0.3)" }}
+            >
+              <p className="text-xs font-semibold text-blue-300 mb-2">2. JSXを返す</p>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                return の後にHTMLライクな構造を書く。これが「見た目の設計図」になる。
+              </p>
+            </div>
+            <div
+              className="rounded-lg border p-3"
+              style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+            >
+              <p className="text-xs font-semibold text-blue-300 mb-2">3. タグとして使う</p>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                {'<Greeting />'} のようにHTMLタグと同じ感覚で呼び出せる。
+              </p>
+            </div>
           </div>
           <p className="text-xs text-gray-600 text-center mt-4">
-            Reactは直接DOMを書き換えず、Virtual DOMで差分を計算してから最小限の変更だけを反映する。
+            関数の名前は必ず大文字始まり（Greeting）にする。小文字だとHTMLタグと区別がつかなくなる。
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          1つのコンポーネントの形が分かりました。次は「複数のコンポーネントをどう組み合わせるか」というツリー構造を見ていきます。
+        </p>
+
+        {/* ── 概念図B: ツリー構造 ── */}
         <ConceptDiagram
           title="概念図B — ツリー構造"
           description="コンポーネントは入れ子で組み合わさり「木構造」を形成する"
@@ -164,6 +269,12 @@ export default function ComponentsPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          コンポーネントの組み合わせ方が分かりました。次は「1つのコンポーネントの中で何が起きているのか」を詳しく見てみます。
+        </p>
+
+        {/* ── 概念図C: 関数コンポーネントの解剖 ── */}
         <ConceptDiagram
           title="概念図C — 関数コンポーネントの解剖"
           description="1つの関数コンポーネントの中で何が起きているのか"
@@ -178,7 +289,7 @@ export default function ComponentsPage() {
             <FlowCard
               Icon={FunctionSquare}
               title="ロジック実行"
-              subtitle="計算・条件分岐・Hooks呼び出しなど"
+              subtitle="計算・条件分岐など（Hooksは後のページで解説）"
               highlight
               accentColor="blue"
             />
@@ -199,89 +310,181 @@ export default function ComponentsPage() {
             関数コンポーネントは「Propsを受け取り、JSXを返す純粋な関数」として設計するのが理想。
           </p>
         </ConceptDiagram>
+      </section>
 
+      {/* ── MajiDialogue（基礎編 — 概念図の直後） ─────────── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "マスター、「コンポーネント」って何ですか？ HTMLとどう違うんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "LINEのトーク画面を想像してみてください。あの吹き出しが一つひとつコンポーネントです、マジさん。自分の吹き出しと相手の吹き出し、形は違いますが、同じ「吹き出しコンポーネント」を使い回しているだけ。HTMLだと毎回同じ構造を手で書き直しますが、コンポーネントは一度定義すれば何度でも呼び出せます。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "JSXって何ですか？ HTMLに見えるけどHTMLじゃないの？ マジ？",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "JSXはJavaScriptの中にHTMLのような記法で書ける構文です。料理レシピに「絵で書ける欄」が追加されたようなイメージ。見た目はHTMLそっくりですが、最終的にはJavaScriptに変換されます。だから class ではなく className を使うなど、細かい違いがあります。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "コンポーネントを「組み合わせる」って、どういうことですか？ ボクには積み木みたいなイメージしかなくて。",
+          },
+          {
+            speaker: "master",
+            emotion: "thinking",
+            text: "積み木で大正解ですよ、マジさん。大きな積み木（App）の中に中くらいの積み木（Header）があって、さらにその中に小さな積み木（Button）が入っている。この入れ子構造でどんな複雑なUIも作れます。家で言えば、壁・床・屋根という部品が組み合わさって「家」になるのと同じです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "「部品として切り出す」ことで同じコードを何度も書かずに済むし、どこを直せばいいかも分かりやすくなる、ということですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "完璧な整理です。「再利用性」と「責務の分離」がコンポーネント設計の2大利点です。一つのコンポーネントに詰め込みすぎず、適切な粒度に分けるセンスがReactエンジニアの腕の見せ所ですよ、マジさん。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ─────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={[
+            "HTMLだけで書く場合",
+            "コンポーネントに分ける場合",
+          ]}
+          rows={[
+            {
+              label: "同じUIを使い回す",
+              cells: [
+                "同じHTMLを何箇所にもコピペする必要がある",
+                "コンポーネントを呼び出すだけで使い回せる",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "UIを変更したいとき",
+              cells: [
+                "コピペした全箇所を直す必要がある",
+                "コンポーネントを1箇所直すだけで全部変わる",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "複雑さの管理",
+              cells: [
+                "1ファイルにHTMLが大量に積み上がる",
+                "役割ごとに分割されて見通しが良い",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "チーム開発",
+              cells: [
+                "同じ箇所を複数人が触って衝突しやすい",
+                "担当コンポーネントを分けて並行作業できる",
+              ],
+              highlightCol: 1,
+            },
+          ]}
+          note="コンポーネント分割の本質は「再利用」と「責務の分離」。1つのコンポーネントが1つのことだけに責任を持つ設計が理想。Reactは宣言的UI（何を表示するかを記述するスタイル）を採用しています。"
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ──────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下はReactの内部動作を深く知りたい方向けです。コンポーネントの基本が分かったら次のPropsページに進んでも構いません。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — Virtual DOMとレンダリングサイクル
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          ここではReactが内部でどうUIを更新しているかを解説します。「なぜReactは速いのか」という仕組みの話です。
+        </p>
+
+        {/* TermNote: 応用図に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "Virtual DOM",
+              definition: "Reactが内部で管理するDOMの軽量コピー。実際のDOMを触る前に、ここで差分を計算する。",
+            },
+            {
+              word: "ReactDOM",
+              definition: "ReactのVirtual DOMをブラウザの実際のDOMに反映するためのライブラリ。",
+            },
+            {
+              word: "差分更新（diffing）",
+              definition: "変更前と変更後のVirtual DOMを比較して、変わった部分だけを実DOMに適用する処理。",
+            },
+            {
+              word: "マウント",
+              definition: "コンポーネントが初めて画面に追加されること。",
+            },
+            {
+              word: "アンマウント",
+              definition: "コンポーネントが画面から取り除かれること。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図D: JSXからDOM反映までの流れ ── */}
         <ConceptDiagram
-          title="概念図D：コンポーネントの再利用パターン"
-          description="1つのコンポーネントを柔軟に使い回す仕組み"
-          accentColor="blue"
+          title="概念図D — JSXからブラウザ表示までの流れ"
+          description="JSXを書いてからブラウザに表示されるまでの流れ"
         >
-          {/* Propsで柔軟に変化するButtonの例 */}
-          <div className="mb-5">
-            <p className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-2">
-              Props で柔軟に変化する Button コンポーネント
-            </p>
-            <div className="flex flex-wrap gap-2 justify-center">
-              {[
-                { variant: "primary", size: "md", label: "送信" },
-                { variant: "danger", size: "sm", label: "削除" },
-                { variant: "outline", size: "lg", label: "キャンセル" },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-lg border border-blue-500/30 bg-blue-500/10 px-3 py-2 text-center"
-                >
-                  <p className="text-xs font-mono text-blue-300">
-                    {"<Button"}
-                  </p>
-                  <p className="text-xs font-mono text-gray-400 ml-2">
-                    variant={JSON.stringify(item.variant)}
-                  </p>
-                  <p className="text-xs font-mono text-gray-400 ml-2">
-                    size={JSON.stringify(item.size)}
-                  </p>
-                  <p className="text-xs font-mono text-blue-300">
-                    {"  />"} <span className="text-gray-500">→</span>{" "}
-                    <span className="text-white">{item.label}</span>
-                  </p>
-                </div>
-              ))}
-            </div>
-            <p className="text-xs text-gray-500 text-center mt-2">
-              1つのButtonコンポーネントが全ページで統一UIを提供
-            </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 flex-wrap">
+            <FlowCard
+              Icon={Code2}
+              title="JSX return"
+              subtitle="コンポーネント関数が返す構造"
+              highlight
+              accentColor="blue"
+            />
+            <FlowArrow label="Reactが解析" direction="right" />
+            <FlowCard
+              Icon={Layers}
+              title="Virtual DOM"
+              subtitle="Reactが管理する軽量コピー"
+            />
+            <FlowArrow label="差分だけ反映" direction="right" />
+            <FlowCard
+              Icon={Monitor}
+              title="Real DOM反映"
+              subtitle="ブラウザに実際に描画される"
+            />
           </div>
-
-          {/* コンポジションパターン */}
-          <div className="mb-5">
-            <p className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-2">
-              コンポジション — 小さな部品を組み合わせる
-            </p>
-            <div className="rounded-xl border border-blue-500/30 bg-blue-500/5 p-3">
-              <p className="text-xs font-mono text-gray-300 text-center mb-1">
-                Card = CardHeader + CardBody + CardFooter
-              </p>
-              <div className="flex flex-col gap-1">
-                <div className="rounded border border-blue-400/40 bg-blue-500/10 px-3 py-1.5 text-xs text-blue-300 font-mono text-center">
-                  CardHeader（タイトル・アイコン）
-                </div>
-                <div className="rounded border border-gray-600 bg-gray-800/50 px-3 py-1.5 text-xs text-gray-300 font-mono text-center">
-                  CardBody（メインコンテンツ）
-                </div>
-                <div className="rounded border border-gray-700 bg-gray-800/30 px-3 py-1.5 text-xs text-gray-400 font-mono text-center">
-                  CardFooter（アクション・補足）
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Container vs Presentational */}
-          <div>
-            <p className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-2">
-              Container vs Presentational の分離
-            </p>
-            <div className="flex gap-2">
-              <div className="flex-1 rounded-lg border border-violet-500/30 bg-violet-500/10 p-2">
-                <p className="text-xs font-semibold text-violet-300 mb-1">Container（賢い）</p>
-                <p className="text-xs text-gray-400">データ取得・状態管理・ロジックを担当。見た目は持たない。</p>
-              </div>
-              <div className="flex-1 rounded-lg border border-blue-500/30 bg-blue-500/10 p-2">
-                <p className="text-xs font-semibold text-blue-300 mb-1">Presentational（表示専用）</p>
-                <p className="text-xs text-gray-400">Propsを受け取り表示するだけ。ロジックを持たない。</p>
-              </div>
-            </div>
-          </div>
+          <p className="text-xs text-gray-600 text-center mt-4">
+            Reactは直接DOMを書き換えず、Virtual DOMで差分を計算してから最小限の変更だけを反映する。
+          </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          Virtual DOMの仕組みが分かりました。次はコンポーネントのライフサイクル（生まれてから消えるまで）を確認します。
+        </p>
+
+        {/* ── 概念図E: レンダリングサイクル ── */}
         <ConceptDiagram
           title="概念図E：Reactコンポーネントのレンダリングサイクル"
           description="マウントから更新、アンマウントまでの完全な流れ"
@@ -358,6 +561,7 @@ export default function ComponentsPage() {
           </div>
         </ConceptDiagram>
 
+        {/* ── 概念図F: クラスコンポーネントとの比較 ── */}
         <ConceptDiagram
           title="概念図F：クラスコンポーネントと関数コンポーネントの比較"
           description="書き方・ライフサイクル・現在の推奨を並べて確認する"
@@ -444,99 +648,8 @@ export default function ComponentsPage() {
         </ConceptDiagram>
       </section>
 
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={[
-            "クラスコンポーネント",
-            "関数コンポーネント",
-          ]}
-          rows={[
-            {
-              label: "書き方",
-              cells: [
-                "class MyComp extends React.Component",
-                "function MyComp() { return ... }",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "状態管理",
-              cells: [
-                "this.state / this.setState",
-                "useState Hook",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "ライフサイクル",
-              cells: [
-                "componentDidMount など",
-                "useEffect Hook",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "現在の推奨",
-              cells: [
-                "レガシー・非推奨",
-                "現在の標準",
-              ],
-              highlightCol: 1,
-            },
-          ]}
-          note="React 16.8（2019年）でHooksが導入されて以来、関数コンポーネントが標準になった。新規コードはすべて関数コンポーネントで書く。既存のクラスコンポーネントは動作するが、新規作成は避ける。"
-        />
-      </section>
-
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "マスター、「コンポーネント」って何ですか？ HTMLとどう違うんですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "LINEのトーク画面を想像してみてください。あの吹き出しが一つひとつコンポーネントです、マジさん。自分の吹き出しと相手の吹き出し、形は違いますが、同じ「吹き出しコンポーネント」を使い回しているだけ。HTMLだと毎回同じ構造を手で書き直しますが、コンポーネントは一度定義すれば何度でも呼び出せます。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text: "JSXって何ですか？ HTMLに見えるけどHTMLじゃないの？ マジ？",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text: "JSXはJavaScriptの中にHTMLのような記法で書ける構文です。料理レシピに「絵で書ける欄」が追加されたようなイメージ。見た目はHTMLそっくりですが、最終的にはJavaScriptに変換されます。だから`class`ではなく`className`を使うなど、細かい違いがあります。",
-          },
-          {
-            speaker: "maji",
-            emotion: "worried",
-            text: "コンポーネントを「組み合わせる」って、どういうことですか？ ボクには積み木みたいなイメージしかなくて。",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text: "積み木で大正解ですよ、マジさん。大きな積み木（App）の中に中くらいの積み木（Header）があって、さらにその中に小さな積み木（Button）が入っている。この入れ子構造でどんな複雑なUIも作れます。家で言えば、壁・床・屋根という部品が組み合わさって「家」になるのと同じです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "「部品として切り出す」ことで同じコードを何度も書かずに済むし、どこを直せばいいかも分かりやすくなる、ということですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "完璧な整理です。「再利用性」と「責務の分離」がコンポーネント設計の2大利点です。一つのコンポーネントに詰め込みすぎず、適切な粒度に分けるセンスがReactエンジニアの腕の見せ所ですよ、マジさん。",
-          },
-        ]}
-      />
-
       <DetailSection title="詳細解説">
+        {/* 7.1 JSXのルール（最も実用的なので先頭へ） */}
         <DetailBlock heading="7.1 JSXのルール">
           <p>
             JSXには守るべきルールが4つある。まず、<strong className="text-white">1つのルート要素</strong>に包む必要がある。複数要素を返す場合は{" "}
@@ -605,7 +718,7 @@ export default function ComponentsPage() {
             状態が変化するとReactはまずVirtual DOMを更新し、変更前と変更後のVirtual DOMを比較（diffing）する。そこで差分だけを特定し、最小限の変更をReal DOMに反映する。
           </p>
           <KeyPoint>
-            毎回ページ全体を描き直すのではなく「変わった部分だけ」を更新するのがVirtual DOMの利点。これによってReactは複雑なUIでも効率よく画面を更新できる。
+            毎回ページ全体を描き直すのではなく「変わった部分だけ」を更新するのがVirtual DOMの利点。これによってReactは複雑なUIでも効率よく画面を更新できる。React.memoによるメモ化最適化の詳細はhooksページで扱う。
           </KeyPoint>
         </DetailBlock>
       </DetailSection>

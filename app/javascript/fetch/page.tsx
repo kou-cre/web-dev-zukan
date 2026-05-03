@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -30,6 +31,8 @@ import { CorrectionCard } from "@/components/CorrectionCard";
 import { UseCaseGrid } from "@/components/UseCaseGrid";
 import { CodeBlock } from "@/components/CodeBlock";
 import { TerminalBlock } from "@/components/TerminalBlock";
+import { SectionDivider } from "@/components/SectionDivider";
+import { TermNote } from "@/components/TermNote";
 import { fetchQuestions } from "@/content/questions/javascript/fetch";
 
 export const metadata = {
@@ -49,6 +52,26 @@ export default function FetchPage() {
         accentColor="cyan"
       />
 
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "fetchとは何か（ブラウザからサーバーにデータを取りに行く仕組み）",
+          "GET（取得）とPOSTの（送信）違いと書き方",
+          "レスポンスのステータスコードの意味（200/404/500）",
+          "async/awaitでfetchを書く定型パターン",
+        ]}
+        prerequisites={[
+          "async/awaitを知っている（/javascript/asyncを読んだ）",
+          "HTTP = Webでデータをやりとりするためのルールのこと",
+          "JSON = {'{'}key: value{'}'} の形式でデータを表す共通フォーマット",
+        ]}
+        outOfScope={[
+          "CORS / preflightリクエストの詳細な仕組み（応用編で扱う）",
+          "AbortControllerによるfetchのキャンセル",
+          "axiosの内部実装の詳細（axios自体は基礎の比較表で扱う）",
+        ]}
+      />
+
       <OnePageSummary
         keyMessage="fetchはブラウザ標準のHTTP通信API。URLを渡すとPromiseを返し、サーバーからJSONやテキストを取得できる。BaaSのAPIもREST APIも、最終的にfetchで通信している。"
         metaphorTitle="宅急便の集荷依頼"
@@ -61,11 +84,48 @@ export default function FetchPage() {
         definition="fetchとは、URLを指定してHTTPリクエストを送り、レスポンスをPromiseで受け取るブラウザ標準のAPI。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
+        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+          まず「fetchを呼ぶとブラウザとサーバーの間で何が起きるか」という全体像を確認します。
+        </p>
+
+        {/* TermNote: 概念図Aに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "HTTP",
+              definition:
+                "HyperText Transfer Protocol の略。ブラウザとサーバーがデータをやり取りするときの「会話のルール（手順）」のこと。",
+            },
+            {
+              word: "リクエスト",
+              definition:
+                "ブラウザからサーバーへの「お願い」。「このURLのデータをください」「このデータを保存してください」などの要求のこと。",
+            },
+            {
+              word: "レスポンス",
+              definition:
+                "サーバーからブラウザへの「返答」。リクエストに対してデータやエラーの内容を返す。",
+            },
+            {
+              word: "API",
+              definition:
+                "Application Programming Interface の略。サーバーが「このURLにリクエストを送れば、このデータを返しますよ」と約束した窓口のこと。",
+            },
+            {
+              word: "エンドポイント",
+              definition:
+                "APIの具体的なURL。例えば /api/users は「ユーザー一覧を返す窓口（エンドポイント）」という意味になる。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図A: fetchの全体像 ── */}
         <ConceptDiagram
           title="概念図A"
           description="fetchを呼ぶと、ブラウザとサーバーの間で何が起きているのか？"
@@ -81,6 +141,37 @@ export default function FetchPage() {
             fetch(url) は Promise を返す。await すると Response が手に入り、もう一度 await response.json() で中身のデータが取れる（2段階）。
           </p>
         </ConceptDiagram>
+
+        {/* bridge A→B */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          全体の流れが分かりました。次は「リクエストの種類（GETとPOST）」を見ていきます。
+        </p>
+
+        {/* TermNote: 概念図Bに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "GET",
+              definition:
+                "HTTPメソッドの一つ。サーバーからデータを「読み取る」ときに使う。URLを開くだけで実行されるので、ブックマークやリンクで共有できる。",
+            },
+            {
+              word: "POST",
+              definition:
+                "HTTPメソッドの一つ。サーバーにデータを「送る」ときに使う。フォームの送信・新しいデータの登録などで使われる。",
+            },
+            {
+              word: "HTTPメソッド",
+              definition:
+                "リクエストの「目的（動詞）」を表す言葉。GET（取得）・POST（作成）・PUT（更新）・DELETE（削除）などがある。",
+            },
+            {
+              word: "JSON.stringify",
+              definition:
+                "JavaScriptのオブジェクト（{'{'}name: 'マジ'{'}'}）を、サーバーに送れる文字列形式に変換する関数。逆はJSON.parse。",
+            },
+          ]}
+        />
 
         <ConceptDiagram
           title="概念図B"
@@ -138,6 +229,27 @@ export default function FetchPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge B→C */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          GETとPOSTが書けるようになったら、次に必ず直面するのが「通信が失敗したとき」の問題です。
+        </p>
+
+        {/* TermNote: 概念図Cに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "ステータスコード",
+              definition:
+                "サーバーが返す「結果の番号」。200=成功、404=見つからない、500=サーバー側エラー、など3桁の数字で結果を表す。",
+            },
+            {
+              word: "response.ok",
+              definition:
+                "ステータスコードが200〜299のとき true になるプロパティ。fetchは404や500でもエラーにならないので、この値を自分で確認する必要がある。",
+            },
+          ]}
+        />
+
         <ConceptDiagram
           title="概念図C"
           description="fetchのエラーは「3層」に分かれている。それぞれ捕まえ方が違うのが落とし穴。"
@@ -165,11 +277,119 @@ export default function FetchPage() {
             「fetch は HTTPエラーで自動rejectされない」が最大の落とし穴。axiosが好まれる最大の理由でもある。
           </p>
         </ConceptDiagram>
+      </section>
+
+      {/* ── MajiDialogue（基礎編 — ComparisonTableより前） ── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "マスター、fetch って「取ってくる」って意味ですよね。何を取ってくるんですか？ ボクの中ではまだ、犬がボールを咥えて戻ってくる絵しか浮かんでいません……。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "イメージは案外悪くないですよ、マジさん。私はいつも宅急便の集荷依頼にたとえています。`fetch(url)` で「この住所のサーバーから荷物を取ってきて」と依頼すると、配達員（ブラウザ）が出発する。受付番号にあたるのが Promise です。荷物（データ）が届くまでの間、あなたの手元には番号だけがある状態ですね。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "マジ？\nじゃあ `response.ok` って何ですか？ 通信が成功したらエラーは自動で捕まえてくれるんじゃないんですか！？ ボク、こんな大事なこと知らずに生きてきたなんて……ちょっと震えています！",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "ここがfetchの最大の落とし穴です。404や500が返ってきても、fetchの世界では「通信は成功した」扱いになる。配達員は荷物を持ち帰ってきた、ただし中身は「品切れのお詫び状」だった、というイメージですね。なので `if (!response.ok) throw new Error(...)` と自分で例外を投げる必要があります。axiosが好まれるのは、ここを自動でやってくれるからなんですよ。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "POSTでJSONを送る時のヘッダーとかbodyとか、書くことが多くて頭が混乱してきました……。method・headers・body・JSON.stringify……ボク、もう何を渡せばいいか分からなくなっています。",
+          },
+          {
+            speaker: "master",
+            emotion: "thinking",
+            text: "落ち着いてください、マジさん。これは引っ越しの梱包と同じで、毎回やることは決まっています。① 段ボールに入れる（`JSON.stringify`）、② 中身ラベルを貼る（`Content-Type: application/json`）、③ 配送伝票を書く（`method: 'POST'`）。この3点セットを覚えれば、あとは中身が変わるだけ。一度書いたものをコピペして使い回しても全く問題ありません。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "つまりfetchは「URLとオプションを渡してPromiseで受け取る」のが本体で、エラー処理とPOSTの定型句さえ押さえれば、あとはほぼ毎回同じ形なんですね。腑に落ちました。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その通りです、マジさん。さらに言えば、Firebaseや SupabaseのSDK も、内部では結局このfetchを呼んでいます。実務では直接fetchを書く機会が減るかもしれませんが、裏で何が起きているか分かっていれば、エラーが出た時の解像度が全く違う。「市場を知っている料理人」と同じです。今日のところは「fetchはHTTP通信の本体、Promiseで返ってくる、エラーは3層」、これだけ持ち帰ってください。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ──────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["fetch", "axios", "SWR / React Query"]}
+          rows={[
+            {
+              label: "種別",
+              cells: ["ブラウザ標準", "外部ライブラリ", "データフェッチHooks"],
+              highlightCol: 0,
+            },
+            {
+              label: "インストール",
+              cells: ["不要", "npm install axios", "npm install swr"],
+              highlightCol: 0,
+            },
+            {
+              label: "エラー処理",
+              cells: [
+                "response.okを自分で確認",
+                "HTTPエラーを自動でthrow",
+                "自動でエラー状態を管理",
+              ],
+              highlightCol: 0,
+            },
+            {
+              label: "キャッシュ",
+              cells: ["なし", "なし", "自動キャッシュ・再検証"],
+              highlightCol: 0,
+            },
+            {
+              label: "使うシーン",
+              cells: [
+                "基礎学習・シンプルな通信",
+                "実務での標準",
+                "Reactアプリのデータ取得",
+              ],
+              highlightCol: 0,
+            },
+          ]}
+          note="まずはfetchで「裸のHTTP通信」を理解する。その上でaxios・SWRに進むと、各ライブラリが「fetchの何を補ってくれているか」が見えてくる。"
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ──────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下はHTTPメソッドの詳細・Responseオブジェクトの深掘り・CORSの仕組みなど、実務で詰まったときに戻ってくるための内容です。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — HTTPメソッドとResponseの詳細
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+          GET・POSTの次は、PUT・PATCH・DELETEと全メソッドの使い分けを確認します。さらにResponseオブジェクトの構造も見ていきます。
+        </p>
 
         <ConceptDiagram
           title="概念図D：HTTPメソッドの役割と使い分け"
           description="REST APIで使う5つのHTTPメソッド。URLは「リソース」、メソッドは「動詞」を表す。"
-          accentColor="cyan"
         >
           <div className="flex flex-col gap-2">
             {[
@@ -194,10 +414,14 @@ export default function FetchPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge D→E */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          HTTPメソッドの全体像が分かりました。次はfetchが返す「Responseオブジェクト」の中身を深掘りします。
+        </p>
+
         <ConceptDiagram
           title="概念図E：fetch()のResponseオブジェクトを正しく処理する"
           description="fetch()はPromise{`<Response>`}を返す。Responseの中身を取り出すには2段階のawaitが必要。"
-          accentColor="cyan"
         >
           <div className="flex flex-col gap-3">
             <div className="flex flex-col sm:flex-row items-stretch gap-2">
@@ -243,10 +467,35 @@ export default function FetchPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge E→F */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          Responseオブジェクトの使い方が分かりました。次はブラウザのセキュリティ制限「CORS」を見ていきます。CORSエラーに詰まったときにここへ戻ってきてください。
+        </p>
+
+        {/* TermNote: 概念図Fに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "CORS",
+              definition:
+                "Cross-Origin Resource Sharing（クロスオリジンリソース共有）の略。ブラウザが「別のドメインへのfetchを制限する」セキュリティの仕組み。",
+            },
+            {
+              word: "オリジン",
+              definition:
+                "プロトコル（https://）＋ドメイン（example.com）＋ポート番号（:3000）の3つを合わせたもの。1つでも違うと「別オリジン」になる。",
+            },
+            {
+              word: "プリフライト",
+              definition:
+                "ブラウザが本番のリクエストを送る前に「このリクエストを送っていいか確認するための事前リクエスト」を自動で送る仕組み。OPTIONSメソッドで送られる。",
+            },
+          ]}
+        />
+
         <ConceptDiagram
           title="概念図F：CORS（クロスオリジンリソース共有）の仕組み"
           description="なぜブラウザは別のドメインへのfetchをブロックするのか？ オリジンの定義から理解する。"
-          accentColor="cyan"
         >
           <div className="flex flex-col gap-3">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -302,98 +551,44 @@ export default function FetchPage() {
         </ConceptDiagram>
       </section>
 
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={["fetch", "axios", "SWR / React Query"]}
-          rows={[
-            {
-              label: "種別",
-              cells: ["ブラウザ標準", "外部ライブラリ", "データフェッチHooks"],
-              highlightCol: 0,
-            },
-            {
-              label: "インストール",
-              cells: ["不要", "npm install axios", "npm install swr"],
-              highlightCol: 0,
-            },
-            {
-              label: "エラー処理",
-              cells: [
-                "response.okを自分で確認",
-                "HTTPエラーを自動でthrow",
-                "自動でエラー状態を管理",
-              ],
-              highlightCol: 0,
-            },
-            {
-              label: "キャッシュ",
-              cells: ["なし", "なし", "自動キャッシュ・再検証"],
-              highlightCol: 0,
-            },
-            {
-              label: "使うシーン",
-              cells: [
-                "基礎学習・シンプルな通信",
-                "実務での標準",
-                "Reactアプリのデータ取得",
-              ],
-              highlightCol: 0,
-            },
-          ]}
-          note="まずはfetchで「裸のHTTP通信」を理解する。その上でaxios・SWRに進むと、各ライブラリが「fetchの何を補ってくれているか」が見えてくる。"
-        />
-      </section>
-
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "マスター、fetch って「取ってくる」って意味ですよね。何を取ってくるんですか？ ボクの中ではまだ、犬がボールを咥えて戻ってくる絵しか浮かんでいません……。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "イメージは案外悪くないですよ、マジさん。私はいつも宅急便の集荷依頼にたとえています。`fetch(url)` で「この住所のサーバーから荷物を取ってきて」と依頼すると、配達員（ブラウザ）が出発する。受付番号にあたるのが Promise です。荷物（データ）が届くまでの間、あなたの手元には番号だけがある状態ですね。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text: "マジ？\nじゃあ `response.ok` って何ですか？ 通信が成功したらエラーは自動で捕まえてくれるんじゃないんですか！？ ボク、こんな大事なこと知らずに生きてきたなんて……ちょっと震えています！",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text: "ここがfetchの最大の落とし穴です。404や500が返ってきても、fetchの世界では「通信は成功した」扱いになる。配達員は荷物を持ち帰ってきた、ただし中身は「品切れのお詫び状」だった、というイメージですね。なので `if (!response.ok) throw new Error(...)` と自分で例外を投げる必要があります。axiosが好まれるのは、ここを自動でやってくれるからなんですよ。",
-          },
-          {
-            speaker: "maji",
-            emotion: "worried",
-            text: "POSTでJSONを送る時のヘッダーとかbodyとか、書くことが多くて頭が混乱してきました……。method・headers・body・JSON.stringify……ボク、もう何を渡せばいいか分からなくなっています。",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text: "落ち着いてください、マジさん。これは引っ越しの梱包と同じで、毎回やることは決まっています。① 段ボールに入れる（`JSON.stringify`）、② 中身ラベルを貼る（`Content-Type: application/json`）、③ 配送伝票を書く（`method: 'POST'`）。この3点セットを覚えれば、あとは中身が変わるだけ。一度書いたものをコピペして使い回しても全く問題ありません。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "つまりfetchは「URLとオプションを渡してPromiseで受け取る」のが本体で、エラー処理とPOSTの定型句さえ押さえれば、あとはほぼ毎回同じ形なんですね。腑に落ちました。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "その通りです、マジさん。さらに言えば、Firebaseや SupabaseのSDK も、内部では結局このfetchを呼んでいます。実務では直接fetchを書く機会が減るかもしれませんが、裏で何が起きているか分かっていれば、エラーが出た時の解像度が全く違う。「市場を知っている料理人」と同じです。今日のところは「fetchはHTTP通信の本体、Promiseで返ってくる、エラーは3層」、これだけ持ち帰ってください。",
-          },
-        ]}
-      />
-
       <DetailSection title="詳細解説">
-        <DetailBlock heading="6.1 HTTPメソッド（GET / POST / PUT / DELETE）とREST">
+        <DetailBlock heading="6.1 fetchの正しいエラーハンドリングパターン（最重要）">
+          <p>
+            実務でfetchを使うとき、最初に覚えるべきは「完全なエラーハンドリング付きの定型句」です。
+            <strong className="text-white"> response.ok の確認</strong>を忘れると、404や500が返ってきても気づかないバグが生まれます。
+          </p>
+          <CodeBlock
+            title="正しいエラーハンドリングパターン（これを覚える）"
+            language="javascript"
+            code={`async function fetchUser(id) {
+  try {
+    const res = await fetch(\`/api/users/\${id}\`);
+
+    // ここが重要：HTTPエラーを自分でthrowする
+    if (!res.ok) {
+      throw new Error(\`HTTP \${res.status}: \${res.statusText}\`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    // ネットワークエラー + 上のthrowの両方をここで捕まえられる
+    console.error('取得失敗:', err.message);
+    throw err;
+  }
+}`}
+          />
+          <CorrectionCard
+            misconception="404や500が返ってきたら、try/catchで自動的に捕まえられる"
+            correction="fetchはHTTP通信が成功した時点でresolveされる。404・500はエラーではなく「返ってきたステータス」"
+            reason="rejectされるのはネットワーク接続そのものが失敗した時だけ（オフライン・DNS失敗など）。サーバーが404を返すのは「通信は成功した・中身がなかっただけ」なのでresolveされる。"
+          />
+          <WarningPoint>
+            この処理を毎回書くのが面倒なので、実務では axios や ky のような「HTTPエラーを自動でthrow」してくれるラッパーを使うことが多い。
+          </WarningPoint>
+        </DetailBlock>
+
+        <DetailBlock heading="6.2 HTTPメソッド（GET / POST / PUT / DELETE）とREST">
           <p>
             HTTPには「動詞」がある。{" "}
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>GET</code>{" "}
@@ -462,7 +657,7 @@ const res = await fetch('/api/users/1', { method: 'DELETE' });`}
           <KeyPoint>fetchはデフォルトでGET。POST以降を使う時だけ method オプションを明示する。</KeyPoint>
         </DetailBlock>
 
-        <DetailBlock heading="6.2 fetchのレスポンス処理（response.json / text / blob）">
+        <DetailBlock heading="6.3 fetchのレスポンス処理（response.json / text / blob）">
           <p>
             fetchが返す{" "}
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>Response</code>{" "}
@@ -511,48 +706,6 @@ const data = await response.json();
 const data = await fetch('/api/users').then(r => r.json());`}
           />
           <KeyPoint>これらはすべてPromiseを返す。fetchが2段階のawaitを必要とするのはこのため。</KeyPoint>
-        </DetailBlock>
-
-        <DetailBlock heading="6.3 fetchの落とし穴（HTTPエラーがrejectされない問題）">
-          <p>
-            初学者がもっとも踏みやすい地雷。404でも500でも、{" "}
-            <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>fetch</code>{" "}
-            は「通信は成功した」と判断するため、Promiseは{" "}
-            <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>resolve</code>{" "}
-            される。その結果、try/catchで捕まえようとしても引っかからない。
-          </p>
-          <CorrectionCard
-            misconception="404や500が返ってきたら、try/catchで自動的に捕まえられる"
-            correction="fetchはHTTP通信が成功した時点でresolveされる。404・500はエラーではなく「返ってきたステータス」"
-            reason="rejectされるのはネットワーク接続そのものが失敗した時だけ（オフライン・DNS失敗など）。サーバーが404を返すのは「通信は成功した・中身がなかっただけ」なのでresolveされる。"
-          />
-          <p>
-            正しい書き方は「response.ok（status が 200〜299 ならtrue）」を自分で確認すること。
-          </p>
-          <CodeBlock
-            title="正しいエラーハンドリングパターン"
-            language="javascript"
-            code={`async function fetchUser(id) {
-  try {
-    const res = await fetch(\`/api/users/\${id}\`);
-
-    // ここが重要：HTTPエラーを自分でthrowする
-    if (!res.ok) {
-      throw new Error(\`HTTP \${res.status}: \${res.statusText}\`);
-    }
-
-    const data = await res.json();
-    return data;
-  } catch (err) {
-    // ネットワークエラー + 上のthrowの両方をここで捕まえられる
-    console.error('取得失敗:', err.message);
-    throw err;
-  }
-}`}
-          />
-          <WarningPoint>
-            この処理を毎回書くのが面倒なので、実務では axios や ky のような「HTTPエラーを自動でthrow」してくれるラッパーを使うことが多い。
-          </WarningPoint>
         </DetailBlock>
 
         <DetailBlock heading="6.4 CORSとは何か（ブラウザのセキュリティ制限）">

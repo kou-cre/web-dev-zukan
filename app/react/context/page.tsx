@@ -11,6 +11,9 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
+import { TermNote } from "@/components/TermNote";
+import { SectionDivider } from "@/components/SectionDivider";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -41,6 +44,25 @@ export default function ContextPage() {
         accentColor="rose"
       />
 
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "Contextとは何か（なぜ必要なのか）",
+          "なぜProps drillingが問題になるのか",
+          "createContext / Provider / useContext の3ステップの使い方",
+        ]}
+        prerequisites={[
+          "Props を知っている（/react/props を読んだ）",
+          "useState を知っている（/react/state を読んだ）",
+          "コンポーネントの入れ子構造（親・子・孫）を知っている",
+        ]}
+        outOfScope={[
+          "パフォーマンス最適化の具体的な実装方法（React.memo・useMemoの組み合わせ）（応用編で扱う）",
+          "ReduxとZustandとの使い分け",
+          "Contextのスプリット設計（応用編で扱う）",
+        ]}
+      />
+
       <OnePageSummary
         keyMessage="ContextはReactのコンポーネントツリー全体に値を「流す」仕組み。Props drillingの解決策。createContext でチャンネルを作り、Provider で値を提供し、useContext で受け取る、という3ステップで使う。テーマ・ログインユーザー情報・言語設定など、「どこからでもアクセスしたい値」に最適。"
         metaphorTitle="会社の全館放送システム"
@@ -54,10 +76,41 @@ export default function ContextPage() {
         definition="ContextはReactのコンポーネントツリーで値を全体共有する仕組み。Props drillingを避け、テーマ・ユーザー情報などグローバルな値を扱うときに使う。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          まずは「なぜContextが必要なのか」という問題から始め、その後に「Contextをどう使うか」の3ステップを見ていきます。
+        </p>
+
+        {/* TermNote: 基礎図に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "Props drilling",
+              definition: "必要のない中間コンポーネントを経由してPropsを渡し続けなければならない状態。ドリルで穴を開けるように上から下へ通す様子に例えた名前。",
+            },
+            {
+              word: "Context",
+              definition: "コンポーネントツリー全体に値を共有できるReactの仕組み。Propsを使わずに値を「流せる」。",
+            },
+            {
+              word: "createContext",
+              definition: "Contextの「チャンネル」を作る関数。どんな値を共有するかをここで定義する。",
+            },
+            {
+              word: "Provider",
+              definition: "Contextの値を提供するコンポーネント。Providerで包んだ範囲の中であれば、どこからでも値を受け取れる。",
+            },
+            {
+              word: "useContext",
+              definition: "ContextをReactコンポーネントの中で受け取るためのHook。1行で値を取り出せる。",
+            },
+          ]}
+        />
 
         {/* 図A: Props drilling vs Context */}
         <ConceptDiagram
@@ -165,6 +218,11 @@ export default function ContextPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          Props drillingの問題が分かりました。次は「Contextをどう使うか」、createContext・Provider・useContextの3ステップを見ていきます。
+        </p>
+
         {/* 図B: Contextの3ステップ */}
         <ConceptDiagram
           title="概念図B"
@@ -196,6 +254,11 @@ export default function ContextPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          3ステップが分かりました。次はContextがどんな値に向いているかを確認します。
+        </p>
+
         {/* 図C: 典型的な使用例 */}
         <ConceptDiagram
           title="概念図C"
@@ -222,11 +285,123 @@ export default function ContextPage() {
           <StackLayer
             Icon={Bell}
             title="Toast通知"
-            subtitle="どのコンポーネントからでもトースト通知を発火させたい場合。"
+            subtitle="どのコンポーネントからでもトースト通知を発火させたい場合。（ページの右下などに一時的に表示される「保存しました」のようなお知らせ表示）"
             iconColor="text-amber-400"
             showArrow={false}
           />
         </ConceptDiagram>
+      </section>
+
+      {/* ── MajiDialogue（基礎編 — 概念図の直後） ─────────── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "Props drillingって何ですか？ボク、「drilling」って穴あけのことでしたよね……コンポーネントに穴をあけるんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "比喩としてはいい線ですよ、マジさん。上の階から下の階へ「Propsをドリルで穴あけしながら通す」状態です。3階建ての建物で、3階の情報を地下1階に届けるためにわざわざ1階・2階を経由させる非効率さのことです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "マジ？\nContextを使えばどの階からでも直接受け取れる、ということですか！？ボク、これは革命すぎます！",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "ほぼ正解です。正確には「Providerで包んだ範囲の中であれば、どのコンポーネントでも受け取れる」です。全館放送が届くエリアを設定するイメージですね。Providerの外にいるコンポーネントには届きません、マジさん。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "ボク……Contextを使うと全部再レンダリングされてしまうと聞いたのですが、それって遅くなりませんか？",
+          },
+          {
+            speaker: "master",
+            emotion: "thinking",
+            text: "鋭い懸念です。Contextの値が変わると、useContextを使っているコンポーネント全体が再レンダリングされます。だから「更新頻度の高い値」にContextを使うと、大量の再レンダリングが起きてパフォーマンスに影響します。テーマや認証情報のような「あまり変わらない値」に使うのがベストプラクティスですよ、マジさん。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なるほど……。じゃあ「よく変わるけどグローバルに共有したい値」はどうするんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その場合はZustandやReduxといった外部のState管理ライブラリが選択肢になります。ただし、Next.jsやReactを始めたばかりなら、まずはContextとuseStateの組み合わせで十分です。複雑さを持ち込む前に、シンプルな手段で解決できないか考える習慣が大切ですよ、マジさん。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ───────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["Props", "Context", "外部State管理（Zustand等）"]}
+          rows={[
+            {
+              label: "用途",
+              cells: [
+                "親子間のデータ渡し",
+                "ツリー全体での共有",
+                "アプリ全体の複雑な状態",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "更新の通知",
+              cells: [
+                "Propsが変わると子が再レンダー",
+                "値が変わると使用コンポーネント全体が再レンダー",
+                "サブスクライブした部分だけ再レンダー",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "学習コスト",
+              cells: [
+                "低",
+                "中",
+                "高（ライブラリ学習が必要）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "おすすめ場面",
+              cells: [
+                "シンプルな親子関係",
+                "テーマ・認証情報",
+                "大規模アプリのState管理",
+              ],
+              highlightCol: 1,
+            },
+          ]}
+          note="まずPropsで解決を試みて、Props drillingが3階層を超えたらContextを検討する。更新頻度が高くなってきたらZustandなどを検討するという段階的なアプローチがベストプラクティス。"
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ──────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下はContextのパフォーマンス問題・複数Contextのネスト・Redux/Zustandとの比較など、実務で詰まったときに戻ってくる内容です。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — パフォーマンスと複数Context
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          基本的な使い方が分かったら、次は「Contextが引き起こすパフォーマンス問題」と「複数のContextをどう管理するか」を見ていきます。
+        </p>
 
         {/* 図D: Context値更新と再レンダリング範囲 */}
         <ConceptDiagram
@@ -310,6 +485,10 @@ export default function ContextPage() {
             Contextは「1つの関心事 = 1つのContext」を目安に分割すると再レンダリングを最小化できる。
           </p>
         </ConceptDiagram>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          Context分割のパターンが分かりました。次は複数のContextをネストする実際の構造と、Contextと外部ライブラリの使い分けを見ていきます。
+        </p>
 
         {/* 図E: 複数Contextの入れ子構造 */}
         <ConceptDiagram
@@ -420,6 +599,10 @@ export default function ContextPage() {
             子コンポーネントはどのContextでも useContext 1回で受け取れる。Providerは複数あっても入れ子にすればよい。
           </p>
         </ConceptDiagram>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          複数Contextの管理方法が分かりました。最後にContextと外部ライブラリの使い分け基準を整理しておきます。
+        </p>
 
         {/* 図F: Context vs Zustand/Redux 使い分け */}
         <ConceptDiagram
@@ -547,103 +730,11 @@ export default function ContextPage() {
         </ConceptDiagram>
       </section>
 
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={["Props", "Context", "外部State管理（Zustand等）"]}
-          rows={[
-            {
-              label: "用途",
-              cells: [
-                "親子間のデータ渡し",
-                "ツリー全体での共有",
-                "アプリ全体の複雑な状態",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "更新の通知",
-              cells: [
-                "Propsが変わると子が再レンダー",
-                "値が変わると使用コンポーネント全体が再レンダー",
-                "サブスクライブした部分だけ再レンダー",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "学習コスト",
-              cells: [
-                "低",
-                "中",
-                "高（ライブラリ学習が必要）",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "おすすめ場面",
-              cells: [
-                "シンプルな親子関係",
-                "テーマ・認証情報",
-                "大規模アプリのState管理",
-              ],
-              highlightCol: 1,
-            },
-          ]}
-          note="まずPropsで解決を試みて、Props drillingが3階層を超えたらContextを検討する。更新頻度が高くなってきたらZustandなどを検討するという段階的なアプローチがベストプラクティス。"
-        />
-      </section>
-
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "Props drillingって何ですか？ボク、「drilling」って穴あけのことでしたよね……コンポーネントに穴をあけるんですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "比喩としてはいい線ですよ、マジさん。上の階から下の階へ「Propsをドリルで穴あけしながら通す」状態です。3階建ての建物で、3階の情報を地下1階に届けるためにわざわざ1階・2階を経由させる非効率さのことです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text: "マジ？\nContextを使えばどの階からでも直接受け取れる、ということですか！？ボク、これは革命すぎます！",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text: "ほぼ正解です。正確には「Providerで包んだ範囲の中であれば、どのコンポーネントでも受け取れる」です。全館放送が届くエリアを設定するイメージですね。Providerの外にいるコンポーネントには届きません、マジさん。",
-          },
-          {
-            speaker: "maji",
-            emotion: "worried",
-            text: "ボク……Contextを使うと全部再レンダリングされてしまうと聞いたのですが、それって遅くなりませんか？",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text: "鋭い懸念です。Contextの値が変わると、useContextを使っているコンポーネント全体が再レンダリングされます。だから「更新頻度の高い値」にContextを使うと、大量の再レンダリングが起きてパフォーマンスに影響します。テーマや認証情報のような「あまり変わらない値」に使うのがベストプラクティスですよ、マジさん。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "なるほど……。じゃあ「よく変わるけどグローバルに共有したい値」はどうするんですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "その場合はZustandやReduxといった外部のState管理ライブラリが選択肢になります。ただし、Next.jsやReactを始めたばかりなら、まずはContextとuseStateの組み合わせで十分です。複雑さを持ち込む前に、シンプルな手段で解決できないか考える習慣が大切ですよ、マジさん。",
-          },
-        ]}
-      />
-
       <DetailSection title="詳細解説">
         <DetailBlock heading="7.1 Contextの実装パターン">
           <p>
             <strong className="text-white">Step 1: createContextでチャンネルを作る</strong><br />
+            TypeScriptを使っている場合は <code className="text-xs px-1 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>{`<型名>`}</code> でContextが扱う値の種類を指定します。<br />
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>const ThemeContext = createContext&lt;string&gt;("light")</code>
             {" "}のように型とデフォルト値を指定する。
           </p>

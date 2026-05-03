@@ -18,6 +18,9 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
+import { TermNote } from "@/components/TermNote";
+import { SectionDivider } from "@/components/SectionDivider";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -53,6 +56,24 @@ export default function ServerPage() {
         accentColor="emerald"
       />
 
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "クライアント（ブラウザ）とサーバーの役割分担",
+          "HTTP でデータをやり取りする仕組み",
+          "ブラウザが URL を入力してから画面が表示されるまでの流れ",
+        ]}
+        prerequisites={[
+          "ブラウザ（Chrome 等）を使ったことがある",
+          "URL（https://example.com）とは何かを知っている",
+        ]}
+        outOfScope={[
+          "HTTPS の証明書の仕組み（SSL/TLS）（応用編で扱う）",
+          "WebSocket によるリアルタイム通信（応用編で扱う）",
+          "SSR / SSG の詳細（Next.js のページ生成モード）（応用編で扱う）",
+        ]}
+      />
+
       <OnePageSummary
         keyMessage="サーバーとは「リクエストを受けたら何かを返してくれる、ずっと起きているコンピューター」のこと。Webサイトが動くのは、地球のどこかで誰かのサーバーが24時間あなたのブラウザの呼びかけに応答してくれているから。"
         metaphorTitle="24時間営業のホテルのフロント係"
@@ -65,11 +86,43 @@ export default function ServerPage() {
         definition="サーバーとは、リクエストを受け取って、レスポンスを返すことを仕事にしている、常時稼働のコンピューター。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ─────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
+        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+          まずは「クライアントとサーバーのやり取り」と「サーバーの中身」を図で確認しましょう。
+        </p>
+
+        {/* TermNote: 概念図Aに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "クライアント",
+              definition: "サービスを「受ける側」。Webの世界ではブラウザのこと。サーバーにお願いする立場。",
+            },
+            {
+              word: "サーバー",
+              definition: "サービスを「提供する側」。クライアントからの依頼を受けて、データを返すコンピューター。",
+            },
+            {
+              word: "HTTP",
+              definition: "ブラウザとサーバーがデータをやり取りするための「約束事（プロトコル）」。手紙の書き方ルールのようなもの。",
+            },
+            {
+              word: "リクエスト",
+              definition: "ブラウザがサーバーに「このページを送って」とお願いするメッセージ。",
+            },
+            {
+              word: "レスポンス",
+              definition: "リクエストを受けたサーバーが返す答え。HTML・画像・JSONなどのデータが入っている。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図A: クライアント〜サーバー〜DB ── */}
         <ConceptDiagram
           title="概念図A"
           description="ブラウザに表示されている画面は、どこから来たのか？"
@@ -90,6 +143,26 @@ export default function ServerPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          ブラウザとサーバーのやり取りの流れが分かりました。次は「サーバーの中では何が動いているのか」を見ていきます。
+        </p>
+
+        {/* TermNote: 概念図Bに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "プロトコル",
+              definition: "通信の「約束事」。手紙を送るときの封筒の書き方ルールのようなもの。HTTP もプロトコルの一種。",
+            },
+            {
+              word: "ポート番号",
+              definition: "サーバーの「窓口番号」。HTTP は 80番、HTTPS は 443番など、役割ごとに番号が決まっている。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図B: サーバー内部構造 ── */}
         <ConceptDiagram
           title="概念図B"
           description="「サーバー」と一括りにしているが、中で何が動いているのか？"
@@ -129,6 +202,22 @@ export default function ServerPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          サーバーの中身が分かりました。次は「自前サーバー・仮想サーバー・BaaS」で担当範囲がどう変わるかを比較します。
+        </p>
+
+        {/* TermNote: 概念図Cに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "BaaS",
+              definition: "Firebase/Supabaseなど、認証・DB・ストレージなどバックエンド機能をまるごとクラウドが提供するサービス。詳しくは『BaaSって何？』ページで解説。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図C: 担当範囲の対比 ── */}
         <ConceptDiagram
           title="概念図C — 対比構造"
           description="「サーバー管理の担当範囲」を比較する。あなたが担当する割合が少ないほど、コードだけに集中できる。"
@@ -177,9 +266,157 @@ export default function ServerPage() {
             ))}
           </div>
         </ConceptDiagram>
+      </section>
 
-        {/* 概念図D: HTTP詳細フロー */}
-        <ConceptDiagram title="概念図D：HTTPリクエスト〜レスポンスの詳細フロー" accentColor="emerald">
+      {/* ── MajiDialogue（基礎編 — 概念図Cの直後） ────────── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "マスター、ボク実を言うと、いまだに「サーバー」が何なのかピンときていないんですよ……。なんか黒くて無骨な箱のイメージしかなくて。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "正直に言えるのは素晴らしいことですよ、マジさん。一言で言うなら、サーバーとは「ホテルの24時間フロント係」です。お客様が来て「301号室の鍵をください」とおっしゃったら、奥の棚から鍵を持ってきてお渡しする。それをコンピューター上でやっているだけです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "マジ？\nじゃあボクのMacBookもサーバーになれるってことですか？ 寝ている間に世界中から誰かにアクセスされてしまうんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "理論上はなれます。実際、`npm run dev` と打った瞬間、マジさんのMacは自分専用の小さなホテルとしてフロント係を始めています。ただし玄関の鍵（ファイアウォール）が閉まっているので、外のお客様は入れません。世のサーバーは「その玄関を開けて、24時間電気をつけたまま、世界中からの来客を受け入れている」というだけの違いです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "なるほど……。でもそれなら、最近よく聞く「BaaS」というものを使えば、もうサーバーのことは一切勉強しなくていいんじゃないですか？ Firebaseさえ使っていれば、ボクはもう無敵なのでは！",
+          },
+          {
+            speaker: "master",
+            emotion: "thinking",
+            text: "鋭いご指摘です。フロントエンド学習の初期段階では、それで十分です。BaaSはフロント係付きの居抜き物件のようなもので、開業初日から営業できます。ただ、いずれクライアントから「社内システムを作ってほしい」とご依頼を受けた時、先方の事情で自前のサーバーが必要になるケースがあります。完全に避け続けるのではなく、「今は使わないが、構造は理解している」という状態を目指していただくのが理想です。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "つまり、知らないと選べない、ということですね。BaaSを選んで使っているのと、それしか知らないから使っているのでは、天地の差があると。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その通りです。サーバーの正体を知っていれば、BaaSの裏で何が起きているかも想像できるようになります。料理人が市場を知っているのと同じです。今日のところは「サーバー＝24時間営業のフロント係」、これだけ持ち帰っていただければ合格ですよ、マジさん。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={[
+            "自前サーバー（VPS / EC2）",
+            "サーバーレス（Vercel Functions）",
+            "BaaS（Firebase / Supabase）",
+          ]}
+          rows={[
+            {
+              label: "管理者",
+              cells: [
+                "自分（OS・ミドルウェア・セキュリティ全部）",
+                "クラウド事業者（コードだけ自分）",
+                "クラウド事業者（DB・認証・ストレージ込みで設定だけ）",
+              ],
+              highlightCol: 2,
+            },
+            {
+              label: "コスト構造",
+              cells: [
+                "起動している間ずっと固定費",
+                "リクエスト数×実行時間（呼ばれない時はゼロ円）",
+                "無料枠＋使用量課金（DB読み書き・帯域など）",
+              ],
+              highlightCol: 2,
+            },
+            {
+              label: "学習コスト",
+              cells: [
+                "高い（Linux・SSH・Nginx・セキュリティ・監視）",
+                "中（関数として書く感覚は必要）",
+                "低い（フロントから直接叩ける感覚）",
+              ],
+              highlightCol: 2,
+            },
+            {
+              label: "代表例",
+              cells: [
+                "AWS EC2、さくらのVPS、ConoHa",
+                "Vercel Functions、AWS Lambda、Cloudflare Workers",
+                "Firebase、Supabase、AppWrite",
+              ],
+              highlightCol: 2,
+            },
+            {
+              label: "個人開発での典型的な使い方",
+              cells: [
+                "複雑なビジネスロジックが必要になったとき",
+                "フロントエンドと組み合わせて構成するとき",
+                "学習コストを最小にして最短で動かしたいとき",
+              ],
+              highlightCol: 2,
+            },
+          ]}
+          note="個人開発の初期段階では BaaS（Firebase / Supabase）から入るのが一般的。自前サーバーの知識は後から身につけても間に合うため、まずはBaaSで全体の流れを掴む方が効率が良い。"
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ────────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下は「HTTP の詳しい流れ」「ステートレスとセッション」「SSR」などの発展内容です。まず基礎を掴みたい方は詳細解説（6.1）まで進んでください。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ─────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — HTTP の詳細フロー
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-5">
+          ブラウザが URL を入力してからページが表示されるまで、裏側では複数のステップが順番に走っています。
+          「なぜページ表示に時間がかかるのか」が見えてきます。
+        </p>
+
+        {/* TermNote: 概念図Dに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "DNS",
+              definition: "ドメイン名（example.com）をIPアドレス（数字の住所）に変換する仕組み。電話帳のような役割。",
+            },
+            {
+              word: "IPアドレス",
+              definition: "インターネット上の住所。例: 93.184.216.34。ドメイン名は人間向けの分かりやすい名前で、実際の通信にはIPアドレスが使われる。",
+            },
+            {
+              word: "TCP接続",
+              definition: "データを送る前に「繋がったよ」「分かった」と確認し合う手順。電話をかけて相手が出るのを確認してから話すイメージ。",
+            },
+            {
+              word: "ステータスコード",
+              definition: "サーバーからの返事の「番号」。200 は成功、404 は見つからない、500 はサーバー側のエラーを意味する。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図D: HTTPリクエスト〜レスポンスの詳細フロー ── */}
+        <ConceptDiagram title="概念図D：HTTPリクエスト〜レスポンスの詳細フロー" description="ブラウザが URL を入力してからページが表示されるまでのステップを追う。">
           <p className="text-sm text-gray-300 leading-relaxed mb-4">
             ブラウザにURLを入力してからページが表示されるまで、裏側では以下のステップが順番に実行されています。
             各ステップを理解することで「なぜページ表示に時間がかかるのか」が見えてきます。
@@ -221,8 +458,23 @@ export default function ServerPage() {
           </div>
         </ConceptDiagram>
 
-        {/* 概念図E: ステートレスとセッション管理 */}
-        <ConceptDiagram title="概念図E：ステートレスの本質とセッション管理の仕組み" accentColor="emerald">
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          HTTP の流れが掴めました。次は「なぜサーバーはログイン状態を覚えられるのか」というセッションの仕組みを見ていきます。
+        </p>
+
+        {/* TermNote: 概念図Eに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "ステートレス",
+              definition: "HTTPはリクエストごとに前の通信を覚えていない設計。毎回『初対面』として扱われる。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図E: ステートレスとセッション管理 ── */}
+        <ConceptDiagram title="概念図E：ステートレスの本質とセッション管理の仕組み" description="HTTP はリクエストごとに記憶がない。Cookie とセッション ID がログイン状態を保つ仕組みを解説。">
           <p className="text-sm text-gray-300 leading-relaxed mb-4">
             HTTPは「ステートレス」プロトコルです。サーバーはリクエストごとに「誰からの通信か」を覚えていません。
             ではなぜログイン状態が維持できるのか？ Cookie とセッションIDが解決します。
@@ -274,8 +526,13 @@ export default function ServerPage() {
           </div>
         </ConceptDiagram>
 
-        {/* 概念図F: SSRの流れ */}
-        <ConceptDiagram title="概念図F：SSR（サーバーサイドレンダリング）の流れ" accentColor="emerald">
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          セッション管理の仕組みが分かりました。最後に、Next.js などで使われる SSR（サーバーサイドレンダリング）の流れを見ていきます。
+        </p>
+
+        {/* ── 概念図F: SSRの流れ ── */}
+        <ConceptDiagram title="概念図F：SSR（サーバーサイドレンダリング）の流れ" description="SSR と CSR の違いをフロー図で比較する。初期表示速度と SEO の観点で整理。">
           <p className="text-sm text-gray-300 leading-relaxed mb-4">
             SSRでは「HTMLの生成」をサーバー側で行います。ブラウザは完成品のHTMLを受け取るため、
             初期表示が速くSEOにも有利です。通常のSPA（CSR）と比べながら理解しましょう。
@@ -338,114 +595,62 @@ export default function ServerPage() {
         </ConceptDiagram>
       </section>
 
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={[
-            "自前サーバー（VPS / EC2）",
-            "サーバーレス（Vercel Functions）",
-            "BaaS（Firebase / Supabase）",
-          ]}
-          rows={[
-            {
-              label: "管理者",
-              cells: [
-                "自分（OS・ミドルウェア・セキュリティ全部）",
-                "クラウド事業者（コードだけ自分）",
-                "クラウド事業者（DB・認証・ストレージ込みで設定だけ）",
-              ],
-              highlightCol: 2,
-            },
-            {
-              label: "コスト構造",
-              cells: [
-                "起動している間ずっと固定費",
-                "リクエスト数×実行時間（呼ばれない時はゼロ円）",
-                "無料枠＋使用量課金（DB読み書き・帯域など）",
-              ],
-              highlightCol: 2,
-            },
-            {
-              label: "学習コスト",
-              cells: [
-                "高い（Linux・SSH・Nginx・セキュリティ・監視）",
-                "中（関数として書く感覚は必要）",
-                "低い（フロントから直接叩ける感覚）",
-              ],
-              highlightCol: 2,
-            },
-            {
-              label: "代表例",
-              cells: [
-                "AWS EC2、さくらのVPS、ConoHa",
-                "Vercel Functions、AWS Lambda、Cloudflare Workers",
-                "Firebase、Supabase、AppWrite",
-              ],
-              highlightCol: 2,
-            },
-            {
-              label: "個人開発での典型的な使い方",
-              cells: [
-                "複雑なビジネスロジックが必要になったとき",
-                "フロントエンドと組み合わせて構成するとき",
-                "学習コストを最小にして最短で動かしたいとき",
-              ],
-              highlightCol: 2,
-            },
-          ]}
-          note="個人開発の初期段階では BaaS（Firebase / Supabase）から入るのが一般的。自前サーバーの知識は後から身につけても間に合うため、まずはBaaSで全体の流れを掴む方が効率が良い。"
-        />
-      </section>
+      {/* ── 応用編 → 詳細解説 ブリッジ ─────────────────────── */}
+      <p className="text-sm text-gray-400 leading-relaxed my-6">
+        応用編の3つのテーマ（HTTP詳細・セッション・SSR）を見てきました。以下の詳細解説では、実務での活かし方を確認します。
+      </p>
 
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "マスター、ボク実を言うと、いまだに「サーバー」が何なのかピンときていないんですよ……。なんか黒くて無骨な箱のイメージしかなくて。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "正直に言えるのは素晴らしいことですよ、マジさん。一言で言うなら、サーバーとは「ホテルの24時間フロント係」です。お客様が来て「301号室の鍵をください」とおっしゃったら、奥の棚から鍵を持ってきてお渡しする。それをコンピューター上でやっているだけです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text: "マジ？\nじゃあボクのMacBookもサーバーになれるってことですか？ 寝ている間に世界中から誰かにアクセスされてしまうんですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text: "理論上はなれます。実際、`npm run dev` と打った瞬間、マジさんのMacは自分専用の小さなホテルとしてフロント係を始めています。ただし玄関の鍵（ファイアウォール）が閉まっているので、外のお客様は入れません。世のサーバーは「その玄関を開けて、24時間電気をつけたまま、世界中からの来客を受け入れている」というだけの違いです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "なるほど……。でもそれなら、最近よく聞く「BaaS」というものを使えば、もうサーバーのことは一切勉強しなくていいんじゃないですか？ Firebaseさえ使っていれば、ボクはもう無敵なのでは！",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text: "鋭いご指摘です。フロントエンド学習の初期段階では、それで十分です。BaaSはフロント係付きの居抜き物件のようなもので、開業初日から営業できます。ただ、いずれクライアントから「社内システムを作ってほしい」とご依頼を受けた時、先方の事情で自前のサーバーが必要になるケースがあります。完全に避け続けるのではなく、「今は使わないが、構造は理解している」という状態を目指していただくのが理想です。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "つまり、知らないと選べない、ということですね。BaaSを選んで使っているのと、それしか知らないから使っているのでは、天地の差があると。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "その通りです。サーバーの正体を知っていれば、BaaSの裏で何が起きているかも想像できるようになります。料理人が市場を知っているのと同じです。今日のところは「サーバー＝24時間営業のフロント係」、これだけ持ち帰っていただければ合格ですよ、マジさん。",
-          },
-        ]}
-      />
-
+      {/* ── 詳細解説 ─────────────────────────────────────────── */}
       <DetailSection title="詳細解説">
-        <DetailBlock heading="6.1 サーバーの語源">
+        {/* 6.1 フロントエンドとバックエンドの分業（最も実用的なので先頭へ） */}
+        <DetailBlock heading="6.1 フロントエンドとバックエンドの分業">
+          <UseCaseGrid cols={2} items={[
+            {
+              Icon: Monitor,
+              title: "フロントエンド",
+              subtitle: "ブラウザの中で動く",
+              description: "HTML・CSS・JavaScript・React。ユーザーの目に直接触れる表示層。",
+              accentColor: "sky",
+            },
+            {
+              Icon: Server,
+              title: "バックエンド（サーバー）",
+              subtitle: "サーバーの中で動く",
+              description: "API・DB操作・認証・課金・メール送信。ユーザーには見えないが、データの安全と整合性を守る。",
+              accentColor: "emerald",
+            },
+          ]} />
+          <p>このページでいう「サーバー」は、ほぼバックエンドの実行場所のこと。フロントエンドの世界しか知らなかった人は、ここで初めて「裏側」を意識する。</p>
+          <KeyPoint>
+            フロントエンドは「見せる」、バックエンドは「守る・保存する・計算する」の役割分担。BaaSを使うと、このバックエンドの部分をほぼ丸ごとクラウドに任せられる。
+          </KeyPoint>
+        </DetailBlock>
+
+        <DetailBlock heading="6.2 自前サーバーをいつ学ぶか">
+          <Timeline items={[
+            {
+              year: "Stage 1",
+              label: "BaaS で始める",
+              description: "Firebase / Supabase + Vercel の組み合わせ。自前サーバー不要。フロントから直接DBを叩く感覚で開発できる。",
+              accentColor: "emerald",
+            },
+            {
+              year: "Stage 2",
+              label: "BaaSの壁にぶつかる",
+              description: "複雑なビジネスロジック・定期実行・サードパーティ連携など、BaaSだけでは対応しにくい要件が出てくる。",
+              accentColor: "amber",
+            },
+            {
+              year: "Stage 3",
+              label: "自前サーバーへ踏み込む",
+              description: "Express / Hono / Next.js API Routes / コンテナ・VPS へ。概念図Bで描いた「HTTPサーバー＋処理ロジック＋DB接続」の構造が地続きで活きる。",
+              accentColor: "violet",
+            },
+          ]} />
+          <KeyPoint>重要なのは「BaaSの裏で何が起きているか」を想像できるレベルにしておくこと。そのイメージがあれば、自前サーバーを学ぶときの地続き感がまったく違う。</KeyPoint>
+        </DetailBlock>
+
+        <DetailBlock heading="6.3 サーバーの語源">
           <p>
             <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: "#0f1117", color: "#34d399" }}>server</code>{" "}
             は英語の{" "}
@@ -470,7 +675,7 @@ export default function ServerPage() {
           ]} />
         </DetailBlock>
 
-        <DetailBlock heading="6.2 物理サーバーと仮想サーバー">
+        <DetailBlock heading="6.4 物理サーバーと仮想サーバー">
           <UseCaseGrid cols={2} items={[
             {
               Icon: HardDrive,
@@ -494,54 +699,10 @@ export default function ServerPage() {
           />
         </DetailBlock>
 
-        <DetailBlock heading="6.3 「クラウド」は誰かのサーバー">
+        <DetailBlock heading="6.5 「クラウド」は誰かのサーバー">
           <KeyPoint>
             「クラウド」の実態は他人のデータセンターのサーバーをネット経由で借りているだけ。VercelもFirebaseもSupabaseも最終的には誰かのラックに刺さった物理サーバーが動いている。"There is no cloud — it's just someone else's computer."
           </KeyPoint>
-        </DetailBlock>
-
-        <DetailBlock heading="6.4 フロントエンドとバックエンドの分業">
-          <UseCaseGrid cols={2} items={[
-            {
-              Icon: Monitor,
-              title: "フロントエンド",
-              subtitle: "ブラウザの中で動く",
-              description: "HTML・CSS・JavaScript・React。ユーザーの目に直接触れる表示層。",
-              accentColor: "sky",
-            },
-            {
-              Icon: Server,
-              title: "バックエンド（サーバー）",
-              subtitle: "サーバーの中で動く",
-              description: "API・DB操作・認証・課金・メール送信。ユーザーには見えないが、データの安全と整合性を守る。",
-              accentColor: "emerald",
-            },
-          ]} />
-          <p>このページでいう「サーバー」は、ほぼバックエンドの実行場所のこと。フロントエンドの世界しか知らなかった人は、ここで初めて「裏側」を意識する。</p>
-        </DetailBlock>
-
-        <DetailBlock heading="6.5 自前サーバーをいつ学ぶか">
-          <Timeline items={[
-            {
-              year: "Stage 1",
-              label: "BaaS で始める",
-              description: "Firebase / Supabase + Vercel の組み合わせ。自前サーバー不要。フロントから直接DBを叩く感覚で開発できる。",
-              accentColor: "emerald",
-            },
-            {
-              year: "Stage 2",
-              label: "BaaSの壁にぶつかる",
-              description: "複雑なビジネスロジック・定期実行・サードパーティ連携など、BaaSだけでは対応しにくい要件が出てくる。",
-              accentColor: "amber",
-            },
-            {
-              year: "Stage 3",
-              label: "自前サーバーへ踏み込む",
-              description: "Express / Hono / Next.js API Routes / コンテナ・VPS へ。概念図Bで描いた「HTTPサーバー＋処理ロジック＋DB接続」の構造が地続きで活きる。",
-              accentColor: "violet",
-            },
-          ]} />
-          <KeyPoint>重要なのは「BaaSの裏で何が起きているか」を想像できるレベルにしておくこと。そのイメージがあれば、自前サーバーを学ぶときの地続き感がまったく違う。</KeyPoint>
         </DetailBlock>
       </DetailSection>
 

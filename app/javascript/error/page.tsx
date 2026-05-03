@@ -7,7 +7,6 @@ import {
   Search,
   AlertOctagon,
   WifiOff,
-  Wand2,
   PackageOpen,
   ArrowUpFromLine,
   Bug,
@@ -18,6 +17,7 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -39,6 +39,8 @@ import { CorrectionCard } from "@/components/CorrectionCard";
 import { UseCaseGrid } from "@/components/UseCaseGrid";
 import { Timeline } from "@/components/Timeline";
 import { CodeBlock } from "@/components/CodeBlock";
+import { SectionDivider } from "@/components/SectionDivider";
+import { TermNote } from "@/components/TermNote";
 import { errorQuestions } from "@/content/questions/javascript/error";
 
 export const metadata = {
@@ -60,6 +62,24 @@ export default function ErrorPage() {
           "プログラムは必ず失敗する。失敗の起こり方と、起きた時に何をするかを先に決める。"
         }
         accentColor="red"
+      />
+
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "try/catchでエラーを捕まえる方法",
+          "Errorオブジェクトの基本（message・name・stack）",
+          "エラーをUIに表示する設計（開発者ログとユーザー向けメッセージの分離）",
+        ]}
+        prerequisites={[
+          "「エラーが発生するとプログラムが止まる」という体験がある",
+          "async/awaitを知っている（/javascript/asyncを読んだ）",
+        ]}
+        outOfScope={[
+          "カスタムエラークラス（extends Error）（応用編で扱う）",
+          "エラーチェイン（error.cause）",
+          "非同期エラー処理の細部（Promise.catch / unhandledrejection）（応用編で扱う）",
+        ]}
       />
 
       <OnePageSummary
@@ -90,11 +110,43 @@ export default function ErrorPage() {
         definition="エラーハンドリングとはプログラムの失敗を事前に想定し、try/catchで捕まえて適切に対処する設計。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
+        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+          まず「エラーとは何か」と「try/catch/finallyの流れ」という基本の構造を確認します。
+        </p>
+
+        {/* TermNote: 概念図Aに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "例外（Exception）",
+              definition:
+                "プログラムの実行中に「想定外の問題」が起きたこと。エラーが発生すると、その場でプログラムが止まり「例外」として上位に伝わっていく。",
+            },
+            {
+              word: "try",
+              definition:
+                "「エラーが起きるかもしれない処理」を囲むブロック。try { } の中でエラーが起きると、即座に catch に移る。",
+            },
+            {
+              word: "catch",
+              definition:
+                "try の中でエラーが起きた時だけ実行されるブロック。引数でエラーオブジェクトを受け取り、ログ記録・ユーザー通知などを行う。",
+            },
+            {
+              word: "finally",
+              definition:
+                "tryが成功しても失敗しても、必ず最後に実行されるブロック。「後片付け」（接続を閉じる・ローディング表示を消すなど）に使う。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図A: try/catch/finallyの構造 ── */}
         <ConceptDiagram
           title="概念図A"
           description="try / catch / finally の構造。失敗が起きるかもしれない処理を try で囲み、起きた時の対応を catch、必ず行う後処理を finally に書く。"
@@ -128,6 +180,27 @@ export default function ErrorPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge A→B */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          try/catch/finallyの流れが分かりました。次は「エラーにはどんな種類があるか」を見ていきます。エラーの種類を知ると、原因特定が格段に速くなります。
+        </p>
+
+        {/* TermNote: 概念図Bに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "Errorオブジェクト",
+              definition:
+                "JavaScriptがエラーを表すために使うオブジェクト。message（説明文）・name（種類名）・stack（発生場所の履歴）の3つを持つ。",
+            },
+            {
+              word: "スタックトレース",
+              definition:
+                "エラーが起きた行から、どの関数を経由してここまで来たかの「呼び出し履歴」。e.stack で確認でき、バグの場所を特定するのに役立つ。",
+            },
+          ]}
+        />
+
         <ConceptDiagram
           title="概念図B"
           description="JavaScript のエラーには代表的な5種類がある。発生する場面と原因を知っておくと原因特定が早い。"
@@ -158,16 +231,9 @@ export default function ErrorPage() {
               {
                 Icon: WifiOff,
                 name: "NetworkError",
-                desc: "通信失敗（fetch の reject）",
+                desc: "ネットワーク通信が失敗したとき（fetch のエラーなど）",
                 example: "fetch('/api') 失敗",
                 color: "text-violet-400",
-              },
-              {
-                Icon: Wand2,
-                name: "CustomError",
-                desc: "自分で作るエラー",
-                example: "class MyError extends Error",
-                color: "text-emerald-400",
               },
             ].map(({ Icon, name, desc, example, color }, i) => (
               <div
@@ -195,6 +261,11 @@ export default function ErrorPage() {
             ほとんどの実行時エラーは Error クラスを継承している。catch (e) で受けた e は instanceof で種類を判別できる。
           </p>
         </ConceptDiagram>
+
+        {/* bridge B→C */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          エラーの種類が分かりました。次は「catchを書かなかった場合、エラーがどこまで伝わっていくか」という「エラーの伝播」を見ていきます。
+        </p>
 
         <ConceptDiagram
           title="概念図C"
@@ -232,11 +303,118 @@ export default function ErrorPage() {
             どこにも catch がないとブラウザ／Node.js のトップレベルまで届き、最悪「画面真っ白」になる。
           </p>
         </ConceptDiagram>
+      </section>
+
+      {/* ── MajiDialogue（基礎編 — ComparisonTableより前） ── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "マスター、エラーって、コンソールに赤い文字が出るやつですよね。それを「ハンドリング」って、ボクは具体的に何をすればいいんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "良い問いです、マジさん。これは航空機のパイロット訓練に近い話です。彼らは「エンジンが止まったら？」「片翼に氷がついたら？」を事前に何度も訓練します。エラーハンドリングとはコードの世界でこれを行うこと——失敗を「想定外」ではなく「想定内の出来事」として扱う設計です。`try` で通常飛行、`catch` で緊急時マニュアル、`finally` で着陸後のチェックリスト、というわけです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "マジ？\nじゃあ `finally` は、エラーが起きても起きなくても実行されるってことですか！？ それはいつ使うんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "はい、その通りです。例えばファイルを開いたら必ず閉じる、データベースに接続したら必ず切る、ローディング画面を出したら必ず消す——こうした「成功しても失敗しても、必ず後始末しなければならない処理」を入れる場所が `finally` です。レストランで料理が出ても出なくても会計はする、というのと同じですね。",
+          },
+          {
+            speaker: "maji",
+            emotion: "surprised",
+            text: "えっ、ちょっと待ってください、自分でエラーを作れるんですか！？ ボクはエラーって、JavaScriptが勝手に出してくるものだとばかり思っていました！ 自分で `throw` するなんて、なんだか反逆みたいでドキドキします！",
+          },
+          {
+            speaker: "master",
+            emotion: "thinking",
+            text: "落ち着いてください、マジさん。自分でエラーを作って throw することもできます。たとえば `throw new Error('ユーザーが見つかりません')` のように書きます。カスタムクラスの詳細は応用編で扱います。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なるほど……エラーハンドリングって、後から付け足すものじゃなくて、設計の段階で組み込んでおくものなんですね。ボクは今までエラーが出てから「うわ、どうしよう」って慌てていました。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "そこに気づけたのが大きな前進です、マジさん。エラーハンドリングはユーザー体験を守る最後の砦です。「起きてから考える」のではなく、「設計時に、起きた時にどう振る舞うかまで決めておく」。設計の段階でエラーを想定しておく習慣がつくと、あなたのコードは格段に信頼されるものになります。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ──────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={[
+            "同期エラー",
+            "非同期エラー（Promise）",
+            "非同期エラー（async/await）",
+          ]}
+          rows={[
+            {
+              label: "捕まえ方",
+              cells: ["try/catch", ".catch()", "try/catch（awaitと組み合わせ）"],
+              highlightCol: 2,
+            },
+            {
+              label: "エラー情報",
+              cells: ["Error オブジェクト", "rejectの引数", "Error オブジェクト"],
+              highlightCol: 2,
+            },
+            {
+              label: "見逃しリスク",
+              cells: [
+                "catchがないと上位に伝播する",
+                ".catch()忘れで握りつぶされる",
+                "awaitを忘れると捕まえられない",
+              ],
+              highlightCol: 2,
+            },
+            {
+              label: "推奨",
+              cells: [
+                "try/catch",
+                "async/awaitに統一推奨",
+                "基本これ",
+              ],
+              highlightCol: 2,
+            },
+          ]}
+          note="async/await を使えば、同期コードと同じ感覚でtry/catchが書ける。Promiseチェーンの.catch()忘れより事故が起きにくい。"
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ──────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下はErrorオブジェクトの継承階層・カスタムエラークラス・非同期エラーの詳細など、実務でより深い設計が必要になったときに戻ってくるための内容です。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — エラークラスの継承と非同期エラー
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+          組み込みエラーの継承ツリーと、より高度なエラーハンドリングパターンを見ていきます。
+        </p>
 
         <ConceptDiagram
           title="概念図D：JavaScriptのErrorオブジェクト継承階層"
           description="JavaScript の組み込みエラーはすべて Error クラスを継承している。カスタムエラーも同様に extends Error で作ることで instanceof 判別が使えるようになる。"
-          accentColor="red"
         >
           <div className="space-y-4">
             {/* 継承ツリー */}
@@ -334,10 +512,14 @@ catch (e) {
           </p>
         </ConceptDiagram>
 
+        {/* bridge D→E */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          エラークラスの継承ツリーが分かりました。次は「非同期処理のエラーハンドリング」の3パターンを比較します。
+        </p>
+
         <ConceptDiagram
           title="概念図E：非同期処理のエラーハンドリング3パターン比較"
           description="非同期処理のエラーハンドリングにはコールバック・Promise・async/await の3パターンがある。現代のコードでは async/await に統一するのが最もわかりやすい。"
-          accentColor="red"
         >
           <div className="space-y-3">
             {/* 3パターン比較 */}
@@ -476,10 +658,14 @@ window.addEventListener(
           </p>
         </ConceptDiagram>
 
+        {/* bridge E→F */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          非同期エラーの3パターンが分かりました。最後にcatch後の「エラーをどう処理するか」のパターンを見ていきます。
+        </p>
+
         <ConceptDiagram
           title="概念図F：エラーの再スロー・ラッピング・変換パターン"
           description="エラーを catch したあとの処理には「再スロー」「ラッピング」「変換」という3つの定石パターンがある。状況に応じて使い分ける。"
-          accentColor="red"
         >
           <div className="space-y-3">
             {[
@@ -568,97 +754,49 @@ window.addEventListener(
         </ConceptDiagram>
       </section>
 
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={[
-            "同期エラー",
-            "非同期エラー（Promise）",
-            "非同期エラー（async/await）",
-          ]}
-          rows={[
-            {
-              label: "捕まえ方",
-              cells: ["try/catch", ".catch()", "try/catch（awaitと組み合わせ）"],
-              highlightCol: 2,
-            },
-            {
-              label: "エラー情報",
-              cells: ["Error オブジェクト", "rejectの引数", "Error オブジェクト"],
-              highlightCol: 2,
-            },
-            {
-              label: "見逃しリスク",
-              cells: [
-                "catchがないと上位に伝播する",
-                ".catch()忘れで握りつぶされる",
-                "awaitを忘れると捕まえられない",
-              ],
-              highlightCol: 2,
-            },
-            {
-              label: "推奨",
-              cells: [
-                "try/catch",
-                "async/awaitに統一推奨",
-                "基本これ",
-              ],
-              highlightCol: 2,
-            },
-          ]}
-          note="async/await を使えば、同期コードと同じ感覚でtry/catchが書ける。Promiseチェーンの.catch()忘れより事故が起きにくい。"
-        />
-      </section>
-
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "マスター、エラーって、コンソールに赤い文字が出るやつですよね。それを「ハンドリング」って、ボクは具体的に何をすればいいんですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "良い問いです、マジさん。これは航空機のパイロット訓練に近い話です。彼らは「エンジンが止まったら？」「片翼に氷がついたら？」を事前に何度も訓練します。エラーハンドリングとはコードの世界でこれを行うこと——失敗を「想定外」ではなく「想定内の出来事」として扱う設計です。`try` で通常飛行、`catch` で緊急時マニュアル、`finally` で着陸後のチェックリスト、というわけです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text: "マジ？\nじゃあ `finally` は、エラーが起きても起きなくても実行されるってことですか！？ それはいつ使うんですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text: "はい、その通りです。例えばファイルを開いたら必ず閉じる、データベースに接続したら必ず切る、ローディング画面を出したら必ず消す——こうした「成功しても失敗しても、必ず後始末しなければならない処理」を入れる場所が `finally` です。レストランで料理が出ても出なくても会計はする、というのと同じですね。",
-          },
-          {
-            speaker: "maji",
-            emotion: "surprised",
-            text: "えっ、ちょっと待ってください、自分でエラーを作れるんですか！？ ボクはエラーって、JavaScriptが勝手に出してくるものだとばかり思っていました！ 自分で `throw` するなんて、なんだか反逆みたいでドキドキします！",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text: "落ち着いてください、マジさん。むしろこれはとても上品なやり方なのです。「ユーザーが存在しません」「在庫が足りません」といった業務固有のエラーは、`Error` を継承した自分専用のクラス——例えば `UserNotFoundError` のようなものを作って `throw` するのが定石です。catch する側で種類を判別できますし、コードを読む人も「ああ、これは想定済みの業務エラーだな」と一目で分かります。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "なるほど……エラーハンドリングって、後から付け足すものじゃなくて、設計の段階で組み込んでおくものなんですね。ボクは今までエラーが出てから「うわ、どうしよう」って慌てていました。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "そこに気づけたのが大きな前進です、マジさん。エラーハンドリングはユーザー体験を守る最後の砦です。「起きてから考える」のではなく、「設計時に、起きた時にどう振る舞うかまで決めておく」。それがプロのコードと初学者のコードを分ける、地味ですが決定的な違いなのですよ。",
-          },
-        ]}
-      />
-
       <DetailSection title="詳細解説">
-        <DetailBlock heading="6.1 Error オブジェクトのプロパティ">
+        <DetailBlock heading="6.1 実践的なエラーハンドリングのパターン（最重要）">
+          <p>
+            最初に覚えるべきパターンは「<strong className="text-white">try/catchでfetchを包み、response.okを確認し、ユーザーに丁寧に伝える</strong>」という一連のセットです。
+            これだけで実務のほとんどのケースに対応できます。
+          </p>
+          <CodeBlock
+            title="実践的なエラーハンドリングの定型句"
+            language="typescript"
+            code={`async function loadUser(id: number) {
+  try {
+    const res = await fetch(\`/api/users/\${id}\`);
+
+    // fetchは404でもrejectしないので自分でチェック
+    if (!res.ok) {
+      throw new Error(\`サーバーエラー: \${res.status}\`);
+    }
+
+    const user = await res.json();
+    return user;
+
+  } catch (e) {
+    // 開発者向けにスタックトレースをログに残す
+    if (e instanceof Error) {
+      console.error(e.message, e.stack);
+    }
+    // ユーザーには丁寧なメッセージを表示
+    showToast('データの取得に失敗しました。しばらく後にお試しください。');
+    // 呼び出し元にもエラーを伝える（再スロー）
+    throw e;
+
+  } finally {
+    // 成功・失敗に関係なくローディングを消す
+    setLoading(false);
+  }
+}`}
+          />
+          <KeyPoint>
+            「try/catch で囲む → response.ok でHTTPエラーを自分でthrow → catch でログ記録とユーザー通知 → finally でローディング解除」これが実務の基本セット。
+          </KeyPoint>
+        </DetailBlock>
+
+        <DetailBlock heading="6.2 Error オブジェクトのプロパティ">
           <p>
             JavaScript の{" "}
             <code
@@ -711,7 +849,7 @@ window.addEventListener(
           </KeyPoint>
         </DetailBlock>
 
-        <DetailBlock heading="6.2 カスタム Error クラスの作り方">
+        <DetailBlock heading="6.3 カスタム Error クラスの作り方">
           <p>
             業務固有のエラーは Error を継承した独自クラスを作るのが定石。class 構文で1行書くだけで、catch 側で種類を判別できるようになる。
           </p>
@@ -758,7 +896,7 @@ async function processOrder(userId: number, itemId: string) {
           </KeyPoint>
         </DetailBlock>
 
-        <DetailBlock heading="6.3 非同期エラーの罠（未処理のPromiseリジェクション）">
+        <DetailBlock heading="6.4 非同期エラーの罠（未処理のPromiseリジェクション）">
           <p>
             Promise を返す関数を呼び出した後、{" "}
             <code
@@ -805,7 +943,7 @@ fetchUser(42)
           </WarningPoint>
         </DetailBlock>
 
-        <DetailBlock heading="6.4 エラーログとユーザー向けメッセージの分離">
+        <DetailBlock heading="6.5 エラーログとユーザー向けメッセージの分離">
           <UseCaseGrid cols={2} items={[
             {
               Icon: Terminal,

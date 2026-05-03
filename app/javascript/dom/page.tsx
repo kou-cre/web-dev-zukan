@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -39,6 +40,8 @@ import { CorrectionCard } from "@/components/CorrectionCard";
 import { UseCaseGrid } from "@/components/UseCaseGrid";
 import { BrowserMock } from "@/components/BrowserMock";
 import { CodeBlock } from "@/components/CodeBlock";
+import { SectionDivider } from "@/components/SectionDivider";
+import { TermNote } from "@/components/TermNote";
 import { domQuestions } from "@/content/questions/javascript/dom";
 
 export const metadata = {
@@ -56,6 +59,27 @@ export default function DomPage() {
         subtitle={"HTMLをJavaScriptから動かす仕組み——ページを「生きた状態」にする技術"}
         body={"ボタンを押したら文字が変わる、クリックしたら色が変わる。その正体を1枚で掴む。"}
         accentColor="lime"
+      />
+
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "DOMとは何か（ブラウザがHTMLをどう扱うか）",
+          "JavaScriptでHTML要素を取得・変更する方法",
+          "イベントリスナーの基本（クリックなどに反応する仕組み）",
+          "フォーム制御の流れ",
+        ]}
+        prerequisites={[
+          "HTMLのタグ（<div>、<p>、<button> 等）を書いたことがある",
+          "CSSセレクタ（.class、#id）の基本を知っている",
+          "JavaScriptの関数を書けること",
+        ]}
+        outOfScope={[
+          "イベント伝播（バブリング・キャプチャ）の詳細な仕組み",
+          "仮想DOMの実装詳細（fiber architectureなど）（応用編で扱う）",
+          "カスタムイベントの作成",
+          "XSS対策の実装詳細",
+        ]}
       />
 
       <OnePageSummary
@@ -86,11 +110,48 @@ export default function DomPage() {
         definition="DOMとはブラウザがHTMLから作るオブジェクトのツリー。JavaScriptはDOMを通じてページを動的に変更できる。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
+        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+          まずは「HTMLがどうやってJavaScriptから操作できる形に変わるのか」という基本の流れを図で確認します。
+        </p>
+
+        {/* TermNote: 基礎編に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "DOM",
+              definition:
+                "Document Object Model の略。ブラウザがHTMLを読み込んで作る「操作可能なオブジェクトの集まり」。JavaScriptはこれを通じてHTMLを動かす。",
+            },
+            {
+              word: "ツリー構造",
+              definition:
+                "木のように枝分かれした入れ子の構造。HTMLの <html> の中に <body>、その中に <div> ……という入れ子がそのまま親子関係を持ったツリーになる。家系図に似た構造。",
+            },
+            {
+              word: "ノード",
+              definition:
+                "DOMツリーを構成する1つひとつのパーツのこと。タグ（要素）、テキスト、属性などすべてがノード。",
+            },
+            {
+              word: "要素（Element）",
+              definition:
+                "HTMLのタグ（<div>、<p>、<button> など）に対応するノード。querySelector などで取得できるのはこの「要素ノード」。",
+            },
+            {
+              word: "CSSセレクタ",
+              definition:
+                "CSSでスタイルを当てるときに使う書き方（.class-name や #id-name など）。querySelector の引数にもこの書き方を使う。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図A: HTMLからDOMツリーへ ── */}
         <ConceptDiagram
           title="概念図A"
           description="HTMLテキストは、ブラウザの中で「DOMツリー」というオブジェクトに姿を変える。"
@@ -123,6 +184,9 @@ export default function DomPage() {
             <p className="text-xs font-semibold text-lime-400 text-center mb-3 tracking-wide uppercase">
               DOM ツリー — 構造イメージ
             </p>
+            <p className="text-xs text-gray-500 text-center mb-3 leading-relaxed">
+              HTMLの入れ子（タグの中にタグ）がそのまま「親子関係」のツリーになる。家系図と同じ構造。
+            </p>
             <div className="font-mono text-xs text-gray-400 leading-relaxed space-y-1 pl-2">
               <p><span className="text-lime-300">document</span></p>
               <p className="pl-4">└─ <span className="text-lime-300">html</span></p>
@@ -139,6 +203,12 @@ export default function DomPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          DOMがツリー構造のオブジェクトだと分かりました。次は「そのDOMで何ができるか」、つまり取得・変更・追加・削除の4種類の操作を見ていきます。
+        </p>
+
+        {/* ── 概念図B: DOM操作でできること ── */}
         <ConceptDiagram
           title="概念図B"
           description="DOM操作で「できること」は、大きく分けて4種類しかない。"
@@ -211,6 +281,60 @@ export default function DomPage() {
           </p>
         </ConceptDiagram>
 
+        {/* コード例：概念図Bのメソッドを実際に書いてみる */}
+        <div className="rounded-lg border p-4 mb-6" style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}>
+          <p className="text-xs text-gray-500 mb-3">実際に書くとこうなります</p>
+          <pre className="text-sm text-gray-300 leading-relaxed font-mono">
+            <code>{`// 要素を取得する
+const btn = document.querySelector('#btn');
+
+// テキストを変更する
+btn.textContent = '押された！';
+
+// クリックに反応する
+btn.addEventListener('click', () => {
+  btn.textContent = '押された！';
+});`}</code>
+          </pre>
+        </div>
+
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          4種類の操作が分かりました。次は「ユーザーの操作に反応する」仕組み——イベントリスナーを見ていきます。
+        </p>
+
+        {/* TermNote: 変更系プロパティと イベント図に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "innerHTML",
+              definition:
+                "要素の中身をHTMLとして読み書きするプロパティ。タグを解釈するため、XSS攻撃のリスクがある。",
+            },
+            {
+              word: "textContent",
+              definition:
+                "要素の中のテキストだけを読み書きするプロパティ。タグを解釈しないため安全。",
+            },
+            {
+              word: "イベント",
+              definition:
+                "ユーザーの操作やブラウザの状態変化のこと。クリック・キー入力・フォーム送信・ページ読込完了などがある。",
+            },
+            {
+              word: "イベントリスナー",
+              definition:
+                "「このイベントが起きたらこの関数を呼んで」と登録しておく仕組み。addEventListener で登録する。",
+            },
+            {
+              word: "イベントオブジェクト",
+              definition:
+                "イベントが発生したときに関数に渡される情報のまとまり。どの要素でクリックされたか・どのキーが押されたかなどが入っている。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図C: イベントリスナー ── */}
         <ConceptDiagram
           title="概念図C"
           description="ユーザーの操作に応じて何かを動かしたい——これを実現するのが「イベントリスナー」。"
@@ -246,7 +370,146 @@ export default function DomPage() {
             「いつ」動かすかを決めるのがイベントリスナー、「何を」動かすかを決めるのが関数の中身。
           </p>
         </ConceptDiagram>
+      </section>
 
+      {/* ── MajiDialogue（基礎編 — 概念図の直後） ────────────── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "マスター、DOMって何の略ですか？ 聞いたことはあるけど、ボク全然わからなくて……。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "Document Object Model の略です、マジさん。劇場で言うところの「舞台の設計図」だと思ってください。HTMLは幕が開いた瞬間の舞台セットそのもの。DOMはその舞台を演出家が後から書き換えられるよう、隅々まで詳細に書き起こした設計図です。JavaScriptは、その設計図を片手に舞台に指示を出す演出家。「あの照明を青に変えて」「ここに机を一つ追加して」と、リアルタイムに舞台を動かしていけるわけです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "マジ？\nじゃあReactって結局DOMを操作してるんですか？ ReactはDOMを使わない別世界の話だと思っていました……！",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "最終的には実DOMを操作しています。ただ、Reactは「仮想DOM（Virtual DOM）」という、メモリ上のJavaScriptオブジェクトとして持ったDOMの軽量コピーを挟みます。状態が変わると新しい仮想DOMを作り、前回との差分だけを計算して、実DOMにはその差分だけを反映する。これによって「実DOMをむやみに触らない」効率化を実現しているわけです。中で動いている本質は、`document.querySelector` や `appendChild` と地続きの話なんですよ。",
+          },
+          {
+            speaker: "maji",
+            emotion: "surprised",
+            text: "ところでマスター、ボクひとつ怖いことを聞きました。`innerHTML` って危なくないんですか？ なんかXSSとかいう攻撃と関係あるって……！",
+          },
+          {
+            speaker: "master",
+            emotion: "thinking",
+            text: "鋭いところを突かれましたね、マジさん。ユーザーが入力した文字列をそのまま `innerHTML` に渡してしまうと、その中に `<script>` タグが混ざっていた場合、そのスクリプトがブラウザで実行されてしまうんです。これがクロスサイトスクリプティング、通称XSS。ユーザー入力を画面に出すときは `textContent` を使う、もしくは DOMPurify のようなサニタイズライブラリを必ず通す——これが鉄則です。手紙を読み上げるときに、書かれた呪文まで唱えてしまわないようにする、という心構えですね。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なるほど……。つまり「DOMはブラウザの中の操作可能な設計図」で、JavaScriptはそれをいじる演出家。ReactもDOMを操作しているけど、仮想DOMという賢い仕組みで効率化している。そしてユーザー入力を表示するときは `textContent` を使うのが安全と。腑に落ちました。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "完璧なまとめですよ、マジさん。今日の話を押さえておけば、Reactを学んだときに「ああ、結局これはDOM操作の抽象化なんだな」とすんなり繋がります。生のDOM操作を一度自分の手でやってみてからReactに進むと、Reactのありがたみが10倍違って見えますよ。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["querySelector", "getElementById", "querySelectorAll"]}
+          rows={[
+            {
+              label: "引数",
+              cells: [
+                "CSSセレクタ（柔軟）",
+                "ID名のみ",
+                "CSSセレクタ（複数取得）",
+              ],
+              highlightCol: 0,
+            },
+            {
+              label: "戻り値",
+              cells: [
+                "最初の1要素（Element / null）",
+                "1要素（Element / null）",
+                "NodeList（配列like）",
+              ],
+              highlightCol: 0,
+            },
+            {
+              label: "速度",
+              cells: ["十分に速い（通常は体感不可）", "最速", "少し遅い"],
+              highlightCol: 0,
+            },
+            {
+              label: "使いやすさ",
+              cells: [
+                "◎ 柔軟（クラス・属性・子孫）",
+                "○ シンプル",
+                "◎ 複数取得に便利",
+              ],
+              highlightCol: 0,
+            },
+            {
+              label: "推奨",
+              cells: [
+                "基本これでOK",
+                "IDが確実に存在する場合",
+                "複数要素の処理（forEach）",
+              ],
+              highlightCol: 0,
+            },
+          ]}
+          note="速度差はミリ秒以下のレベルで、ほとんどのケースでは体感差ゼロ。「迷ったら querySelector」で進めて問題ない。"
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ──────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下はDOMの仕組みをより深く知りたい方向けの内容です。ツリー構造の詳細・イベント伝播・XSSリスク・仮想DOMとの比較を扱います。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — DOMツリーの詳細構造
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-5">
+          基礎ではツリー構造の概要を見ました。ここではノードの種類と、取得メソッドの使い分けをより詳しく確認します。
+        </p>
+
+        {/* TermNote: 応用編に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "属性",
+              definition:
+                "HTMLタグの中に書く追加情報。id=\"app\" や class=\"btn\" の id・class の部分が属性。JavaScriptから getAttribute() などで操作できる。",
+            },
+            {
+              word: "バブリング",
+              definition:
+                "クリックなどのイベントが、発生した要素から親・祖先の方向へ次々と伝わっていく仕組み。泡が水面に上がるイメージ。",
+            },
+            {
+              word: "XSS",
+              definition:
+                "Cross-Site Scripting の略。悪意ある人が書いたスクリプトを、別の人のブラウザで実行させる攻撃手法。innerHTML に未検証の文字列を渡すと起きやすい。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図D: DOMツリーの詳細構造 ── */}
         <ConceptDiagram
           title="概念図D：DOMツリーの階層構造とノードの種類"
           description="HTMLページはブラウザによってツリー構造に変換される。各ノードには種類があり、親子・兄弟の関係で繋がっている。"
@@ -354,6 +617,16 @@ export default function DomPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          ツリー構造の詳細が分かりました。次は「クリックなどのイベントがDOMツリーをどう伝わるか」というイベント伝播の仕組みを見ていきます。
+        </p>
+
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
+          ADVANCED — イベント伝播
+        </h2>
+
+        {/* ── 概念図E: イベント伝播 ── */}
         <ConceptDiagram
           title="概念図E：イベント伝播の仕組み（バブリング/キャプチャリング）"
           description="クリックなどのイベントは、ターゲット要素だけでなくDOMツリーを上下に伝播する。その仕組みを理解するとイベント委譲が使えるようになる。"
@@ -449,6 +722,16 @@ export default function DomPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          直接DOMを書き換えるのが大変だと分かってきましたか？ ボタンが100個あったら、100個全部に addEventListener と textContent の更新を書く必要があります。この「大変さを自動化した」のが React です。Reactは内部で仮想DOMという仕組みを使っています。
+        </p>
+
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
+          ADVANCED — 仮想DOM（React理解のための前知識）
+        </h2>
+
+        {/* ── 概念図F: 仮想DOM ── */}
         <ConceptDiagram
           title="概念図F：仮想DOM（Virtual DOM）とリアルDOMの違い"
           description="なぜReactは速いのか。直接DOM操作のコストと、仮想DOMによる差分更新の仕組みを比較する。"
@@ -570,105 +853,8 @@ export default function DomPage() {
         </ConceptDiagram>
       </section>
 
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={["querySelector", "getElementById", "querySelectorAll"]}
-          rows={[
-            {
-              label: "引数",
-              cells: [
-                "CSSセレクタ（柔軟）",
-                "ID名のみ",
-                "CSSセレクタ（複数取得）",
-              ],
-              highlightCol: 0,
-            },
-            {
-              label: "戻り値",
-              cells: [
-                "最初の1要素（Element / null）",
-                "1要素（Element / null）",
-                "NodeList（配列like）",
-              ],
-              highlightCol: 0,
-            },
-            {
-              label: "速度",
-              cells: ["少し遅い", "最速", "少し遅い"],
-              highlightCol: 0,
-            },
-            {
-              label: "使いやすさ",
-              cells: [
-                "◎ 柔軟（クラス・属性・子孫）",
-                "○ シンプル",
-                "◎ 複数取得に便利",
-              ],
-              highlightCol: 0,
-            },
-            {
-              label: "推奨",
-              cells: [
-                "基本これでOK",
-                "IDが確実に存在する場合",
-                "複数要素の処理（forEach）",
-              ],
-              highlightCol: 0,
-            },
-          ]}
-          note="速度差はミリ秒以下のレベルで、ほとんどのケースでは体感差ゼロ。「迷ったら querySelector」で進めて問題ない。"
-        />
-      </section>
-
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "マスター、DOMって何の略ですか？ 聞いたことはあるけど、ボク全然わからなくて……。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "Document Object Model の略です、マジさん。劇場で言うところの「舞台の設計図」だと思ってください。HTMLは幕が開いた瞬間の舞台セットそのもの。DOMはその舞台を演出家が後から書き換えられるよう、隅々まで詳細に書き起こした設計図です。JavaScriptは、その設計図を片手に舞台に指示を出す演出家。「あの照明を青に変えて」「ここに机を一つ追加して」と、リアルタイムに舞台を動かしていけるわけです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text: "マジ？\nじゃあReactって結局DOMを操作してるんですか？ ReactはDOMを使わない別世界の話だと思っていました……！",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text: "最終的には実DOMを操作しています。ただ、Reactは「仮想DOM（Virtual DOM）」という、メモリ上のJavaScriptオブジェクトとして持ったDOMの軽量コピーを挟みます。状態が変わると新しい仮想DOMを作り、前回との差分だけを計算して、実DOMにはその差分だけを反映する。これによって「実DOMをむやみに触らない」効率化を実現しているわけです。中で動いている本質は、`document.querySelector` や `appendChild` と地続きの話なんですよ。",
-          },
-          {
-            speaker: "maji",
-            emotion: "surprised",
-            text: "ところでマスター、ボクひとつ怖いことを聞きました。`innerHTML` って危なくないんですか？ なんかXSSとかいう攻撃と関係あるって……！",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text: "鋭いところを突かれましたね、マジさん。ユーザーが入力した文字列をそのまま `innerHTML` に渡してしまうと、その中に `<script>` タグが混ざっていた場合、そのスクリプトがブラウザで実行されてしまうんです。これがクロスサイトスクリプティング、通称XSS。ユーザー入力を画面に出すときは `textContent` を使う、もしくは DOMPurify のようなサニタイズライブラリを必ず通す——これが鉄則です。手紙を読み上げるときに、書かれた呪文まで唱えてしまわないようにする、という心構えですね。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "なるほど……。つまり「DOMはブラウザの中の操作可能な設計図」で、JavaScriptはそれをいじる演出家。ReactもDOMを操作しているけど、仮想DOMという賢い仕組みで効率化している。そしてユーザー入力を表示するときは `textContent` を使うのが安全と。腑に落ちました。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "完璧なまとめですよ、マジさん。今日の話を押さえておけば、Reactを学んだときに「ああ、結局これはDOM操作の抽象化なんだな」とすんなり繋がります。生のDOM操作を一度自分の手でやってみてからReactに進むと、Reactのありがたみが10倍違って見えますよ。",
-          },
-        ]}
-      />
-
       <DetailSection title="詳細解説">
+        {/* 7.1 実践的な使い方（最も実用的なので先頭へ） */}
         <DetailBlock heading="7.1 DOMツリーの構造（ノード・要素・テキスト）">
           <p>
             DOMはツリー（木構造）。最上位に{" "}

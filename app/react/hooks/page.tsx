@@ -13,6 +13,9 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
+import { TermNote } from "@/components/TermNote";
+import { SectionDivider } from "@/components/SectionDivider";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -43,6 +46,26 @@ export default function HooksPage() {
         accentColor="emerald"
       />
 
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "カスタムフックとは何か",
+          "なぜカスタムフックを作るのか（目的と利点）",
+          "useXxx命名ルールの理由",
+          "基本的なカスタムフックの書き方",
+        ]}
+        prerequisites={[
+          "useState を知っている（/react/state を読んだ）",
+          "useEffect を知っている（/react/useeffect を読んだ）",
+          "JavaScriptの関数を書けること",
+        ]}
+        outOfScope={[
+          "useCallback / useMemo によるメモ化（1周目は飛ばしてOK。応用編に収録）",
+          "useImperativeHandle",
+          "サードパーティのカスタムフック（SWR / React Query）",
+        ]}
+      />
+
       <OnePageSummary
         keyMessage="カスタムHooksとは、useStateやuseEffectを組み合わせたロジックを「useXxx」という関数に切り出す技術。コンポーネントから複雑なロジックを分離し、複数のコンポーネントで再利用できるようにする。Reactが提供する組み込みHooksを活用した「ユーザー定義Hook」。"
         metaphorTitle="専用の道具箱を作る"
@@ -71,10 +94,37 @@ export default function HooksPage() {
         definition="カスタムHooksとはReactのHooksを組み合わせたロジックをuse始まりの関数に切り出す仕組み。コードの再利用と関心の分離を実現する。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          まずは「なぜカスタムフックが必要か」という目的と、「Hooksの呼び出しルール」という基礎知識を押さえます。
+        </p>
+
+        {/* TermNote: 基礎図に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "カスタムフック",
+              definition: "useStateやuseEffectなどのHooksを使ったロジックを、use〇〇という名前の関数に切り出したもの。コンポーネントから「処理だけ」を分離できる。",
+            },
+            {
+              word: "use〇〇 命名規則",
+              definition: "カスタムフックは必ず「use」で始める。ReactとESLintがこの名前を見て「Hookのルールを適用すべき関数」と認識する。",
+            },
+            {
+              word: "ロジックの抽出・再利用",
+              definition: "同じuseState+useEffectの処理を複数コンポーネントで書いていた場合に、1つのカスタムフックにまとめてどこからでもimportできるようにすること。",
+            },
+            {
+              word: "フック合成",
+              definition: "カスタムフックの中で別のカスタムフックを呼ぶこと。組み込みHooksを組み合わせて高機能なカスタムフックを作れる。",
+            },
+          ]}
+        />
 
         {/* 図A: カスタムHooks化の流れ */}
         <ConceptDiagram
@@ -106,6 +156,11 @@ export default function HooksPage() {
             切り出した後、コンポーネントはUIの描画だけに集中できる。ロジックはHooksが担う。
           </p>
         </ConceptDiagram>
+
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          カスタムフックを作る目的が分かりました。次は「どんなカスタムフックが現場でよく使われるか」を見ていきます。
+        </p>
 
         {/* 図B: よくあるカスタムHooksのパターン */}
         <ConceptDiagram
@@ -162,6 +217,35 @@ export default function HooksPage() {
           </p>
         </ConceptDiagram>
 
+        {/* カスタムフックの最小形コード例 */}
+        <div className="rounded-lg border p-4 mb-6" style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}>
+          <p className="text-xs text-gray-500 mb-3">カスタムフックの最小形</p>
+          <pre className="text-sm text-gray-300 leading-relaxed font-mono whitespace-pre">
+            <code>{`// useCounter.js（カスタムフック）
+import { useState } from 'react';
+
+export function useCounter(initial = 0) {
+  const [count, setCount] = useState(initial);
+  const increment = () => setCount(c => c + 1);
+  const reset = () => setCount(initial);
+  return { count, increment, reset };
+}
+
+// Counter.jsx（使う側）
+import { useCounter } from './useCounter';
+
+export function Counter() {
+  const { count, increment } = useCounter(0);
+  return <button onClick={increment}>{count}</button>;
+}`}</code>
+          </pre>
+        </div>
+
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          代表的なカスタムフックが分かりました。次は「Hooksには守るべきルールがある」という重要な制約を確認します。
+        </p>
+
         {/* 図C: Hooksのルール */}
         <ConceptDiagram
           title="概念図C — Hooksの呼び出しルール"
@@ -198,6 +282,116 @@ export default function HooksPage() {
             </p>
           </div>
         </ConceptDiagram>
+      </section>
+
+      {/* ── MajiDialogue（基礎編 — 概念図の直後） ─────────── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "カスタムHooksって、普通の関数と何が違うんですか？ ボク、useから始めなくていい気がするんですが……",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "命名規則には意味があるんです、マジさん。useから始まる関数はReactが「Hookのルールを適用すべき関数」として認識します。普通の関数の中でuseState等を呼ぶとエラーになりますが、use始まりにすることで「この中にHooksがある」とReactとESLintが分かってくれる。ラベルの貼り方が違うだけで、中身は全く同じ関数ですよ。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "マジ？\nじゃあuseEffectの中にuseStateを入れることもできるんですか！？ ボク、そんな自由があるとは……！",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "それは逆ですね、マジさん。Hooksはifやforやネストされたコールバックの中では呼べません。でも「カスタムHooksの中で別のHooksを呼ぶ」のは全く問題ない。useFetchの中でuseStateとuseEffectを両方使う、というのが典型的なパターンです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "ボク、複数ページで「APIからデータを取ってくる処理」を書いていて、毎回同じようなuseState+useEffectを書いています……それがカスタムHooksにすべき状況ですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "thinking",
+            text: "まさにそれが最もカスタムHooksが活きる場面です。loading・error・dataの3つのStateと、useEffectでのfetch処理を useFetch(url) としてまとめれば、使う側は1行で済む。「同じロジックを2か所以上書いた瞬間がカスタムHooks化のサイン」と覚えておいてください、マジさん。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なるほど！コンポーネントがUIだけに集中できて、ロジックはHooksに任せる、という分業制ですね。ボク、すごくスッキリしました。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その理解で完璧です。テストの観点でも、UIロジックを分離したHooksは単体テストが書きやすくなります。「見た目」と「動き」を分けることで、どちらも変更しやすくなる——これがReactにおける設計の醍醐味ですよ、マジさん。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ───────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={[
+            "コンポーネントにロジックを直書き",
+            "カスタムHooksに切り出す",
+          ]}
+          rows={[
+            {
+              label: "コードの長さ",
+              cells: [
+                "コンポーネントが肥大化する",
+                "コンポーネントがスッキリする",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "再利用性",
+              cells: [
+                "同じロジックをコピペしがち",
+                "importするだけで使い回せる",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "テストのしやすさ",
+              cells: [
+                "UIと混在してテストしにくい",
+                "Hooksだけ単独テストできる",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "役割の分け方",
+              cells: [
+                "画面表示とデータ処理が混在",
+                "UIはコンポーネント・ロジックはHooks",
+              ],
+              highlightCol: 1,
+            },
+          ]}
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ──────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下はHooksの実行順序の仕組み・useMemo/useCallbackによるメモ化など、パフォーマンスや内部動作を深く知りたい方向けの内容です。useMemo/useCallbackの解説を含みます。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — 実装パターンと最適化
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          カスタムフックの基本が分かったら、次は「具体的な実装の中身」と「なぜHooksの順序が重要なのか」を見ていきます。
+        </p>
 
         {/* 図D: カスタムフックの構造 */}
         <ConceptDiagram
@@ -258,6 +452,10 @@ export default function HooksPage() {
           </div>
         </ConceptDiagram>
 
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          カスタムフックの内部構造が分かりました。次はReactがHooksをどうやって管理しているかの仕組みを見ます。
+        </p>
+
         {/* 図E: Hookの実行順序とルール */}
         <ConceptDiagram
           title="概念図E：Hooksのルールと実行順序の重要性"
@@ -267,7 +465,7 @@ export default function HooksPage() {
           <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-4 mb-3">
             <p className="text-xs font-semibold text-red-400 mb-2">NG — 条件によって呼び出し順が変わる</p>
             <p className="text-xs font-mono text-gray-400 whitespace-pre-wrap leading-relaxed">{`if (isLoggedIn) {
-  const [name, setName] = useState(""); // ❌ 条件次第でスキップされる
+  const [name, setName] = useState(""); // 条件次第でスキップされる
 }`}</p>
             <p className="text-xs text-red-300 mt-2">レンダリングごとにHookの数が変わり、ReactがどのstateをどのHookに対応させるか分からなくなる。</p>
           </div>
@@ -275,7 +473,7 @@ export default function HooksPage() {
           {/* OK パターン */}
           <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4 mb-4">
             <p className="text-xs font-semibold text-emerald-400 mb-2">OK — Hooksをトップレベルに置き、条件は後で</p>
-            <p className="text-xs font-mono text-gray-400 whitespace-pre-wrap leading-relaxed">{`const [name, setName] = useState(""); // ✅ 常に1番目に呼ばれる
+            <p className="text-xs font-mono text-gray-400 whitespace-pre-wrap leading-relaxed">{`const [name, setName] = useState(""); // 常に1番目に呼ばれる
 
 if (isLoggedIn) {
   // name を使う処理
@@ -290,7 +488,7 @@ if (isLoggedIn) {
               { label: "2番目", code: "useState(0)", color: "text-emerald-400" },
               { label: "3番目", code: "useEffect(...)", color: "text-blue-400" },
               { label: "4番目", code: "useCallback(...)", color: "text-violet-400" },
-              { label: "5番目", code: "useCustomHook() ← 内部でuseState + useEffect", color: "text-amber-400" },
+              { label: "5番目", code: "useCustomHook() — 内部でuseState + useEffect", color: "text-amber-400" },
             ].map(({ label, code, color }) => (
               <div key={label} className="flex items-center gap-3 rounded px-3 py-1.5" style={{ backgroundColor: "#0f1117" }}>
                 <span className="text-xs text-gray-600 w-12 flex-shrink-0">{label}</span>
@@ -299,6 +497,10 @@ if (isLoggedIn) {
             ))}
           </div>
         </ConceptDiagram>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-5 px-1">
+          Hooksの実行順序の仕組みが分かりました。最後に useMemo / useCallback という最適化のためのHooksを見ておきます。
+        </p>
 
         {/* 図F: useMemo vs useCallback */}
         <ConceptDiagram
@@ -342,98 +544,17 @@ if (isLoggedIn) {
             </p>
           </div>
         </ConceptDiagram>
-      </section>
 
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={[
-            "コンポーネントにロジックを直書き",
-            "カスタムHooksに切り出す",
-          ]}
-          rows={[
+        {/* TermNote: 応用編で出てくる言葉 */}
+        <TermNote
+          terms={[
             {
-              label: "コードの長さ",
-              cells: [
-                "コンポーネントが肥大化する",
-                "コンポーネントがスッキリする",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "再利用性",
-              cells: [
-                "同じロジックをコピペしがち",
-                "importするだけで使い回せる",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "テストのしやすさ",
-              cells: [
-                "UIと混在してテストしにくい",
-                "Hooksだけ単独テストできる",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "関心の分離",
-              cells: [
-                "UIロジックとビジネスロジックが混在",
-                "UIはコンポーネント・ロジックはHooks",
-              ],
-              highlightCol: 1,
+              word: "メモ化",
+              definition: "一度計算した結果を記憶しておき、同じ入力が来たときに再計算せず記憶した結果を返すこと。パフォーマンス改善に使う。",
             },
           ]}
         />
       </section>
-
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "カスタムHooksって、普通の関数と何が違うんですか？ ボク、useから始めなくていい気がするんですが……",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "命名規則には意味があるんです、マジさん。useから始まる関数はReactが「Hookのルールを適用すべき関数」として認識します。普通の関数の中でuseState等を呼ぶとエラーになりますが、use始まりにすることで「この中にHooksがある」とReactとESLintが分かってくれる。ラベルの貼り方が違うだけで、中身は全く同じ関数ですよ。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text: "マジ？\nじゃあuseEffectの中にuseStateを入れることもできるんですか！？ ボク、そんな自由があるとは……！",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text: "それは逆ですね、マジさん。Hooksはifやforやネストされたコールバックの中では呼べません。でも「カスタムHooksの中で別のHooksを呼ぶ」のは全く問題ない。useFetchの中でuseStateとuseEffectを両方使う、というのが典型的なパターンです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "worried",
-            text: "ボク、複数ページで「APIからデータを取ってくる処理」を書いていて、毎回同じようなuseState+useEffectを書いています……それがカスタムHooksにすべき状況ですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text: "まさにそれが最もカスタムHooksが活きる場面です。loading・error・dataの3つのStateと、useEffectでのfetch処理を useFetch(url) としてまとめれば、使う側は1行で済む。「同じロジックを2か所以上書いた瞬間がカスタムHooks化のサイン」と覚えておいてください、マジさん。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "なるほど！コンポーネントがUIだけに集中できて、ロジックはHooksに任せる、という分業制ですね。ボク、すごくスッキリしました。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "その理解で完璧です。テストの観点でも、UIロジックを分離したHooksは単体テストが書きやすくなります。「見た目」と「動き」を分けることで、どちらも変更しやすくなる——これがReactにおける設計の醍醐味ですよ、マジさん。",
-          },
-        ]}
-      />
 
       <DetailSection title="詳細解説">
         <DetailBlock heading="7.1 カスタムHooksの基本パターン — useFetch">

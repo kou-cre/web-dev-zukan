@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -30,6 +31,8 @@ import { CorrectionCard } from "@/components/CorrectionCard";
 import { UseCaseGrid } from "@/components/UseCaseGrid";
 import { Timeline } from "@/components/Timeline";
 import { CodeBlock } from "@/components/CodeBlock";
+import { SectionDivider } from "@/components/SectionDivider";
+import { TermNote } from "@/components/TermNote";
 import { asyncQuestions } from "@/content/questions/javascript/async";
 
 export const metadata = {
@@ -51,6 +54,25 @@ export default function AsyncPage() {
           "シングルスレッドのJavaScriptが、なぜ通信中も固まらずに動けるのか。番号札のたとえで一気に掴む。"
         }
         accentColor="amber"
+      />
+
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "同期と非同期の違い（なぜ非同期が必要なのか）",
+          "Promiseとは何か（3つの状態と基本的な使い方）",
+          "async/awaitの書き方（Promiseを読みやすく書く方法）",
+        ]}
+        prerequisites={[
+          "関数を書けること（function f() {} の書き方を知っている）",
+          "コールバック関数を見たことがある（関数を引数として渡す書き方）",
+          "console.log() を使ったことがある",
+        ]}
+        outOfScope={[
+          "イベントループとマイクロタスクキューの詳細な仕組み",
+          "Promise.race / Promise.any など全メソッドの網羅比較（応用編で扱う）",
+          "ジェネレーター関数（Generator）",
+        ]}
       />
 
       <OnePageSummary
@@ -81,11 +103,43 @@ export default function AsyncPage() {
         definition="非同期処理とは、時間のかかる処理を待つ間も他の処理を進める仕組み。Promiseはその結果（成功か失敗か）を表すオブジェクト。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
+        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+          まずは「同期と非同期の違い」を図で確認します。その後、非同期処理の主役である Promise の仕組みを見ていきます。
+        </p>
+
+        {/* TermNote: 基礎編に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "シングルスレッド",
+              definition:
+                "JavaScriptが「同時に1つのことしかできない」という性質。レジが1台しかないお店のようなもの。",
+            },
+            {
+              word: "同期処理",
+              definition:
+                "前の処理が終わるまで次の処理を始めない方式。料理ができるまでレジの前に立ち続けるイメージ。",
+            },
+            {
+              word: "非同期処理",
+              definition:
+                "時間のかかる処理を「後で結果を受け取る」形で投げておき、その間に他の処理を進める方式。番号札を受け取って席で待つイメージ。",
+            },
+            {
+              word: "コールバック関数",
+              definition:
+                "「処理が終わったときに呼び出してほしい関数」として渡す関数のこと。「終わったらこれを実行して」という予約のようなもの。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図A: 同期 vs 非同期のフロー比較 ── */}
         <ConceptDiagram
           title="概念図A — 同期 vs 非同期のフロー比較"
           description="同じ3つのタスクを、同期と非同期で実行したときの違い。"
@@ -138,6 +192,38 @@ export default function AsyncPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          同期と非同期の違いが分かりました。次は「非同期処理の結果をどう受け取るか」を担う Promise という仕組みを見ていきます。
+        </p>
+
+        {/* TermNote: Promise図に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "Promise",
+              definition:
+                "「将来のある時点で結果を返すことを約束する」オブジェクト。番号札のように「いつか呼ばれる」ことを表す。",
+            },
+            {
+              word: "pending",
+              definition:
+                "Promise の初期状態。「まだ結果が出ていない、待機中」を意味する。番号札を受け取ったばかりの状態。",
+            },
+            {
+              word: "fulfilled",
+              definition:
+                "Promise が成功して結果が得られた状態。「料理ができました」と呼ばれた状態。.then() が呼ばれる。",
+            },
+            {
+              word: "rejected",
+              definition:
+                "Promise が失敗した状態。「品切れで用意できませんでした」という状態。.catch() が呼ばれる。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図B: Promiseの3状態 ── */}
         <ConceptDiagram
           title="概念図B — Promiseの3つの状態"
           description="Promiseは生成直後は pending（待機中）。やがて fulfilled（成功）か rejected（失敗）のどちらかに解決され、その後は変わらない。"
@@ -182,6 +268,38 @@ export default function AsyncPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          Promise の3状態が分かりました。次は Promise を使った書き方と、それをさらに読みやすくした async/await を見ていきます。
+        </p>
+
+        {/* TermNote: async/await 図に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "async",
+              definition:
+                "関数の前に付けるキーワード。この関数は非同期処理を含む、という宣言。async 関数は必ず Promise を返す。",
+            },
+            {
+              word: "await",
+              definition:
+                "async 関数の中で使えるキーワード。Promise の結果が出るまでその行で待つ。「番号が呼ばれるまでここで待つ」という指示。",
+            },
+            {
+              word: "糖衣構文",
+              definition:
+                "見た目を変えただけで動作は同じ書き方のこと。async/await は Promise を書きやすくした「見た目の改善版」であって、裏では Promise が動いている。",
+            },
+          ]}
+        />
+
+        {/* fetch 注記 */}
+        <p className="text-sm text-amber-300/70 leading-relaxed mb-4 px-3 py-2 rounded-lg border border-amber-500/20 bg-amber-500/5">
+          fetch は次のページで詳しく学びます。ここでは「サーバーにデータを取りに行くPromiseを返す関数」として読んでください。
+        </p>
+
+        {/* ── 概念図C: async/await の変換イメージ ── */}
         <ConceptDiagram
           title="概念図C — async/await の変換イメージ"
           description="同じ意味のコードを、Promiseチェーンと async/await で並べて比較する。"
@@ -246,7 +364,154 @@ export default function AsyncPage() {
             裏ではPromiseが動いているのは同じ。書き方が「上から下に読める」ようになっただけ。
           </p>
         </ConceptDiagram>
+      </section>
 
+      {/* ── MajiDialogue（基礎編 — 概念図の直後） ────────────── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text:
+              "マスター、「非同期処理」って言葉自体がよくわからないんですよ……。ボク、「同期」と何が違うんですか？ 同じ時刻に動くか動かないか、みたいな話ですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text:
+              "いえ、時刻の話ではないんですよ、マジさん。ファミレスを思い浮かべてください。同期処理は「料理ができるまでレジの前で立ち続ける」状態。後ろのお客様は一歩も進めません。非同期処理は「番号札を受け取って席で待つ」状態。料理ができたら呼ばれるので、それまで他のお客様も注文できる。サーバーが固まらないというのは、こういう仕組みのことなんです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text:
+              "マジ？\nじゃあ `await` って書くと、何を「待っている」ことになるんですか？ 待つと言われると、また料理ができるまでレジで立ってる気がしてきます……。",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text:
+              "鋭いご指摘です。`await` が待っているのは「Promiseが解決されること」、つまり番号札が `fulfilled`（成功）か `rejected`（失敗）に変わる瞬間です。重要なのは、その間 JavaScript本体は止まっていないという点です。awaitしている関数だけ一旦中断し、ブラウザは画面を描いたり他のクリックを処理したりできています。立ち止まっているのはマジさん（その関数）だけで、お店全体（ブラウザ）は動き続けているとお考えください。",
+          },
+          {
+            speaker: "maji",
+            emotion: "surprised",
+            text:
+              "えっ、`try / catch` で非同期のエラーが捕まえられるんですか！？ ボク、通信エラーってなんとなく `.catch()` でしか拾えない別世界の存在だと思っていました。それはありがたすぎます！",
+          },
+          {
+            speaker: "master",
+            emotion: "thinking",
+            text:
+              "そう感じるのは自然なことです。実は async/await が登場する前は、まさに別世界だったんですよ、マジさん。Promiseチェーンが3段4段と深くなり、「どの`.then()`の中で投げたエラーが、どの`.catch()`で捕まるのか」を追うのが大変でした。それを「同期コードと同じ try/catch で書ける」ようにしたのがasync/awaitです。歴史的経緯を知ると、今の便利さがありがたく思えてきます。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text:
+              "なるほど……。「JavaScriptはシングルスレッドだけど、重い処理は外に投げて待たせる」「番号札がPromise」「番号を呼ばれたら受け取りに行くのが await」、ここまでで結構スッキリしてきました。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text:
+              "見事なまとめです、マジさん。次は実際にサーバーから情報を取りに行く `fetch` API を扱います。ちょうど料理を運ぶ給仕係を覚えたところで、本物のレストランを開店するようなものです。今日掴んだ非同期の感覚が、そのまま地続きで使えますよ。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["コールバック", "Promise", "async / await"]}
+          rows={[
+            {
+              label: "書き方",
+              cells: [
+                "ネストが深くなる（コールバック地獄）",
+                ".then() をチェーンで繋ぐ",
+                "同期コードに近い書き方",
+              ],
+              highlightCol: 2,
+            },
+            {
+              label: "エラー処理",
+              cells: [
+                "各階層で個別に処理（漏れやすい）",
+                ".catch() でチェーン全体を一括捕捉",
+                "try / catch で直感的に捕捉",
+              ],
+              highlightCol: 2,
+            },
+            {
+              label: "可読性",
+              cells: [
+                "低（ネストが深く追いづらい）",
+                "中（チェーンで横に伸びる）",
+                "高（上から下に読める）",
+              ],
+              highlightCol: 2,
+            },
+            {
+              label: "現在の推奨",
+              cells: [
+                "新規では使わない",
+                "ライブラリAPIで遭遇するので読めればOK",
+                "基本これを使う",
+              ],
+              highlightCol: 2,
+            },
+          ]}
+          note="「コールバック → Promise → async/await」と歴史的に進化してきた。今のJSの基本は async/await。Promiseは中で動いているので「消えた」わけではなく、表に出てこなくなっただけ。"
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ──────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下は「なぜそう動くのか」を深く知りたい方向けの内容です。イベントループの仕組みやPromiseチェーンの詳細、並列処理の書き方を扱います。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — イベントループの仕組み
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-5">
+          「なぜシングルスレッドなのに画面が固まらないのか」を詳しく見ていきます。これは非同期処理の内側の仕組みです。
+        </p>
+
+        {/* TermNote: イベントループ図に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "コールスタック",
+              definition:
+                "今まさに実行中の関数が積まれる場所。関数を呼ぶと上に積まれ、終わると取り出される。1本の積み重ね（スタック）なので同時に複数は実行できない。",
+            },
+            {
+              word: "Web API",
+              definition:
+                "ブラウザが提供する機能の総称。fetch・setTimeout など時間のかかる処理をJavaScript本体に代わって裏で担当する。",
+            },
+            {
+              word: "タスクキュー",
+              definition:
+                "Web APIが完了したときに「次はこれを実行して」と並べておく待ち行列。コールスタックが空になったら取り出される。",
+            },
+            {
+              word: "イベントループ",
+              definition:
+                "「コールスタックが空かどうか」を常に監視して、空になったらタスクキューから1つ取り出してスタックに積む仕組み。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図D: イベントループの全体像 ── */}
         <ConceptDiagram
           title="概念図D — イベントループの全体像"
           description="シングルスレッドのJSが、なぜ「待つ間に他のことをできる」のか。"
@@ -281,6 +546,12 @@ export default function AsyncPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          イベントループの仕組みが分かりました。次はPromiseチェーンのエラー伝播と、async/awaitがPromiseとどう対応しているかの詳細を見ていきます。
+        </p>
+
+        {/* ── 概念図E: Promiseチェーンのエラー伝播 ── */}
         <ConceptDiagram
           title="概念図E：Promiseチェーンのエラー伝播の仕組み"
           description="チェーン途中でエラーが発生すると、後続の .then() はスキップされ、最後の .catch() に直接ジャンプする。"
@@ -353,6 +624,17 @@ export default function AsyncPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          エラー伝播の仕組みが分かりました。次はasync/awaitとPromiseが裏でどう対応しているかを詳しく見ます。
+        </p>
+
+        {/* fetch 注記（応用編） */}
+        <p className="text-sm text-amber-300/70 leading-relaxed mb-4 px-3 py-2 rounded-lg border border-amber-500/20 bg-amber-500/5">
+          fetch は次のページで詳しく学びます。ここでは「サーバーにデータを取りに行くPromiseを返す関数」として読んでください。
+        </p>
+
+        {/* ── 概念図F: async/await は Promise の糖衣構文 ── */}
         <ConceptDiagram
           title="概念図F：async/await は Promise の糖衣構文"
           description="async/await は Promise を置き換えるのではなく、同じ動作を読みやすく書けるようにしたもの。裏では必ず Promise が動いている。"
@@ -414,6 +696,12 @@ export default function AsyncPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          Promise と async/await の対応関係が分かりました。最後に、この3世代の書き方の歴史を並べて振り返ります。
+        </p>
+
+        {/* ── 概念図G: 非同期処理の進化 ── */}
         <ConceptDiagram
           title="概念図G：非同期処理の進化：コールバック → Promise → async/await"
           description="同じ操作（ユーザー取得 → 投稿取得 → コメント取得）を3世代の書き方で並べる。"
@@ -499,109 +787,51 @@ export default function AsyncPage() {
         </ConceptDiagram>
       </section>
 
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={["コールバック", "Promise", "async / await"]}
-          rows={[
-            {
-              label: "書き方",
-              cells: [
-                "ネストが深くなる（コールバック地獄）",
-                ".then() をチェーンで繋ぐ",
-                "同期コードに近い書き方",
-              ],
-              highlightCol: 2,
-            },
-            {
-              label: "エラー処理",
-              cells: [
-                "各階層で個別に処理（漏れやすい）",
-                ".catch() でチェーン全体を一括捕捉",
-                "try / catch で直感的に捕捉",
-              ],
-              highlightCol: 2,
-            },
-            {
-              label: "可読性",
-              cells: [
-                "低（ネストが深く追いづらい）",
-                "中（チェーンで横に伸びる）",
-                "高（上から下に読める）",
-              ],
-              highlightCol: 2,
-            },
-            {
-              label: "現在の推奨",
-              cells: [
-                "新規では使わない",
-                "ライブラリAPIで遭遇するので読めればOK",
-                "基本これを使う",
-              ],
-              highlightCol: 2,
-            },
-          ]}
-          note="「コールバック → Promise → async/await」と歴史的に進化してきた。今のJSの基本は async/await。Promiseは中で動いているので「消えた」わけではなく、表に出てこなくなっただけ。"
-        />
-      </section>
-
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text:
-              "マスター、「非同期処理」って言葉自体がよくわからないんですよ……。ボク、「同期」と何が違うんですか？ 同じ時刻に動くか動かないか、みたいな話ですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text:
-              "いえ、時刻の話ではないんですよ、マジさん。ファミレスを思い浮かべてください。同期処理は「料理ができるまでレジの前で立ち続ける」状態。後ろのお客様は一歩も進めません。非同期処理は「番号札を受け取って席で待つ」状態。料理ができたら呼ばれるので、それまで他のお客様も注文できる。サーバーが固まらないというのは、こういう仕組みのことなんです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text:
-              "マジ？\nじゃあ `await` って書くと、何を「待っている」ことになるんですか？ 待つと言われると、また料理ができるまでレジで立ってる気がしてきます……。",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text:
-              "鋭いご指摘です。`await` が待っているのは「Promiseが解決されること」、つまり番号札が `fulfilled`（成功）か `rejected`（失敗）に変わる瞬間です。重要なのは、その間 JavaScript本体は止まっていないという点です。awaitしている関数だけ一旦中断し、ブラウザは画面を描いたり他のクリックを処理したりできています。立ち止まっているのはマジさん（その関数）だけで、お店全体（ブラウザ）は動き続けているとお考えください。",
-          },
-          {
-            speaker: "maji",
-            emotion: "surprised",
-            text:
-              "えっ、`try / catch` で非同期のエラーが捕まえられるんですか！？ ボク、通信エラーってなんとなく `.catch()` でしか拾えない別世界の存在だと思っていました。それはありがたすぎます！",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text:
-              "そう感じるのは自然なことです。実は async/await が登場する前は、まさに別世界だったんですよ、マジさん。Promiseチェーンが3段4段と深くなり、「どの`.then()`の中で投げたエラーが、どの`.catch()`で捕まるのか」を追うのが大変でした。それを「同期コードと同じ try/catch で書ける」ようにしたのがasync/awaitです。歴史的経緯を知ると、今の便利さがありがたく思えてきます。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text:
-              "なるほど……。「JavaScriptはシングルスレッドだけど、重い処理は外に投げて待たせる」「番号札がPromise」「番号を呼ばれたら受け取りに行くのが await」、ここまでで結構スッキリしてきました。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text:
-              "見事なまとめです、マジさん。次は実際にサーバーから情報を取りに行く `fetch` API を扱います。ちょうど料理を運ぶ給仕係を覚えたところで、本物のレストランを開店するようなものです。今日掴んだ非同期の感覚が、そのまま地続きで使えますよ。",
-          },
-        ]}
-      />
-
       <DetailSection title="詳細解説">
-        <DetailBlock heading="6.1 イベントループの仕組み（コールスタック・タスクキュー）">
+        {/* 6.1 実践的なasync/awaitの書き方（最も実用的なので先頭へ） */}
+        <DetailBlock heading="6.1 async / await のエラーハンドリング（try / catch）">
+          <p>
+            <code
+              className="text-xs px-1.5 py-0.5 rounded font-mono"
+              style={{ backgroundColor: "#0f1117", color: "#fbbf24" }}
+            >
+              await
+            </code>
+            したPromiseが rejected になると、その場で例外が throw されたのと同じ振る舞いになる。だから同期コードと同じ
+            <code
+              className="text-xs px-1.5 py-0.5 rounded font-mono"
+              style={{ backgroundColor: "#0f1117", color: "#fbbf24" }}
+            >
+              try / catch
+            </code>
+            で捕まえられる。
+          </p>
+          <KeyPoint>
+            fetchは404・500でもrejectしない。ネットワーク障害以外はPromiseがfullfilledになるため、res.okで手動チェックしてthrowする必要がある。これを知らないと「エラーなのにcatchが動かない」バグに悩まされる。
+          </KeyPoint>
+          <p className="text-sm text-gray-400 leading-relaxed">
+            fetchはResponseオブジェクトを返します（詳しくはfetch APIのページで扱います）。res.ok は HTTPステータスが 200–299 のときだけ true になるプロパティです。
+          </p>
+          <CodeBlock
+            title="async-error-handling.js"
+            language="javascript"
+            code={`async function loadUser(id) {
+  try {
+    const res = await fetch(\`/api/user/\${id}\`);
+
+    // fetch は 404/500 でも reject しないので、自分でチェックする
+    if (!res.ok) throw new Error('HTTPエラー: ' + res.status);
+
+    return await res.json();
+  } catch (err) {
+    console.error('読み込み失敗:', err);
+    return null;
+  }
+}`}
+          />
+        </DetailBlock>
+
+        <DetailBlock heading="6.2 イベントループの仕組み（コールスタック・タスクキュー）">
           <p>
             JavaScriptは「シングルスレッド」で動く。これは「同時に動く実行ラインが1本しかない」という意味で、関数を呼ぶと
             <code
@@ -653,7 +883,7 @@ console.log('② 終了');
           </KeyPoint>
         </DetailBlock>
 
-        <DetailBlock heading="6.2 Promise チェーンの書き方">
+        <DetailBlock heading="6.3 Promise チェーンの書き方">
           <p>
             <code
               className="text-xs px-1.5 py-0.5 rounded font-mono"
@@ -701,48 +931,6 @@ console.log('② 終了');
             <strong className="text-white">①</strong> `.then()` の中で値を `return` するとそれが次の`.then()`の引数になる。
             <strong className="text-white">②</strong> `.catch()` を最後に置けば、チェーン途中のどこで投げられたエラーも拾える。`.catch()`の付け忘れは「未処理のPromise rejection」になる。
           </p>
-        </DetailBlock>
-
-        <DetailBlock heading="6.3 async / await のエラーハンドリング（try / catch）">
-          <p>
-            <code
-              className="text-xs px-1.5 py-0.5 rounded font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#fbbf24" }}
-            >
-              await
-            </code>
-            したPromiseが rejected になると、その場で例外が throw されたのと同じ振る舞いになる。だから同期コードと同じ
-            <code
-              className="text-xs px-1.5 py-0.5 rounded font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#fbbf24" }}
-            >
-              try / catch
-            </code>
-            で捕まえられる。
-          </p>
-          <KeyPoint>
-            fetchは404・500でもrejectしない。ネットワーク障害以外はPromiseがfullfilledになるため、res.okで手動チェックしてthrowする必要がある。これを知らないと「エラーなのにcatchが動かない」バグに悩まされる。
-          </KeyPoint>
-          <CodeBlock
-            title="async-error-handling.js"
-            language="javascript"
-            code={`async function loadUser(id) {
-  try {
-    const res = await fetch(\`/api/user/\${id}\`);
-
-    // fetch は 404/500 でも reject しないので、自分でチェックする
-    if (!res.ok) throw new Error('HTTPエラー: ' + res.status);
-
-    return await res.json();
-  } catch (err) {
-    console.error('読み込み失敗:', err);
-    return null;
-  }
-}`}
-          />
-          <KeyPoint>
-            `fetch` はネットワーク失敗以外（404・500）では reject しない。HTTPステータスは自分で `res.ok` を見て手動で `throw` する必要がある。これは初心者がよく踏む落とし穴。
-          </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading="6.4 Promise.all / Promise.allSettled（並列処理）">

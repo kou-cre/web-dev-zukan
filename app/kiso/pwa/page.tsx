@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -40,6 +41,8 @@ import { DetailSection, DetailBlock, KeyPoint } from "@/components/DetailSection
 import { CorrectionCard } from "@/components/CorrectionCard";
 import { UseCaseGrid } from "@/components/UseCaseGrid";
 import { Timeline } from "@/components/Timeline";
+import { SectionDivider } from "@/components/SectionDivider";
+import { TermNote } from "@/components/TermNote";
 import { pwaQuestions } from "@/content/questions/kiso/pwa";
 
 export const metadata = {
@@ -61,6 +64,25 @@ export default function PwaPage() {
           "manifest.json と Service Worker、たった2つの仕掛けでWebサイトは『アプリ化』する。"
         }
         accentColor="rose"
+      />
+
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "PWAとは何か（Progressive Web Appの役割）",
+          "Service Workerがどうやってオフライン対応を実現するか",
+          "manifest.jsonの役割とできること",
+        ]}
+        prerequisites={[
+          "Webサイトをスマホのブラウザで見たことがある",
+          "JavaScriptがブラウザで動くことを知っている",
+          "HTMLファイルをブラウザで開いたことがある",
+        ]}
+        outOfScope={[
+          "プッシュ通知の実装コード（応用編で扱う）",
+          "バックグラウンドSyncの詳細",
+          "Workboxライブラリの詳細な設定",
+        ]}
       />
 
       <OnePageSummary
@@ -91,10 +113,46 @@ export default function PwaPage() {
         definition="PWAとは、Webサイトに manifest.json と Service Worker を追加することで、アプリのような体験を提供できるようにする技術。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          まずは「通常のWebサイトとPWAの体験の違い」と「PWAを成り立たせる3つの仕組み」を図で確認しましょう。
+        </p>
+
+        {/* TermNote: 基礎編の用語 */}
+        <TermNote
+          terms={[
+            {
+              word: "PWA",
+              definition:
+                "Progressive Web App の略。「段階的に（Progressive）進化させたWebアプリ」という意味。Webサイトをアプリのように使えるようにする技術の総称。",
+            },
+            {
+              word: "オフライン対応",
+              definition:
+                "インターネットにつながっていない（圏外・機内モードなど）状態でもサイトが開けること。あらかじめ保存しておいたファイルを代わりに表示する。",
+            },
+            {
+              word: "manifest.json",
+              definition:
+                "Webサイトを「インストール可能なアプリ」としてブラウザに認識させるための設定ファイル。アイコン・名前・起動時の画面などを定義する。",
+            },
+            {
+              word: "Service Worker",
+              definition:
+                "ブラウザのバックグラウンドで動くJavaScript。Webページが閉じられても常駐し続け、リクエストを横取りしてキャッシュから返したり、オフライン時の代替ページを返したりする。",
+            },
+            {
+              word: "HTTPS",
+              definition:
+                "通信を暗号化するセキュアなWebの仕組み。URLが https:// で始まる状態のこと。PWAの動作にはHTTPSが必須。Vercelにデプロイすれば自動で設定される。",
+            },
+          ]}
+        />
 
         <ConceptDiagram
           title="概念図A"
@@ -164,6 +222,11 @@ export default function PwaPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          体験の違いが分かりました。次は「PWAがどんな3つの仕組みで成り立っているか」を見ていきます。
+        </p>
+
         <ConceptDiagram
           title="概念図B"
           description="PWAは3つの層で成り立っている。HTTPSが土台、manifest.jsonが顔、Service Workerが裏方。"
@@ -197,6 +260,11 @@ export default function PwaPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          3つの構成要素が分かりました。次は「Service Workerが実際にどうやってオフライン対応を実現するか」をフローで見ていきます。
+        </p>
+
         <ConceptDiagram
           title="概念図C"
           description="Service Worker のキャッシュ戦略フロー。リクエストが来たとき、影武者は何を見て、何を返すのか。"
@@ -207,7 +275,7 @@ export default function PwaPage() {
               title="ブラウザ"
               subtitle="ページ・画像・APIをリクエスト"
             />
-            <FlowArrow label="リクエスト" sublabel="GET /index.html" direction="right" />
+            <FlowArrow label="リクエスト" sublabel="ファイルの取得リクエスト" direction="right" />
             <FlowCard
               Icon={Cog}
               title="Service Worker"
@@ -243,9 +311,14 @@ export default function PwaPage() {
             </div>
           </div>
           <p className="text-xs text-gray-600 text-center mt-4">
-            この『キャッシュ確認 → 分岐』のロジックを書くのが、Service Worker の主な役割。
+            この「キャッシュ確認 → 分岐」のロジックを書くのが、Service Worker の主な役割。
           </p>
         </ConceptDiagram>
+
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          Service Workerの動きが分かりました。次は「PWA化すると何ができるようになるか」を機能ごとにまとめます。
+        </p>
 
         <ConceptDiagram
           title="概念図D"
@@ -274,6 +347,153 @@ export default function PwaPage() {
             />
           </div>
         </ConceptDiagram>
+      </section>
+
+      {/* ── MajiDialogue（基礎編 — 概念図Dの直後） ────────── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "マスター、最近よく『PWA』って単語を見るんですけど、結局アプリとWebサイトって何が違うんですか？ ボクの中で全部混ざってしまっています……。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "良いタイミングで聞いてくださいました、マジさん。PWAは「変身できるWebサイト」だと思ってください。普段はブラウザの中にいるWebサイトが、manifest.json と Service Worker という2つの仕掛けを身につけることで、ホーム画面に住みつき、オフラインでも動き、通知まで送れるアプリ風の存在に変身する。これがPWAです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "マジ？\nじゃあ、App Storeに申請しなくてもアプリみたいに配れるってことですか？ それは革命すぎます！ 全人類がPWAになるべきです！",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "落ち着いてください、マジさん。確かに配布方法は劇的に楽になります。URLを共有するだけで、AndroidならChromeが「インストールしますか？」と提案してくれますし、iOSならSafariの「ホーム画面に追加」で同じことができます。ストアの審査もなく、アップデートはサイトを更新するだけで全ユーザーに届く。ただし、革命というより『選択肢が増えた』と捉えるのが冷静な見方です。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "あ、でもマスター。オフラインで動くって、データはどこに保存されているんですか？ 勝手にスマホの中に色々保存されると、なんだか怖くて……。",
+          },
+          {
+            speaker: "master",
+            emotion: "thinking",
+            text: "良い疑問です。Service Worker が保存するのは、あくまでそのデバイスのブラウザキャッシュの中。別のサイトや別のアプリから覗かれることはありません。図書館でいうと「自分専用の貸出棚に本を一時的に置いておく」ようなイメージです。ただし、機密情報まで何でも保存していいわけではなく、何をキャッシュするかは設計者が選びます。そこは普通のWebアプリと同じ責任範囲ですよ。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なるほど……。つまりPWAは、Webサイトにちょっとした魔法（manifest.json + Service Worker）をかけるだけで、アプリっぽくなれるということですね。Webの手軽さは保ったまま、アプリの便利さを取り込む、と。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その通りです、マジさん。しかも嬉しいことに、Next.js プロジェクトなら next-pwa のようなライブラリを使えば、manifest.json の生成も Service Worker の登録もほぼ自動でやってくれます。ステージ1の段階では深追い不要ですが、「ある時点でWebサイトを一気にアプリ化できるカードを持っている」と知っておくだけで、設計の選択肢がぐっと広がりますよ。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["ネイティブアプリ", "PWA", "通常のWebサイト"]}
+          rows={[
+            {
+              label: "インストール",
+              cells: [
+                "アプリストア経由（審査あり）",
+                "ホーム画面に追加（ストア不要）",
+                "なし（毎回ブラウザで開く）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "オフライン",
+              cells: [
+                "対応",
+                "Service Worker で対応可能",
+                "基本不可",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "プッシュ通知",
+              cells: [
+                "対応",
+                "対応（要ユーザー許可）",
+                "不可",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "開発コスト",
+              cells: [
+                "iOS / Android で別々に開発",
+                "Web技術1本で対応できる",
+                "Web技術のみ",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "配布方法",
+              cells: [
+                "App Store / Google Play",
+                "URLを共有するだけ",
+                "URLを共有するだけ",
+              ],
+              highlightCol: 1,
+            },
+          ]}
+          note="PWAは『ネイティブと通常Webの中間』ではなく、『Web技術のままアプリ体験を取り込む』というポジション。配布の手軽さはWeb、機能性はネイティブに寄せている。"
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ──────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下は「Service Workerのライフサイクル」「キャッシュ戦略の使い分け」「インストール条件」など、仕組みを深く知りたい方向けの内容です。実装だけしたい場合は詳細解説（8.1）まで飛ばしてください。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — Service Workerの詳細
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          Service Workerは「インストール → 待機 → 実行」という決まった順序で状態が変わります。このライフサイクルを理解しておくと、更新時のトラブルを回避しやすくなります。
+        </p>
+
+        {/* TermNote: 応用編の用語 */}
+        <TermNote
+          terms={[
+            {
+              word: "ライフサイクル",
+              definition:
+                "ソフトウェアが「生まれて → 動いて → 消える」までの流れのこと。Service Workerは「インストール → 待機 → アクティベート → 実行 → 更新」という決まった状態遷移を持つ。",
+            },
+            {
+              word: "インターセプト",
+              definition:
+                "途中で横取りすること。Service Workerはブラウザが送るすべてのネットワークリクエストを途中で捕まえ（インターセプトし）、キャッシュから返すかサーバーに転送するかを判断する。",
+            },
+            {
+              word: "Cache First",
+              definition:
+                "「まずキャッシュを見て、あれば即返す。なければネットワークへ」というキャッシュ戦略。CSS・JS・画像など変化しないファイルに向く。速度優先。",
+            },
+            {
+              word: "Network First",
+              definition:
+                "「まずネットワークへ取りに行き、失敗したらキャッシュへ」というキャッシュ戦略。APIのレスポンスなど常に最新が必要なものに向く。鮮度優先。",
+            },
+          ]}
+        />
 
         <ConceptDiagram
           title="概念図E：Service Workerのライフサイクル"
@@ -306,6 +526,7 @@ export default function PwaPage() {
               </div>
               <p className="text-xs text-gray-400 leading-relaxed">
                 古いService Workerが動いているタブが残っている間は待機。
+                Service WorkerのJSファイルの中でこう書くことができます：
                 <span className="text-rose-300 font-mono"> self.skipWaiting()</span> を呼ぶと即座に次へ進む。
               </p>
             </div>
@@ -322,6 +543,7 @@ export default function PwaPage() {
               </div>
               <p className="text-xs text-gray-400 leading-relaxed">
                 古いキャッシュを削除してクリーンアップ。
+                Service WorkerのJSファイルの中でこう書くことができます：
                 <span className="text-rose-300 font-mono"> clients.claim()</span> で開いているタブを即座に制御下に置ける。
               </p>
             </div>
@@ -363,6 +585,11 @@ export default function PwaPage() {
             キャッシュの不整合に注意が必要。
           </p>
         </ConceptDiagram>
+
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          ライフサイクルが分かりました。次は「何をキャッシュするかより、どの戦略を当てるか」というキャッシュ設計の考え方を見ていきます。
+        </p>
 
         <ConceptDiagram
           title="概念図F：Cache FirstとNetwork Firstの使い分け"
@@ -444,6 +671,11 @@ export default function PwaPage() {
             リソースの種類ごとに最適な戦略を組み合わせることで、速さと鮮度を両立できる。
           </p>
         </ConceptDiagram>
+
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          キャッシュ戦略の3パターンが分かりました。最後に「ブラウザがPWAのインストールを提案する条件」を確認します。
+        </p>
 
         <ConceptDiagram
           title="概念図G：PWAがホーム画面に追加されるまで"
@@ -529,108 +761,6 @@ export default function PwaPage() {
         </ConceptDiagram>
       </section>
 
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={["ネイティブアプリ", "PWA", "通常のWebサイト"]}
-          rows={[
-            {
-              label: "インストール",
-              cells: [
-                "アプリストア経由（審査あり）",
-                "ホーム画面に追加（ストア不要）",
-                "なし（毎回ブラウザで開く）",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "オフライン",
-              cells: [
-                "対応",
-                "Service Worker で対応可能",
-                "基本不可",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "プッシュ通知",
-              cells: [
-                "対応",
-                "対応（要ユーザー許可）",
-                "不可",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "開発コスト",
-              cells: [
-                "iOS / Android で別々に開発",
-                "Web技術1本で対応できる",
-                "Web技術のみ",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "配布方法",
-              cells: [
-                "App Store / Google Play",
-                "URLを共有するだけ",
-                "URLを共有するだけ",
-              ],
-              highlightCol: 1,
-            },
-          ]}
-          note="PWAは『ネイティブと通常Webの中間』ではなく、『Web技術のままアプリ体験を取り込む』というポジション。配布の手軽さはWeb、機能性はネイティブに寄せている。"
-        />
-      </section>
-
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "マスター、最近よく『PWA』って単語を見るんですけど、結局アプリとWebサイトって何が違うんですか？ ボクの中で全部混ざってしまっています……。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "良いタイミングで聞いてくださいました、マジさん。PWAは「変身できるWebサイト」だと思ってください。普段はブラウザの中にいるWebサイトが、`manifest.json` と `Service Worker` という2つの仕掛けを身につけることで、ホーム画面に住みつき、オフラインでも動き、通知まで送れるアプリ風の存在に変身する。これがPWAです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text: "マジ？\nじゃあ、App Storeに申請しなくてもアプリみたいに配れるってことですか？ それは革命すぎます！ 全人類がPWAになるべきです！",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text: "落ち着いてください、マジさん。確かに配布方法は劇的に楽になります。URLを共有するだけで、AndroidならChromeが「インストールしますか？」と提案してくれますし、iOSならSafariの「ホーム画面に追加」で同じことができます。ストアの審査もなく、アップデートはサイトを更新するだけで全ユーザーに届く。ただし、革命というより『選択肢が増えた』と捉えるのが冷静な見方です。",
-          },
-          {
-            speaker: "maji",
-            emotion: "worried",
-            text: "あ、でもマスター。オフラインで動くって、データはどこに保存されているんですか？ 勝手にスマホの中に色々保存されると、なんだか怖くて……。",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text: "良い疑問です。Service Worker が保存するのは、あくまでそのデバイスのブラウザキャッシュの中。別のサイトや別のアプリから覗かれることはありません。図書館でいうと「自分専用の貸出棚に本を一時的に置いておく」ようなイメージです。ただし、機密情報まで何でも保存していいわけではなく、何をキャッシュするかは設計者が選びます。そこは普通のWebアプリと同じ責任範囲ですよ。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "なるほど……。つまりPWAは、Webサイトにちょっとした魔法（manifest.json + Service Worker）をかけるだけで、アプリっぽくなれるということですね。Webの手軽さは保ったまま、アプリの便利さを取り込む、と。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "その通りです、マジさん。しかも嬉しいことに、Next.js プロジェクトなら `next-pwa` のようなライブラリを使えば、manifest.json の生成も Service Worker の登録もほぼ自動でやってくれます。ステージ1の段階では深追い不要ですが、「ある時点でWebサイトを一気にアプリ化できるカードを持っている」と知っておくだけで、設計の選択肢がぐっと広がりますよ。",
-          },
-        ]}
-      />
-
       <DetailSection title="詳細解説">
         <DetailBlock heading="8.1 manifest.json とは何か">
           <p>
@@ -685,7 +815,7 @@ export default function PwaPage() {
 
         <DetailBlock heading="8.2 Service Worker とは何か">
           <p>
-            <strong className="text-white">Service Worker</strong> は、ブラウザのバックグラウンドで動作するJavaScript。Webページとは別のスレッドで動き、ネットワークリクエストを横取り（インターセプト）して、キャッシュから返したり、オフライン時のフォールバックを返したりできる。
+            <strong className="text-white">Service Worker</strong> は、ブラウザのバックグラウンドで動作するJavaScript。通常のJSと干渉しない独立した場所で動き、ネットワークリクエストを横取り（インターセプト）して、キャッシュから返したり、オフライン時のフォールバックを返したりできる。
           </p>
           <Timeline items={[
             {
@@ -766,7 +896,7 @@ export default function PwaPage() {
             {
               year: "Step 3",
               label: "public/manifest.json とアイコンを置く",
-              description: "public/ 直下に manifest.json を作成し、アイコン画像（192px・512px）を置く。app/layout.tsx の <head> で manifest をリンクする。",
+              description: "public/ 直下に manifest.json を作成し、アイコン画像（192px・512px）を置く。app/layout.tsx の head で manifest をリンクする。",
               accentColor: "blue",
             },
             {
@@ -816,10 +946,7 @@ export default function PwaPage() {
             },
           ]} />
           <KeyPoint>
-            PWAはWeb技術の範囲内でアプリ体験を拡張する技術で、ネイティブアプリと完全に同等ではない。特にiOSではAndroidより対応が限定的で、プッシュ通知はiOS 16.4以降でようやく対応。「Web技術で十分なものをアプリ体験に近づける道具」として使うのが現実的。
-          </KeyPoint>
-          <KeyPoint>
-            PWAは『どんなアプリも置き換える銀の弾丸』ではない。Web技術で十分なものをアプリ体験に近づける道具、と捉えるのが現実的。
+            PWAはすべてのアプリを置き換えるものではなく、Web技術の延長線上でアプリ体験を取り込む道具。iOSとAndroidの対応差も念頭に置いた設計が現実的。
           </KeyPoint>
         </DetailBlock>
       </DetailSection>

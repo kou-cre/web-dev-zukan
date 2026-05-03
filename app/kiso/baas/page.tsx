@@ -15,6 +15,9 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
+import { TermNote } from "@/components/TermNote";
+import { SectionDivider } from "@/components/SectionDivider";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -54,6 +57,24 @@ export default function BaasPage() {
         accentColor="blue"
       />
 
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "BaaS とは何か（どんな機能を提供するサービスか）",
+          "フロントエンドだけで Web アプリが作れる理由",
+          "Firebase / Supabase がどのレイヤーを担うか",
+        ]}
+        prerequisites={[
+          "フロントエンド（HTML/CSS/JS）の基本を知っている",
+          "Web サーバーの概念を知っている（/kiso/server を読んだ）",
+        ]}
+        outOfScope={[
+          "自前バックエンドの実装（Node.js / Express など）（応用編で扱う）",
+          "WebSocket リアルタイム通信の詳細な仕組み（応用編で扱う）",
+          "BaaS の料金モデルの詳細な計算方法（応用編で扱う）",
+        ]}
+      />
+
       <OnePageSummary
         keyMessage="BaaS（Backend as a Service）とは、認証・DB・ストレージ・通知などのバックエンド機能を、クラウド事業者がまるごと提供してくれるサービスのこと。サーバーを建てずに、フロントエンドのコードからほぼ直接バックエンド機能を呼び出せるようになる。Firebase や Supabase が代表例。"
         metaphorTitle="フルオプション付きのシェアキッチン"
@@ -82,11 +103,39 @@ export default function BaasPage() {
         definition="BaaSとは、サーバーを自分で建てずに、バックエンド機能を全部借りられるクラウドサービス。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ─────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
+        <p className="text-sm text-gray-400 leading-relaxed mb-6">
+          まずは「BaaS がフロントエンドとどう繋がるか」と「BaaS の中身」を図で確認しましょう。
+        </p>
+
+        {/* TermNote: 概念図Aに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "BaaS",
+              definition: "Backend as a Service の略。認証・DB・ストレージなどのバックエンド機能をまるごと提供するクラウドサービス。",
+            },
+            {
+              word: "バックエンド",
+              definition: "ユーザーには見えない「裏側」の処理。データの保存・認証・計算など。対義語はフロントエンド（画面に表示される部分）。",
+            },
+            {
+              word: "SDK",
+              definition: "Software Development Kit の略。サービスをコードから簡単に使うためのライブラリのセット。firebase-js-sdk などがこれにあたる。",
+            },
+            {
+              word: "API",
+              definition: "Application Programming Interface の略。外部のサービス・機能を自分のコードから呼び出すための「窓口」。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図A: BaaSとフロントエンドのデータフロー ── */}
         <ConceptDiagram
           title="概念図A"
           description="BaaSが肩代わりしてくれる範囲。自分のコードから何を経由してデータが行き来するのか。"
@@ -122,6 +171,26 @@ export default function BaasPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          BaaS を通じてデータが行き来する流れが分かりました。次は「BaaS の中に何が入っているのか」を見ていきます。
+        </p>
+
+        {/* TermNote: 概念図Bに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "認証（Auth）",
+              definition: "「あなたは誰ですか？」を確認する仕組み。メールとパスワード、Google アカウントなどでログインする処理全般のこと。",
+            },
+            {
+              word: "Firestore",
+              definition: "Firebase が提供するデータベースの名前。NoSQL（ドキュメント型）で、JSON に似たデータ構造でデータを保存する。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図B: BaaS内部機能 ── */}
         <ConceptDiagram
           title="概念図B"
           description="BaaSが内部で提供している主要機能。これらを自前で組むと、それぞれ別々の技術が必要になる。"
@@ -161,6 +230,12 @@ export default function BaasPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          BaaS の機能が分かりました。次は「自前で全部作る場合と比べて、どれだけ担当範囲が変わるか」を見ていきます。
+        </p>
+
+        {/* ── 概念図C: 担当範囲の対比 ── */}
         <ConceptDiagram
           title="概念図C — 対比構造"
           description="自前バックエンド構築と BaaS で「自分が担当する範囲」を比較する。BaaSは自分の負担が劇的に小さい。"
@@ -209,6 +284,16 @@ export default function BaasPage() {
           </div>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          担当範囲の差が分かりました。BaaS の代表として Firebase と Supabase の2つがよく使われますが、どちらを選ぶかを見ていきます。
+        </p>
+
+        <p className="text-sm text-gray-400 leading-relaxed my-4">
+          次はFirebaseとSupabaseの選択基準を見ます。迷っている方向けの内容なので、1周目はスキップしてもOKです。
+        </p>
+
+        {/* ── 概念図D: FirebaseとSupabaseの比較 ── */}
         <ConceptDiagram
           title="概念図D"
           description="BaaSの代表格、Firebase と Supabase の特徴を並べる。どちらを選ぶかは「DBの形」と「自分のSQL経験」で決まる。"
@@ -250,7 +335,144 @@ export default function BaasPage() {
             </div>
           </div>
         </ConceptDiagram>
+      </section>
 
+      {/* ── MajiDialogue（基礎編 — 概念図Dの直後） ────────── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "マスター、BaaSってよく聞く言葉なんですけど、結局なんなんですか？ なんかフワッとしていて、サーバーレスとかクラウドとかと何が違うのかボク全然区別ついてないんです。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "いい質問ですよ、マジさん。BaaS は「フルオプション付きのシェアキッチン」だと思ってください。ドアの鍵（認証）も、食材の冷蔵庫（DB）も、調理器具の棚（ストレージ）も、出前代行（Functions）も、ぜんぶ最初から備え付けられている。自分はそこへ行ってコードを書くだけでよい、というサービスです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "マジ？\nじゃあもうサーバーって完全にいらなくなるってことですか？ これは人類の転換点かもしれません！",
+          },
+          {
+            speaker: "master",
+            emotion: "thinking",
+            text: "落ち着いてください、マジさん。サーバーが消えたわけではありません。BaaS提供側のサーバーが、マジさんの代わりに動いているだけです。たとえるなら「自分の家を持たずに、ホテルに泊まり続けている」ようなもの。家を建てる手間はないけれど、ホテル（クラウド事業者）の建物は確かに存在しています。",
+          },
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "なるほど……。あ、それで気になったんですけど、BaaSって Firebase と Supabase ってのがあるじゃないですか。ボクどっち選べばいいのか全然わからないんです。これ間違えたら一生取り返しがつかないんじゃ……！",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "大袈裟ですよ、マジさん。最初は Firebase からで構いません。Google製で資料も多く、個人開発の最初のステップとして十分な選択肢です。SQL を書いたご経験があるなら Supabase（PostgreSQLベース）も自然な選択肢になります。ですが、今は道具を選ぶことより、選んだ道具を使いこなすことに集中するのが先です。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "つまり、BaaS を「使う」のと「依存する」のは違う、ということですね。BaaS の裏で何が動いているかを知らないままだと、いざ問題が起きたときに動けないと。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その通りです、マジさん。BaaS の中身は、前回お話しした「HTTPサーバー＋処理ロジック＋DB接続＋外部API連携」がクラウド側で動いているだけ。構造を知っていれば、後でステージ2に進んだときに地続きで理解できます。今日のところは「BaaS＝バックエンド全部入りのシェアキッチン」、これだけ持ち帰っていただければ合格ですよ。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["自前バックエンド", "Firebase", "Supabase"]}
+          rows={[
+            {
+              label: "DB種類",
+              cells: [
+                "自由（MySQL / PostgreSQL など好きに選べる）",
+                "Firestore（NoSQL・ドキュメント型）",
+                "PostgreSQL（RDB・SQLが書ける）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "認証",
+              cells: [
+                "自作 or Passport.js などのライブラリで実装",
+                "Firebase Auth（10以上のプロバイダ標準対応）",
+                "Supabase Auth（GitHub・Googleなど）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "リアルタイム",
+              cells: [
+                "Socket.io 等を別途組み込みが必要",
+                "onSnapshot（標準対応・強み）",
+                "Realtime Subscriptions（PostgreSQLの変更を購読）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "無料枠",
+              cells: [
+                "なし（サーバー代が常時かかる）",
+                "Sparkプラン（個人開発には十分寛大）",
+                "無料枠あり（DB容量・帯域に制限あり）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "個人開発での選択例",
+              cells: [
+                "要件が複雑になったとき・チーム開発・既存システム連携",
+                "リアルタイム同期が必要・SQLに慣れていない",
+                "SQLに慣れている・RDB設計に慣れている",
+              ],
+              highlightCol: 1,
+            },
+          ]}
+          note="SQLに慣れていない・最短で動かしたいなら Firebase から入るのが一般的。SQL経験者は Supabase に置き換えても話は通じる。重要なのは「BaaSという選択肢」を理解しておくこと。"
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ────────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下は「Firebase 認証の内部フロー」「Firestore のデータ構造」「BaaS の制約とトレードオフ」などの発展内容です。まず全体像を掴みたい方は詳細解説（7.1）まで進んでください。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ─────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — Firebase の認証フロー
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-5">
+          Firebase Auth でユーザーがログインしてから、Firestore へのアクセスが許可されるまでの流れを詳しく見ていきます。
+          JWT トークンという仕組みがポイントです。
+        </p>
+
+        {/* TermNote: 概念図Eに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "JWT トークン",
+              definition: "JSON Web Token の略。ログインに成功したユーザーに発行される「入場証」。サーバーに送ることで「自分はログイン済みです」と証明できる。",
+            },
+            {
+              word: "onAuthStateChanged",
+              definition: "Firebase のログイン状態が変わったとき（ログイン・ログアウト）に自動で呼び出される関数。ページを再読み込みしてもログイン状態を保持できる。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図E: Firebase認証の詳細フロー ── */}
         <ConceptDiagram
           title="概念図E：Firebase認証の詳細フロー"
           description="ユーザーがログインしてからAPIアクセスが許可されるまでの一連の流れ。JWTトークンがどう発行・使用・検証されるかを追う。"
@@ -313,6 +535,34 @@ export default function BaasPage() {
           </div>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          認証フローが分かりました。次は「Firestore がどんな構造でデータを持っているか」を見ていきます。
+        </p>
+
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
+          ADVANCED — Firestore のデータ構造
+        </h2>
+
+        {/* TermNote: 概念図Fに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "コレクション",
+              definition: "Firestore でドキュメントをまとめる入れ物。フォルダのイメージ。例: users・posts・comments。",
+            },
+            {
+              word: "ドキュメント",
+              definition: "コレクションの中の1件のデータ。JSON のような構造でキーと値のペアを持つ。ユニークな ID で識別される。",
+            },
+            {
+              word: "スキーマレス",
+              definition: "データの型や構造をあらかじめ決めなくてよい仕組み。自由な反面、後から構造が混乱しやすいのでデータ設計が重要になる。",
+            },
+          ]}
+        />
+
+        {/* ── 概念図F: Firestoreのドキュメント/コレクション構造 ── */}
         <ConceptDiagram
           title="概念図F：Firestoreのドキュメント/コレクション構造"
           description="Firestoreのデータはコレクション → ドキュメント → フィールドの階層で管理される。SQLのテーブル構造との対比で理解する。"
@@ -387,6 +637,34 @@ export default function BaasPage() {
           </div>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          Firestore の構造が分かりました。最後に「BaaS を使うと何が不要になるか」を全体像として確認します。
+        </p>
+
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
+          ADVANCED — BaaS が不要にする作業
+        </h2>
+
+        {/* TermNote: 概念図Gに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "SSL証明書",
+              definition: "HTTPS通信を暗号化するための証明書。サイトのURLが『https://』から始まるために必要。",
+            },
+            {
+              word: "ハッシュ化",
+              definition: "パスワードなどを元に戻せない形に変換して保存する処理。生のパスワードをDBに保存しないために使う。",
+            },
+          ]}
+        />
+
+        <p className="text-sm text-gray-400 leading-relaxed my-4">
+          概念図Cで見た担当範囲の整理を、「何が不要になるか」という視点で改めて確認します。
+        </p>
+
+        {/* ── 概念図G: BaaSを使うと何が不要になるか ── */}
         <ConceptDiagram
           title="概念図G：BaaSを使うと何が不要になるか"
           description="フルスタック自前構築と比較して、BaaSが肩代わりしてくれる作業を可視化する。担当範囲の差が圧倒的。"
@@ -468,109 +746,9 @@ export default function BaasPage() {
         </ConceptDiagram>
       </section>
 
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={["自前バックエンド", "Firebase", "Supabase"]}
-          rows={[
-            {
-              label: "DB種類",
-              cells: [
-                "自由（MySQL / PostgreSQL など好きに選べる）",
-                "Firestore（NoSQL・ドキュメント型）",
-                "PostgreSQL（RDB・SQLが書ける）",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "認証",
-              cells: [
-                "自作 or Passport.js などのライブラリで実装",
-                "Firebase Auth（10以上のプロバイダ標準対応）",
-                "Supabase Auth（GitHub・Googleなど）",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "リアルタイム",
-              cells: [
-                "Socket.io 等を別途組み込みが必要",
-                "onSnapshot（標準対応・強み）",
-                "Realtime Subscriptions（PostgreSQLの変更を購読）",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "無料枠",
-              cells: [
-                "なし（サーバー代が常時かかる）",
-                "Sparkプラン（個人開発には十分寛大）",
-                "無料枠あり（DB容量・帯域に制限あり）",
-              ],
-              highlightCol: 1,
-            },
-            {
-              label: "個人開発での選択例",
-              cells: [
-                "要件が複雑になったとき・チーム開発・既存システム連携",
-                "リアルタイム同期が必要・SQLに慣れていない",
-                "SQLに慣れている・RDB設計に慣れている",
-              ],
-              highlightCol: 1,
-            },
-          ]}
-          note="SQLに慣れていない・最短で動かしたいなら Firebase から入るのが一般的。SQL経験者は Supabase に置き換えても話は通じる。重要なのは「BaaSという選択肢」を理解しておくこと。"
-        />
-      </section>
-
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "マスター、BaaSってよく聞く言葉なんですけど、結局なんなんですか？ なんかフワッとしていて、サーバーレスとかクラウドとかと何が違うのかボク全然区別ついてないんです。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "いい質問ですよ、マジさん。BaaS は「フルオプション付きのシェアキッチン」だと思ってください。ドアの鍵（認証）も、食材の冷蔵庫（DB）も、調理器具の棚（ストレージ）も、出前代行（Functions）も、ぜんぶ最初から備え付けられている。自分はそこへ行ってコードを書くだけでよい、というサービスです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text: "マジ？\nじゃあもうサーバーって完全にいらなくなるってことですか？ これは人類の転換点かもしれません！",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text: "落ち着いてください、マジさん。サーバーが消えたわけではありません。BaaS提供側のサーバーが、マジさんの代わりに動いているだけです。たとえるなら「自分の家を持たずに、ホテルに泊まり続けている」ようなもの。家を建てる手間はないけれど、ホテル（クラウド事業者）の建物は確かに存在しています。",
-          },
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "なるほど……。あ、それで気になったんですけど、BaaSって Firebase と Supabase ってのがあるじゃないですか。ボクどっち選べばいいのか全然わからないんです。これ間違えたら一生取り返しがつかないんじゃ……！",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "大袈裟ですよ、マジさん。最初は Firebase からで構いません。Google製で資料も多く、個人開発の最初のステップとして十分な選択肢です。SQL を書いたご経験があるなら Supabase（PostgreSQLベース）も自然な選択肢になります。ですが、今は道具を選ぶことより、選んだ道具を使いこなすことに集中するのが先です。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "つまり、BaaS を「使う」のと「依存する」のは違う、ということですね。BaaS の裏で何が動いているかを知らないままだと、いざ問題が起きたときに動けないと。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "その通りです、マジさん。BaaS の中身は、前回お話しした「HTTPサーバー＋処理ロジック＋DB接続＋外部API連携」がクラウド側で動いているだけ。構造を知っていれば、後でステージ2に進んだときに地続きで理解できます。今日のところは「BaaS＝バックエンド全部入りのシェアキッチン」、これだけ持ち帰っていただければ合格ですよ。",
-          },
-        ]}
-      />
-
+      {/* ── 詳細解説 ─────────────────────────────────────────── */}
       <DetailSection title="詳細解説">
+        {/* 7.1 BaaSが提供する主要機能（最も実用的なので先頭へ） */}
         <DetailBlock heading="7.1 BaaSが提供する主要機能">
           <UseCaseGrid cols={2} items={[
             {

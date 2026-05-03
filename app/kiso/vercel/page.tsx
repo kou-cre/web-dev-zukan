@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 
 import { Hero } from "@/components/Hero";
+import { Prerequisites } from "@/components/Prerequisites";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import {
   ConceptDiagram,
@@ -38,6 +39,8 @@ import { UseCaseGrid } from "@/components/UseCaseGrid";
 import { Timeline } from "@/components/Timeline";
 import { StatCards } from "@/components/StatCards";
 import { BrowserMock } from "@/components/BrowserMock";
+import { SectionDivider } from "@/components/SectionDivider";
+import { TermNote } from "@/components/TermNote";
 import { vercelQuestions } from "@/content/questions/kiso/vercel";
 
 export const metadata = {
@@ -59,6 +62,25 @@ export default function VercelPage() {
           "ビルド・配信・SSL・プレビューURLまで全部自動。書き手はコードを書くことだけに集中できる。"
         }
         accentColor="sky"
+      />
+
+      {/* ── 前提知識ボックス ────────────────────────────────── */}
+      <Prerequisites
+        learn={[
+          "Vercelとは何か（ホスティングサービスの役割）",
+          "GitHubにpushするだけで自動デプロイされる仕組み",
+          "静的ホスティングとサーバーレス関数の違い",
+        ]}
+        prerequisites={[
+          "GitとGitHubの基本を知っている（commit / push）",
+          "HTMLとCSSを書いてブラウザで確認したことがある",
+          "「コードをインターネットで公開する」イメージがある",
+        ]}
+        outOfScope={[
+          "Edge Functionsの詳細（応用編で扱う）",
+          "独自ドメインのDNS設定",
+          "Vercel以外のホスティングサービスとの詳細比較",
+        ]}
       />
 
       <OnePageSummary
@@ -89,10 +111,46 @@ export default function VercelPage() {
         definition="VercelとはGitHubと連携してNext.jsアプリを自動ビルド・世界中に配信してくれるホスティングサービス。"
       />
 
+      {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
         <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          まずは「pushしてから画面が表示されるまでの流れ」と「Vercelがやってくれること」を図で確認しましょう。
+        </p>
+
+        {/* TermNote: 概念図Aに出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "デプロイ",
+              definition:
+                "書いたコードを「実際にインターネットで動く場所」に配置する作業。ローカルのPCで動いているだけでは世界から見えないが、デプロイすると誰でもアクセスできるようになる。",
+            },
+            {
+              word: "GitHub",
+              definition:
+                "コードをクラウド上で管理するサービス。複数人での開発や、バージョン管理（誰が何を変えたかの記録）に使う。",
+            },
+            {
+              word: "Webhook",
+              definition:
+                "あるサービスで何かが起きたときに、別のサービスへ自動で通知を飛ばす仕組み。「GitHubにpushされたらVercelに知らせる」という連絡網のこと。",
+            },
+            {
+              word: "ビルド",
+              definition:
+                "開発者が書いたソースコード（TypeScript・JSXなど）を、ブラウザが直接読めるHTMLやJavaScriptのファイルに変換する作業。",
+            },
+            {
+              word: "CDN",
+              definition:
+                "Content Delivery Network の略。世界中にサーバーを分散配置し、ユーザーの近くのサーバーからファイルを届けることで、表示を高速にする仕組み。",
+            },
+          ]}
+        />
 
         <ConceptDiagram
           title="概念図A"
@@ -136,6 +194,11 @@ export default function VercelPage() {
           </p>
         </ConceptDiagram>
 
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          流れ全体が掴めました。次は「Vercelが具体的に何をやってくれるのか」を詳しく見ていきます。
+        </p>
+
         <ConceptDiagram
           title="概念図B"
           description="Vercel が裏で肩代わりしてくれている仕事の一覧。これらを自前でやるとそれぞれ別々の手作業になる。"
@@ -171,7 +234,7 @@ export default function VercelPage() {
             <StackLayer
               Icon={Lock}
               title="HTTPS自動設定"
-              subtitle="SSL証明書を自動取得・更新してくれる"
+              subtitle="SSL証明書を自動取得・更新してくれる（URLが https:// になる）"
               iconColor="text-rose-400"
             />
             <StackLayer
@@ -186,6 +249,11 @@ export default function VercelPage() {
             自前サーバーで同じことをやろうとすると、Nginx設定・Let&apos;s Encrypt 更新・CI/CD構築……と全部手作業になる。
           </p>
         </ConceptDiagram>
+
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          Vercelがやってくれる6つの仕事が分かりました。次は「本番」と「プレビュー」という2つの公開先の違いを見ていきます。
+        </p>
 
         <ConceptDiagram
           title="概念図C — Production と Preview の対比"
@@ -231,6 +299,162 @@ export default function VercelPage() {
             個人開発でも「main に入れる前にスマホで確認する」用途で Preview は便利。
           </p>
         </ConceptDiagram>
+      </section>
+
+      {/* ── MajiDialogue（基礎編 — 概念図Cの直後） ────────── */}
+      <MajiDialogue
+        turns={[
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "マスター、ボク正直に言うと「デプロイ」って言葉自体がよくわかっていないんですよ……。「公開する」とは言うんですけど、それって具体的に何が起きているんでしょうか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "正直なご質問、素晴らしいです、マジさん。デプロイとは、たとえるなら「自分の部屋（ローカルPC）で書いた本を、世界中の本屋に並べる作業」のことです。ローカルでは自分しか読めない。デプロイすると初めて、地球の裏側の方からも開ける状態になるわけです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "マジ？\nじゃあその「本屋に並べる作業」って、毎回ボクが手作業でやらないといけないんですか？ それは大変そうです……。",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "そこで Vercel の出番です。GitHub の main ブランチへ push する、それだけ。あとは Vercel が「梱包（ビルド）」「世界の倉庫へ配置（CDN）」「鍵の準備（HTTPS）」まで全部代行してくれます。マジさんの仕事は『電話をかける（push）』ことだけなのです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "surprised",
+            text: "マジ？\nしかも PR を出すと専用URLまで自動で発行されるんですか！？ それはもう……ボクのデプロイ人生が変わりました！",
+          },
+          {
+            speaker: "master",
+            emotion: "thinking",
+            text: "それを Preview Deployment と申します。チームでレビューする際は「本番に入れる前にこのURLで動作を見せ合う」というのが定番の使い方です。マジさんのような個人開発者の場合でも、『main にマージする前にスマホで実機確認する』用途で十分役立ちますよ。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "つまり Vercel は、ボクの代わりにデプロイ作業を全部やってくれる執事みたいな存在なんですね。それなら毎日push するのも怖くなくなります。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "良い言い表しです、マジさん。実を申しますと、Vercel を使った Next.js サイトはこの仕組みで動いています。main に push するたびに、数分で世界中の方が新しいページを見られるようになる。これが Vercel の正体です。",
+          },
+        ]}
+      />
+
+      {/* ── 比較表（基礎編） ────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["Vercel", "Netlify", "GitHub Pages"]}
+          rows={[
+            {
+              label: "対応フレームワーク",
+              cells: [
+                "Next.js（最優先対応）",
+                "React / Vue など汎用",
+                "静的サイトのみ",
+              ],
+              highlightCol: 0,
+            },
+            {
+              label: "自動デプロイ",
+              cells: [
+                "GitHub連携で自動",
+                "GitHub連携で自動",
+                "手動 or GitHub Actions",
+              ],
+              highlightCol: 0,
+            },
+            {
+              label: "サーバーサイド",
+              cells: [
+                "Server Components・API Routes対応",
+                "Functions対応",
+                "不可",
+              ],
+              highlightCol: 0,
+            },
+            {
+              label: "無料枠",
+              cells: [
+                "個人利用は実質無料",
+                "無料枠あり",
+                "完全無料",
+              ],
+              highlightCol: 0,
+            },
+            {
+              label: "Preview",
+              cells: [
+                "PR単位でURLが発行",
+                "PR単位でURLが発行",
+                "なし",
+              ],
+              highlightCol: 0,
+            },
+            {
+              label: "Next.jsとの相性",
+              cells: [
+                "最優先（同社製のため最も深く対応）",
+                "対応しているが挙動差が出ることがある",
+                "静的サイトのみ・サーバー機能は不可",
+              ],
+              highlightCol: 0,
+            },
+          ]}
+          note="Next.js を使うなら Vercel が最も相性が良い（同じ Vercel社製のため）。Netlify でも動かせるが、Server Components・API Routes 周りで挙動の差が出ることがある。GitHub Pages は静的サイトのみで Next.js のサーバー機能は使えない。Server Components / API Routes は Next.js の機能で、サーバー側で動くページ・API のこと（詳細は Next.js ページで扱う）。GitHub Actions は CI/CD ツール（自動テスト・デプロイを自動化するサービス）。"
+        />
+      </section>
+
+      {/* ── 応用編 セパレータ ──────────────────────────────── */}
+      <SectionDivider
+        message="ここから応用編 — 1周目は飛ばしてOK"
+        note="以下は「なぜVercelが速いのか」「push後に内部で何が起きているか」を深く知りたい方向けの内容です。実践ルールだけ知りたい場合は詳細解説（8.1）まで飛ばしてください。"
+      />
+
+      {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          ADVANCED — CDNとデプロイの仕組み
+        </h2>
+
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          基礎編でVercelの全体像が掴めました。ここからは「なぜVercelは速いのか」という内部構造を掘り下げます。
+        </p>
+
+        {/* TermNote: 応用編の用語 */}
+        <TermNote
+          terms={[
+            {
+              word: "エッジ / エッジネットワーク",
+              definition:
+                "ユーザーの近くに分散配置されたサーバー群のこと。「端（エッジ）」にいるサーバーという意味。東京・ロンドン・ニューヨークなど世界100か所以上にある。",
+            },
+            {
+              word: "静的ホスティング",
+              definition:
+                "あらかじめビルド済みのHTMLやJSファイルをそのまま配信する方法。毎回サーバーでページを生成しないので高速。",
+            },
+            {
+              word: "サーバーレス関数",
+              definition:
+                "サーバーを常時起動させず、リクエストが来たときだけ一時的に関数を実行する仕組み。Next.jsのAPI RoutesやServer Componentsがこれを使っている。",
+            },
+            {
+              word: "キャッシュHIT / MISS",
+              definition:
+                "キャッシュ（一時保存）にファイルが存在する場合をHIT（すぐ返せる）、存在しない場合をMISS（サーバーへ取りに行く必要がある）という。",
+            },
+          ]}
+        />
 
         <ConceptDiagram
           title="概念図D：CDNエッジネットワークの仕組み"
@@ -313,6 +537,11 @@ export default function VercelPage() {
             2回目以降のアクセスはキャッシュHITになるため、体感速度がさらに向上する。
           </p>
         </ConceptDiagram>
+
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          CDNが速い理由が分かりました。次は「pushしてからCDNに反映されるまでの内部ステップ」を順番に確認します。
+        </p>
 
         <ConceptDiagram
           title="概念図E：GitプッシュからVercel本番デプロイまで"
@@ -403,6 +632,11 @@ export default function VercelPage() {
             </p>
           </div>
         </ConceptDiagram>
+
+        {/* bridge */}
+        <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
+          デプロイの8ステップが分かりました。最後に「本番環境のシークレット情報（APIキーなど）をどう管理するか」を確認します。
+        </p>
 
         <ConceptDiagram
           title="概念図F：Vercelの環境変数管理"
@@ -503,117 +737,6 @@ export default function VercelPage() {
           </div>
         </ConceptDiagram>
       </section>
-
-      <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
-          COMPARISON
-        </h2>
-        <ComparisonTable
-          headers={["Vercel", "Netlify", "GitHub Pages"]}
-          rows={[
-            {
-              label: "対応FW",
-              cells: [
-                "Next.js（最優先対応）",
-                "React / Vue など汎用",
-                "静的サイトのみ",
-              ],
-              highlightCol: 0,
-            },
-            {
-              label: "自動デプロイ",
-              cells: [
-                "GitHub連携で自動",
-                "GitHub連携で自動",
-                "手動 or GitHub Actions",
-              ],
-              highlightCol: 0,
-            },
-            {
-              label: "サーバーサイド",
-              cells: [
-                "Server Components・API Routes対応",
-                "Functions対応",
-                "不可",
-              ],
-              highlightCol: 0,
-            },
-            {
-              label: "無料枠",
-              cells: [
-                "個人利用は実質無料",
-                "無料枠あり",
-                "完全無料",
-              ],
-              highlightCol: 0,
-            },
-            {
-              label: "Preview",
-              cells: [
-                "PR単位でURLが発行",
-                "PR単位でURLが発行",
-                "なし",
-              ],
-              highlightCol: 0,
-            },
-            {
-              label: "Next.jsとの相性",
-              cells: [
-                "最優先（同社製のため最も深く対応）",
-                "対応しているが挙動差が出ることがある",
-                "静的サイトのみ・サーバー機能は不可",
-              ],
-              highlightCol: 0,
-            },
-          ]}
-          note="Next.js を使うなら Vercel が最も相性が良い（同じ Vercel社製のため）。Netlify でも動かせるが、Server Components・API Routes 周りで挙動の差が出ることがある。GitHub Pages は静的サイトのみで Next.js のサーバー機能は使えない。"
-        />
-      </section>
-
-      <MajiDialogue
-        turns={[
-          {
-            speaker: "maji",
-            emotion: "doubt",
-            text: "マスター、ボク正直に言うと「デプロイ」って言葉自体がよくわかっていないんですよ……。「公開する」とは言うんですけど、それって具体的に何が起きているんでしょうか？",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "正直なご質問、素晴らしいです、マジさん。デプロイとは、たとえるなら「自分の部屋（ローカルPC）で書いた本を、世界中の本屋に並べる作業」のことです。ローカルでは自分しか読めない。デプロイすると初めて、地球の裏側の方からも開ける状態になるわけです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text: "マジ？\nじゃあその「本屋に並べる作業」って、毎回ボクが手作業でやらないといけないんですか？ それは大変そうです……。",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text: "そこで Vercel の出番です。GitHub の main ブランチへ push する、それだけ。あとは Vercel が「梱包（ビルド）」「世界の倉庫へ配置（CDN）」「鍵の準備（HTTPS）」まで全部代行してくれます。マジさんの仕事は『電話をかける（push）』ことだけなのです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "surprised",
-            text: "マジ？\nしかも PR を出すと専用URLまで自動で発行されるんですか！？ それはもう……ボクのデプロイ人生が変わりました！",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text: "それを Preview Deployment と申します。チームでレビューする際は「本番に入れる前にこのURLで動作を見せ合う」というのが定番の使い方です。マジさんのような個人開発者の場合でも、『main にマージする前にスマホで実機確認する』用途で十分役立ちますよ。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "つまり Vercel は、ボクの代わりにデプロイ作業を全部やってくれる執事みたいな存在なんですね。それなら毎日push するのも怖くなくなります。",
-          },
-          {
-            speaker: "master",
-            emotion: "explain",
-            text: "良い言い表しです、マジさん。実を申しますと、Vercel を使った Next.js サイトはこの仕組みで動いています。main に push するたびに、数分で世界中の方が新しいページを見られるようになる。これが Vercel の正体です。",
-          },
-        ]}
-      />
 
       <DetailSection title="詳細解説">
         <DetailBlock heading="8.1 そもそも『デプロイ』とは何か">

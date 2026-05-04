@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Braces, Atom, Triangle, Flame, Smartphone, Rocket } from "lucide-react";
+import { BookOpen, Braces, Atom, Triangle, Flame, Smartphone, Rocket, GitBranch } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 const categories: {
@@ -65,6 +65,14 @@ const categories: {
     title: "本番運用",
     description: "デプロイ・DNS・環境変数",
     status: "準備中",
+  },
+  {
+    href: "/git",
+    icon: GitBranch,
+    iconColor: "#818cf8",
+    title: "Git / GitHub",
+    description: "ブランチ・PR・rebase・ブランチ戦略",
+    status: "完成",
   },
 ];
 

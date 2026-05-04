@@ -13,6 +13,7 @@ const accentMap: Record<string, { border: string; bg: string; titleColor: string
   cyan:    { border: "rgba(6,182,212,0.6)",   bg: "rgba(6,182,212,0.06)",   titleColor: "#67e8f9", iconColor: "#22d3ee" },
   orange:  { border: "rgba(249,115,22,0.6)",  bg: "rgba(249,115,22,0.06)",  titleColor: "#fdba74", iconColor: "#fb923c" },
   red:     { border: "rgba(239,68,68,0.6)",   bg: "rgba(239,68,68,0.06)",   titleColor: "#fca5a5", iconColor: "#f87171" },
+  green:   { border: "rgba(74,222,128,0.7)",  bg: "rgba(74,222,128,0.10)",  titleColor: "#86efac", iconColor: "#4ade80" },
 };
 
 interface ConceptDiagramProps {

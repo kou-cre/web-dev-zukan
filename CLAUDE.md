@@ -100,6 +100,14 @@ Next.js 15（App Router）+ TypeScript + Tailwind CSS + lucide-react で構築�
 | JavaScript | fetch API | `cyan` |
 | JavaScript | ESモジュール | `orange` |
 | JavaScript | エラーハンドリング | `red` |
+| Git / GitHub | GitとGitHubとは | `indigo` |
+| Git / GitHub | ブランチとマージ | `teal` |
+| Git / GitHub | Pull Request | `purple` |
+| Git / GitHub | ブランチ戦略 | `pink` |
+| Git / GitHub | stash（一時退避） | `slate` |
+| Git / GitHub | rebase -i（履歴整形） | `fuchsia` |
+| Git / GitHub | cherry-pick | `green` |
+| Git / GitHub | コンフリクト解消 | `stone` |
 | 次カテゴリ以降 | React / Next.js etc | 未割り当て |
 
 ### アイコン

@@ -35,6 +35,8 @@ export function CodeBlock({ title, code, language = "tsx", children, demoLabel =
           fontSize: "13px",
           lineHeight: "1.7",
           padding: "20px",
+          overflowX: "auto",
+          maxWidth: "100%",
         }}
       >
         {code.trim()}

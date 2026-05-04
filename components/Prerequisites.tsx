@@ -19,7 +19,7 @@ export function Prerequisites({ learn, prerequisites, outOfScope }: Prerequisite
         </div>
         <ul className="space-y-2">
           {learn.map((item, i) => (
-            <li key={i} className="text-xs text-gray-300 leading-relaxed flex gap-2">
+            <li key={i} className="text-sm text-gray-300 leading-relaxed flex gap-2">
               <span className="text-green-500 flex-shrink-0 mt-0.5">▸</span>
               <span>{item}</span>
             </li>
@@ -37,7 +37,7 @@ export function Prerequisites({ learn, prerequisites, outOfScope }: Prerequisite
         </div>
         <ul className="space-y-2">
           {prerequisites.map((item, i) => (
-            <li key={i} className="text-xs text-gray-300 leading-relaxed flex gap-2">
+            <li key={i} className="text-sm text-gray-300 leading-relaxed flex gap-2">
               <span className="text-blue-500 flex-shrink-0 mt-0.5">▸</span>
               <span>{item}</span>
             </li>
@@ -57,7 +57,7 @@ export function Prerequisites({ learn, prerequisites, outOfScope }: Prerequisite
         </div>
         <ul className="space-y-2">
           {outOfScope.map((item, i) => (
-            <li key={i} className="text-xs text-gray-500 leading-relaxed flex gap-2">
+            <li key={i} className="text-sm text-gray-500 leading-relaxed flex gap-2">
               <span className="flex-shrink-0 mt-0.5">▸</span>
               <span>{item}</span>
             </li>

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   GitCommit,
   GitBranch,
@@ -37,6 +38,9 @@ export const metadata = {
 export default function CherryPickPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
+      <Link href="/git" className="text-xs text-gray-500 hover:text-white transition-colors mb-6 block">
+        ← Git / GitHub に戻る
+      </Link>
       <Hero
         category="Git"
         title="cherry-pick"
@@ -92,7 +96,7 @@ export default function CherryPickPage() {
 
       {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
@@ -338,7 +342,7 @@ export default function CherryPickPage() {
 
       {/* ── 比較表 ──────────────────────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           COMPARISON
         </h2>
         <ComparisonTable
@@ -392,7 +396,7 @@ export default function CherryPickPage() {
 
       {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED — 複数コミットとコンフリクト対処
         </h2>
 

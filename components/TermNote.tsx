@@ -13,7 +13,7 @@ export function TermNote({ terms }: TermNoteProps) {
       className="rounded-lg border p-4 mb-5"
       style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
     >
-      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+      <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
         この図に出てくる言葉
       </p>
       <dl className="space-y-3">

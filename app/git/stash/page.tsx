@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Archive,
   AlertTriangle,
@@ -37,6 +38,9 @@ export const metadata = {
 export default function StashPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
+      <Link href="/git" className="text-xs text-gray-500 hover:text-white transition-colors mb-6 block">
+        ← Git / GitHub に戻る
+      </Link>
       <Hero
         category="Git"
         title="stash（一時退避）"
@@ -94,7 +98,7 @@ export default function StashPage() {
 
       {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
@@ -154,7 +158,7 @@ export default function StashPage() {
               className="rounded-xl border p-4"
               style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
             >
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4 text-center">
+              <p className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4 text-center">
                 git stash list の表示順
               </p>
               <div className="space-y-2">
@@ -264,7 +268,7 @@ export default function StashPage() {
 
       {/* ── 比較表 ──────────────────────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           COMPARISON
         </h2>
         <ComparisonTable
@@ -331,7 +335,7 @@ export default function StashPage() {
 
       {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED
         </h2>
 

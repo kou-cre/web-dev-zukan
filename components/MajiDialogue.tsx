@@ -47,7 +47,7 @@ function renderText(text: string) {
 export function MajiDialogue({ turns }: MajiDialogueProps) {
   return (
     <section className="mb-10">
-      <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-6">
+      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-6">
         DIALOGUE
       </h2>
       <div className="space-y-5">

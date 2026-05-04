@@ -78,7 +78,7 @@ export function PageDrill({ questions }: PageDrillProps) {
     const score = results.filter(Boolean).length;
     return (
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">DRILL</h2>
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">DRILL</h2>
         <div className="rounded-xl border p-6 text-center" style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}>
           <div className="flex justify-center mb-3">
             {score === questions.length

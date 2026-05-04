@@ -6,14 +6,15 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
 const navItems = [
-  { label: "ホーム", href: "/" },
-  { label: "基礎概念", href: "/kiso" },
-  { label: "JavaScript", href: "/javascript" },
-  { label: "React", href: "/react" },
-  { label: "Next.js", href: "/nextjs" },
-  { label: "Firebase", href: "/firebase" },
-  { label: "PWA", href: "/pwa" },
-  { label: "本番運用", href: "/honban" },
+  { label: "ホーム", href: "/", available: true },
+  { label: "基礎概念", href: "/kiso", available: true },
+  { label: "JavaScript", href: "/javascript", available: true },
+  { label: "Git / GitHub", href: "/git", available: true },
+  { label: "React", href: "/react", available: false },
+  { label: "Next.js", href: "/nextjs", available: false },
+  { label: "Firebase", href: "/firebase", available: false },
+  { label: "PWA", href: "/pwa", available: false },
+  { label: "本番運用", href: "/honban", available: false },
 ];
 
 export function SiteHeader() {
@@ -41,16 +42,27 @@ export function SiteHeader() {
 
         {/* デスクトップナビ */}
         <nav className="hidden sm:flex items-center gap-1 text-xs">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="px-2 py-1 rounded transition-colors whitespace-nowrap"
-              style={{ color: pathname === item.href ? "#ffffff" : "#9ca3af" }}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {navItems.map((item) =>
+            item.available ? (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="px-2 py-1 rounded transition-colors whitespace-nowrap"
+                style={{ color: pathname === item.href ? "#ffffff" : "#9ca3af" }}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <span
+                key={item.href}
+                className="px-2 py-1 whitespace-nowrap cursor-not-allowed"
+                style={{ color: "#4b5563" }}
+                title="準備中"
+              >
+                {item.label}
+              </span>
+            )
+          )}
         </nav>
 
         {/* モバイルハンバーガーボタン */}
@@ -83,19 +95,29 @@ export function SiteHeader() {
         style={{ backgroundColor: "#0f1117", borderColor: "#2d3048" }}
       >
         <nav className="flex flex-col py-3">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center px-5 py-3 text-sm transition-colors"
-              style={{
-                color: pathname === item.href ? "#ffffff" : "#9ca3af",
-                backgroundColor: pathname === item.href ? "rgba(255,255,255,0.05)" : undefined,
-              }}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {navItems.map((item) =>
+            item.available ? (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center px-5 py-3 text-sm transition-colors"
+                style={{
+                  color: pathname === item.href ? "#ffffff" : "#9ca3af",
+                  backgroundColor: pathname === item.href ? "rgba(255,255,255,0.05)" : undefined,
+                }}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <span
+                key={item.href}
+                className="flex items-center px-5 py-3 text-sm cursor-not-allowed"
+                style={{ color: "#4b5563" }}
+              >
+                {item.label}
+              </span>
+            )
+          )}
         </nav>
       </div>
     </>

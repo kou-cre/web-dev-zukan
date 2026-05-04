@@ -27,7 +27,7 @@ interface RelatedLinksProps {
 export function RelatedLinks({ items }: RelatedLinksProps) {
   return (
     <section className="mb-10">
-      <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
         RELATED PAGES
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

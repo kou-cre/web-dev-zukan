@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   GitBranch,
   Cloud,
@@ -36,6 +37,9 @@ export const metadata = {
 export default function GitBasicsPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
+      <Link href="/git" className="text-xs text-gray-500 hover:text-white transition-colors mb-6 block">
+        ← Git / GitHub に戻る
+      </Link>
       <Hero
         category="Git"
         title="GitとGitHubとは"
@@ -98,7 +102,7 @@ export default function GitBasicsPage() {
 
       {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
@@ -214,7 +218,7 @@ export default function GitBasicsPage() {
           description="コードは「作業ツリー → ステージ → ローカルリポジトリ → リモート」の4エリアを移動する。"
         >
           {/* 上方向フロー（push方向） */}
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 text-center">
+          <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 text-center">
             変更を保存する流れ（push方向）
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 flex-wrap">
@@ -247,7 +251,7 @@ export default function GitBasicsPage() {
 
           {/* 下方向フロー（pull方向） */}
           <div className="mt-5">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 text-center">
+            <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 text-center">
               リモートの変更を取り込む流れ（pull方向）
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-2 flex-wrap">
@@ -327,7 +331,7 @@ export default function GitBasicsPage() {
 
       {/* ── 比較表（基礎編） ──────────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           COMPARISON
         </h2>
         <ComparisonTable
@@ -383,7 +387,7 @@ export default function GitBasicsPage() {
 
       {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED — originとHEADの関係
         </h2>
 
@@ -456,7 +460,7 @@ export default function GitBasicsPage() {
               className="rounded-xl border p-4"
               style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
             >
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 text-center">
+              <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 text-center">
                 git fetch vs git pull
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

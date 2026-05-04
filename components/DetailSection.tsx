@@ -9,7 +9,7 @@ interface DetailSectionProps {
 export function DetailSection({ title, children }: DetailSectionProps) {
   return (
     <section className="mb-10">
-      <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
         DETAIL
       </h2>
       <div className="space-y-5">{children}</div>

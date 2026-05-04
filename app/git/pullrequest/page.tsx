@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   GitPullRequest,
   GitBranch,
@@ -47,6 +48,9 @@ export const metadata = {
 export default function PullRequestPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
+      <Link href="/git" className="text-xs text-gray-500 hover:text-white transition-colors mb-6 block">
+        ← Git / GitHub に戻る
+      </Link>
       <Hero
         category="Git"
         title="Pull Request"
@@ -103,7 +107,7 @@ export default function PullRequestPage() {
 
       {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
@@ -220,7 +224,7 @@ export default function PullRequestPage() {
 
       {/* ── マージ方式 概要カード（MajiDialogue の前提知識） ──── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           MERGE STRATEGIES — 3つの方式の概要
         </h2>
         <p className="text-sm text-gray-400 leading-relaxed mb-5">
@@ -323,7 +327,7 @@ export default function PullRequestPage() {
 
       {/* ── 比較表 ────────────────────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           COMPARISON — マージ方式
         </h2>
         <ComparisonTable
@@ -395,7 +399,7 @@ export default function PullRequestPage() {
 
       {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED — レビューサイクルとDraft PR
         </h2>
 

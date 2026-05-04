@@ -13,6 +13,13 @@ const accentMap: Record<string, { bg: string; border: string; icon: string; labe
   lime:    { bg: "rgba(132,204,22,0.08)",  border: "rgba(132,204,22,0.25)",  icon: "#a3e635", label: "#bef264" },
   red:     { bg: "rgba(239,68,68,0.08)",   border: "rgba(239,68,68,0.25)",   icon: "#f87171", label: "#fca5a5" },
   yellow:  { bg: "rgba(234,179,8,0.08)",   border: "rgba(234,179,8,0.25)",   icon: "#facc15", label: "#fde047" },
+  teal:    { bg: "rgba(20,184,166,0.08)",  border: "rgba(20,184,166,0.25)",  icon: "#2dd4bf", label: "#5eead4" },
+  green:   { bg: "rgba(74,222,128,0.08)",  border: "rgba(74,222,128,0.25)",  icon: "#4ade80", label: "#86efac" },
+  indigo:  { bg: "rgba(99,102,241,0.08)",  border: "rgba(99,102,241,0.25)",  icon: "#818cf8", label: "#a5b4fc" },
+  pink:    { bg: "rgba(236,72,153,0.08)",  border: "rgba(236,72,153,0.25)",  icon: "#f472b6", label: "#f9a8d4" },
+  fuchsia: { bg: "rgba(232,121,249,0.08)", border: "rgba(232,121,249,0.25)", icon: "#e879f9", label: "#f0abfc" },
+  slate:   { bg: "rgba(100,116,139,0.08)", border: "rgba(100,116,139,0.25)", icon: "#94a3b8", label: "#cbd5e1" },
+  stone:   { bg: "rgba(120,113,108,0.08)", border: "rgba(120,113,108,0.25)", icon: "#a8a29e", label: "#d6d3d1" },
 };
 
 export interface UseCaseItem {
@@ -36,7 +43,7 @@ export function UseCaseGrid({ items, cols = 2 }: UseCaseGridProps) {
   return (
     <div className={`grid ${gridClass} gap-4 mb-4`}>
       {items.map((item, i) => {
-        const accent = accentMap[item.accentColor ?? "blue"];
+        const accent = accentMap[item.accentColor ?? "blue"] ?? accentMap.blue;
         return (
           <div
             key={i}

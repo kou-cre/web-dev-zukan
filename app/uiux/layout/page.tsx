@@ -20,6 +20,7 @@ import {
   FlowArrow,
 } from "@/components/ConceptDiagram";
 import { MajiDialogue } from "@/components/MajiDialogue";
+import { ComparisonTable } from "@/components/ComparisonTable";
 import { SectionDivider } from "@/components/SectionDivider";
 import {
   DetailSection,
@@ -29,7 +30,8 @@ import {
 } from "@/components/DetailSection";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
-import { layoutQuestions } from "@/content/questions/uiux/layout";
+import { TermNote } from "@/components/TermNote";
+import { layoutQuestions, layoutAdvancedQuestions } from "@/content/questions/uiux/layout";
 
 export default function UiuxLayoutPage() {
   return (
@@ -62,7 +64,7 @@ export default function UiuxLayoutPage() {
           "デザイントークンで色・余白を中央管理する考え方",
         ]}
         prerequisites={[
-          "デザインの4大原則を理解している",
+          { text: "デザインの4大原則を理解している", href: "/uiux/principles" },
           "余白の8の倍数ルールを知っている",
         ]}
         outOfScope={[
@@ -110,6 +112,31 @@ export default function UiuxLayoutPage() {
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
+
+        <TermNote
+          terms={[
+            {
+              word: "12カラムグリッド",
+              definition:
+                "画面幅を12等分した格子状のガイドライン。要素をこの格子に揃えることで整列が自動的に担保される。12は2・3・4・6で割り切れるため柔軟なレイアウトが作りやすい。",
+            },
+            {
+              word: "ガター（Gutter）",
+              definition:
+                "グリッドのカラムとカラムの間の余白。一般的に16〜24px程度に設定し、コンテンツ同士の間隔を一定に保つ。",
+            },
+            {
+              word: "モバイルファースト",
+              definition:
+                "スマートフォン（320〜375px幅）のレイアウトを先に設計し、画面が広くなるにつれてレイアウトを拡張していく設計方針。",
+            },
+            {
+              word: "ブレークポイント",
+              definition:
+                "画面幅が変わったときにレイアウトを切り替える境界値。sm（640px）・md（768px）・lg（1024px）などが一般的。Tailwindではsm:・md:・lg:プレフィックスで指定する。",
+            },
+          ]}
+        />
 
         <ConceptDiagram
           title="概念図A — 12カラムグリッドの3要素"
@@ -228,25 +255,84 @@ export default function UiuxLayoutPage() {
           {
             speaker: "maji",
             emotion: "doubt",
-            text: "レイアウトってFigmaで適当に並べるだけじゃダメ？",
+            text: "レイアウトってFigmaで適当に並べるだけじゃダメなんですか？ ボク、12カラムって言われても、なぜ12なのかピンと来ていなくて。",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "12カラムを意識すると、モバイルに移したときの分割が自動で決まる。",
+            text: "12は2・3・4・6で割り切れるからなんです、マジさん。\n1/2、1/3、1/4、1/6 のレイアウトが自然に作れる。\n8カラムや16カラムでは出せない柔軟性があるんです。\n12カラムを意識すると、モバイルに移したときの分割も自動で決まります。",
           },
           {
             speaker: "maji",
             emotion: "question",
-            text: "色を `primary-500` で書くだけで、ブランド変更がボタン1個で終わるの？ マジ？",
+            text: "マジ？\nじゃあ最初からPC版で作り込むより、モバイル版から設計したほうがいいんですか？",
           },
           {
             speaker: "master",
             emotion: "standard",
-            text: "名前をつけると、デザインがコードになる。一貫性は仕組みで守る方が強い。",
+            text: "そのとおりです。\nモバイルから設計するのは「制約から始める」アプローチ。\n狭い幅の中で本当に必要な情報を選び抜く必要があるので、結果的に情報の優先度が研ぎ澄まされるんです。\nPC版から作るとモバイルで詰みます、マジさん。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "ボク、デザイントークンというのが少し気になっていて。色を `primary-500` という名前で書くだけで、本当にブランド変更がボタン1個で終わるんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "終わるんです、マジさん。\n#3b82f6 のように直書きしていると、微妙に違う青が画面に散らばって、ブランド変更のときに数十箇所を直す羽目になる。\n名前で中央管理しておけば、定義1箇所の変更で全画面に反映される。\nこれが「デザインがコードになる」感覚です。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なんとなく分かってきました。トークン → コンポーネント → 画面、と層を重ねて再利用する。一貫性は気合いではなく仕組みで守る、ということですね。ボク、これで保守が楽になりそうです。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その理解で完璧です。\nトークン化は実装速度より「変更耐性」のメリットが大きい。\nレイアウトは家の間取りと同じで、柱（グリッド）とコンセント（トークン）が決まれば暮らし（=UI）が回るんです、マジさん。",
           },
         ]}
       />
+
+      {/* ── COMPARISON ──────────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["モバイル", "タブレット", "デスクトップ"]}
+          rows={[
+            {
+              label: "ブレークポイント",
+              cells: ["〜 639px", "640px 〜 1023px", "1024px 〜"],
+              highlightCol: 2,
+            },
+            {
+              label: "グリッド列数",
+              cells: ["4カラム", "8カラム", "12カラム"],
+              highlightCol: 2,
+            },
+            {
+              label: "ガター（列間の隙間）",
+              cells: ["16px", "24px", "32px"],
+              highlightCol: 2,
+            },
+            {
+              label: "コンテンツ余白",
+              cells: ["16px", "24px", "32px〜"],
+              highlightCol: 2,
+            },
+            {
+              label: "コンテンツ最大幅",
+              cells: ["100%", "100%", "1280px前後"],
+              highlightCol: 2,
+            },
+          ]}
+          highlightCol={2}
+          note="Tailwind CSSのデフォルトブレークポイントはsm:640px / md:768px / lg:1024px / xl:1280px。このサイトでもこれを使っている。"
+        />
+      </section>
 
       {/* ── SectionDivider */}
       <SectionDivider
@@ -259,6 +345,26 @@ export default function UiuxLayoutPage() {
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED DIAGRAMS
         </h2>
+
+        <TermNote
+          terms={[
+            {
+              word: "デザイントークン",
+              definition:
+                "色・フォントサイズ・余白などに名前をつけて管理する仕組み。primary-500・space-4のような変数名で定義し、コード全体で一貫して使うことで「1か所変えれば全体が変わる」を実現する。",
+            },
+            {
+              word: "CSS変数 / Tailwind config",
+              definition:
+                "デザイントークンを実装する手段。CSS変数は--color-primary: #3b82f6のように定義し、Tailwind configではtheme.extend.colorsなどで独自トークンを追加できる。",
+            },
+            {
+              word: "コンポーネント化",
+              definition:
+                "繰り返し使うUI要素（ボタン・カード・ナビなど）を1つの部品として切り出す設計。変更が1か所で済み、デザインの一貫性が保ちやすくなる。",
+            },
+          ]}
+        />
 
         <ConceptDiagram
           title="概念図C — デザイントークンの考え方"
@@ -452,24 +558,45 @@ export default function UiuxLayoutPage() {
 
       {/* ── RelatedLinks */}
       <RelatedLinks
-        items={[
+        groups={[
           {
-            href: "/uiux/parts",
-            title: "UIパーツの設計",
-            description: "ボタン・入力・カードの状態設計を学ぶ",
-            icon: "Code2",
+            label: "前提として読むページ",
+            items: [
+              {
+                href: "/uiux/parts",
+                title: "UIパーツの設計",
+                description: "ボタン・入力・カードの状態設計を学ぶ",
+                icon: "LayoutGrid",
+              },
+              {
+                href: "/uiux/color",
+                title: "色と配色のルール",
+                description: "三属性と60-30-10 — 一貫性に必要な色の基礎",
+                icon: "Palette",
+              },
+            ],
           },
           {
-            href: "/uiux/ai-quality",
-            title: "AIと仕上げる・品質と倫理",
-            description: "10原則・WCAG・ダークパターンで検収する",
-            icon: "Rocket",
+            label: "次に読むページ",
+            items: [
+              {
+                href: "/uiux/ai-quality",
+                title: "AIと仕上げる・品質と倫理",
+                description: "10原則・WCAG・ダークパターンで検収する",
+                icon: "Sparkles",
+              },
+            ],
           },
         ]}
       />
 
       {/* ── PageDrill */}
-      <PageDrill questions={layoutQuestions} />
+      <PageDrill
+        groups={[
+          { label: "基礎編ドリル", questions: layoutQuestions },
+          { label: "応用編ドリル", questions: layoutAdvancedQuestions },
+        ]}
+      />
     </div>
   );
 }

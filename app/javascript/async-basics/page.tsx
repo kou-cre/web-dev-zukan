@@ -102,7 +102,7 @@ export default function AsyncBasicsPage() {
 
       {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
@@ -386,7 +386,7 @@ console.log('② 終了（すぐ）');
 
       {/* ── 比較表（基礎編） ────────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           COMPARISON
         </h2>
         <ComparisonTable
@@ -434,7 +434,7 @@ console.log('② 終了（すぐ）');
 
       {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED — イベントループとコールバック地獄
         </h2>
 

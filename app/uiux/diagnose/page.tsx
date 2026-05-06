@@ -17,12 +17,14 @@ import { Hero } from "@/components/Hero";
 import { Prerequisites } from "@/components/Prerequisites";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import { Bridge } from "@/components/Bridge";
+import { TermNote } from "@/components/TermNote";
 import {
   ConceptDiagram,
   FlowCard,
   FlowArrow,
 } from "@/components/ConceptDiagram";
 import { MajiDialogue } from "@/components/MajiDialogue";
+import { ComparisonTable } from "@/components/ComparisonTable";
 import { SectionDivider } from "@/components/SectionDivider";
 import {
   DetailSection,
@@ -32,7 +34,7 @@ import {
 } from "@/components/DetailSection";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
-import { diagnoseQuestions } from "@/content/questions/uiux/diagnose";
+import { diagnoseQuestions, diagnoseAdvancedQuestions } from "@/content/questions/uiux/diagnose";
 
 export default function UiuxDiagnosePage() {
   return (
@@ -52,7 +54,7 @@ export default function UiuxDiagnosePage() {
         category="UIデザイン"
         title="UIを読み解く・診断する"
         subtitle={"「なぜ良いか」「何が悪いか」を言葉にする力"}
-        accentColor="purple"
+        accentColor="violet"
       />
 
       {/* ── Prerequisites */}
@@ -63,8 +65,8 @@ export default function UiuxDiagnosePage() {
           "修正のコスパを考えて、どこから手を入れるか決める力",
         ]}
         prerequisites={[
-          "デザインの4大原則（近接・整列・反復・対比）を知っている",
-          "色と余白の基本ルールを理解している",
+          { text: "デザインの4大原則（近接・整列・反復・対比）を知っている", href: "/uiux/principles" },
+          { text: "色と余白の基本ルールを理解している", href: "/uiux/color" },
         ]}
         outOfScope={[
           "Before/Afterで実際に画面を直すリファクタリング演習",
@@ -111,6 +113,23 @@ export default function UiuxDiagnosePage() {
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
+
+        <TermNote
+          terms={[
+            {
+              word: "UIの診断",
+              definition: "デザインの良し悪しを「なぜ良いか／なぜ悪いか」を言語化して評価するプロセス。4原則・色・余白の観点から問題を特定し、修正優先度をつける。",
+            },
+            {
+              word: "コスパマップ",
+              definition: "改善施策を「効果の大きさ」と「修正の手軽さ」の2軸で分類した図。効果大かつ修正簡単な項目（左上）から手をつけるのが基本戦略。",
+            },
+            {
+              word: "AIスロップ（AI Slop）",
+              definition: "AIが量産する「見た目は整っているが意図のないUI」のこと。配色・レイアウトはそれなりに見えるが、情報の優先度・余白リズム・操作の文脈が欠けているデザイン。",
+            },
+          ]}
+        />
 
         <ConceptDiagram
           title="概念図A — 4ステップ診断フロー"
@@ -195,25 +214,91 @@ export default function UiuxDiagnosePage() {
           {
             speaker: "maji",
             emotion: "doubt",
-            text: "これダメなUIらしいけど、どこがダメか分かんない",
-          },
-          {
-            speaker: "master",
-            emotion: "thinking",
-            text: "まず目を細めて。装飾を消したとき、骨格は揃ってる？",
-          },
-          {
-            speaker: "maji",
-            emotion: "question",
-            text: "整列が崩れると、こんなに気持ち悪いんだ…",
+            text: "これダメなUIらしいんですけど、ボク、どこがダメなのか分からないんです。なんとなく雑な感じはするんですけど……。",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "直すのも順番がある。整列→余白→色→文字。コスパが高い順に。",
+            text: "まず目を細めてみてください、マジさん。\n装飾やテキストの細部がボケて、整列・余白・コントラストの「骨格」だけが残ります。\nそうすると「どこが崩れているか」が見えてくるんです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "マジ？\nやってみます……あ、左端がバラバラなのが分かります。整列が崩れていると、こんなに気持ち悪く見えるんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "そうなんです。\n色やフォントから入ると、整列が崩れていることに気づきにくい。\n「全体の骨格 → 部分のディテール」の順で見ると、修正すべき箇所が浮かび上がるんです、マジさん。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "ボク、問題が10個も見つかってしまって。全部直そうとすると大変なのですが、どこから手を入れるのが正解ですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "直すのにも順番があるんです、マジさん。\n整列 → 余白 → 色 → 文字 の順で、コスパが高い順に手を入れる。\n左上の「低コスト・高効果」から始めるのが鉄則。\n「いっそ作り直そう」は最後の手段です。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なんとなく分かってきました。診断は健康診断と同じで、症状を数値に分解して、効く順に処方する、ということですね。ボク、これなら冷静に直せそうです。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その理解で完璧です。\nAIが作るUIには「余白が一定すぎる」「色が全部主張する」というスロップが頻出します。\n物差しを持っていれば、そのスロップに気づけるようになる。\n診断の言葉を持つことが、AI時代のデザインリテラシーなんです、マジさん。",
           },
         ]}
       />
+
+      {/* ── COMPARISON ──────────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["改善が必要なUI", "良いUI"]}
+          rows={[
+            {
+              label: "情報の優先順位",
+              cells: [
+                "全部同じ大きさ・色で何が重要か不明",
+                "重要な情報が大きく・コントラストが高い",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "ボタン",
+              cells: [
+                "背景と同化して押せることに気づかない",
+                "Primaryが明確で目に飛び込んでくる",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "余白",
+              cells: [
+                "関係ない要素が近くに置かれて散漫",
+                "近接の原則に従い関連情報がまとまっている",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "フォント",
+              cells: [
+                "全部同じサイズで単調・読み疲れる",
+                "サイズの階段があり視線が自然に流れる",
+              ],
+              highlightCol: 1,
+            },
+          ]}
+          highlightCol={1}
+          note="「なんか変」を感じたら、上の4項目を順番に点検する。多くの場合、どれか1つが崩れている。"
+        />
+      </section>
 
       {/* ── SectionDivider */}
       <SectionDivider
@@ -408,24 +493,51 @@ export default function UiuxDiagnosePage() {
 
       {/* ── RelatedLinks */}
       <RelatedLinks
-        items={[
+        groups={[
           {
-            href: "/uiux/principles",
-            title: "デザインの4大原則",
-            description: "近接・整列・反復・対比 — 診断のときの物差しになる",
-            icon: "Code2",
+            label: "前提として読むページ",
+            items: [
+              {
+                href: "/uiux/principles",
+                title: "デザインの4大原則",
+                description: "近接・整列・反復・対比 — 診断のときの物差しになる",
+                icon: "MousePointerClick",
+              },
+              {
+                href: "/uiux/color",
+                title: "色と配色のルール",
+                description: "コントラスト比と60-30-10 — 色の診断基準",
+                icon: "Palette",
+              },
+              {
+                href: "/uiux/typography",
+                title: "文字と余白のルール",
+                description: "8の倍数と行間 — 余白の診断基準",
+                icon: "Type",
+              },
+            ],
           },
           {
-            href: "/uiux/parts",
-            title: "UIパーツの設計",
-            description: "ボタン・入力・カードの状態設計を学ぶ",
-            icon: "Rocket",
+            label: "次に読むページ",
+            items: [
+              {
+                href: "/uiux/parts",
+                title: "UIパーツの設計",
+                description: "ボタン・入力・カードの状態設計を学ぶ",
+                icon: "LayoutGrid",
+              },
+            ],
           },
         ]}
       />
 
       {/* ── PageDrill */}
-      <PageDrill questions={diagnoseQuestions} />
+      <PageDrill
+        groups={[
+          { label: "基礎編ドリル", questions: diagnoseQuestions },
+          { label: "応用編ドリル", questions: diagnoseAdvancedQuestions },
+        ]}
+      />
     </div>
   );
 }

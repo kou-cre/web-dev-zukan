@@ -112,7 +112,7 @@ export default function DomPage() {
 
       {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
@@ -420,7 +420,7 @@ btn.addEventListener('click', () => {
 
       {/* ── 比較表（基礎編） ────────────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           COMPARISON
         </h2>
         <ComparisonTable
@@ -480,7 +480,7 @@ btn.addEventListener('click', () => {
 
       {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED — DOMツリーの詳細構造
         </h2>
 
@@ -622,7 +622,7 @@ btn.addEventListener('click', () => {
           ツリー構造の詳細が分かりました。次は「クリックなどのイベントがDOMツリーをどう伝わるか」というイベント伝播の仕組みを見ていきます。
         </p>
 
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
           ADVANCED — イベント伝播
         </h2>
 
@@ -727,7 +727,7 @@ btn.addEventListener('click', () => {
           直接DOMを書き換えるのが大変だと分かってきましたか？ ボタンが100個あったら、100個全部に addEventListener と textContent の更新を書く必要があります。この「大変さを自動化した」のが React です。Reactは内部で仮想DOMという仕組みを使っています。
         </p>
 
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
           ADVANCED — 仮想DOM（React理解のための前知識）
         </h2>
 

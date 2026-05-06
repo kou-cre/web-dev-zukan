@@ -24,6 +24,7 @@ import {
   StackLayer,
 } from "@/components/ConceptDiagram";
 import { MajiDialogue } from "@/components/MajiDialogue";
+import { ComparisonTable } from "@/components/ComparisonTable";
 import { SectionDivider } from "@/components/SectionDivider";
 import {
   DetailSection,
@@ -33,7 +34,8 @@ import {
 } from "@/components/DetailSection";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
-import { typographyQuestions } from "@/content/questions/uiux/typography";
+import { TermNote } from "@/components/TermNote";
+import { typographyQuestions, typographyAdvancedQuestions } from "@/content/questions/uiux/typography";
 
 export const metadata = {
   title: "文字と余白のルール | UIデザイン | Web開発図解",
@@ -71,8 +73,8 @@ export default function TypographyPage() {
           "本文に最適な行間（1.5〜1.7）",
         ]}
         prerequisites={[
-          "デザインの4大原則を知っている（/uiux/principles を読んだ）",
-          "色と配色のルールを知っている（/uiux/color を読んだ）",
+          { text: "デザインの4大原則を知っている（/uiux/principles を読んだ）", href: "/uiux/principles" },
+          { text: "色と配色のルールを知っている（/uiux/color を読んだ）", href: "/uiux/color" },
         ]}
         outOfScope={[
           "和文フォント・欧文フォントの選び方の詳細",
@@ -116,6 +118,27 @@ export default function TypographyPage() {
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
+
+        <TermNote
+          terms={[
+            {
+              word: "タイプスケール",
+              definition: "フォントサイズを一定の比率で段階的に設定したルール。例えば12・14・16・20・24・32pxのように「サイズの階段」を決めておくことで、見出しと本文のサイズ差が整然と揃う。",
+            },
+            {
+              word: "行間（line-height）",
+              definition: "テキスト1行の高さ。フォントサイズの1.5〜1.7倍（CSSで line-height: 1.6 など）にすると可読性が高くなる。",
+            },
+            {
+              word: "8の倍数ルール",
+              definition: "余白（マージン・パディング）を8の倍数（8・16・24・32px）に統一するデザインルール。一貫した余白リズムが生まれて整った印象になる。",
+            },
+            {
+              word: "マージン / パディング",
+              definition: "マージンは要素の外側の余白（他の要素との距離）、パディングは要素の内側の余白（枠線と中身の距離）。CSSのmargin・paddingプロパティで設定する。",
+            },
+          ]}
+        />
 
         {/* 概念図A: サイズの階段（タイプスケール） */}
         <ConceptDiagram
@@ -221,25 +244,84 @@ export default function TypographyPage() {
           {
             speaker: "maji",
             emotion: "doubt",
-            text: "フォントサイズって好きな数字でいいんじゃないの？ 13でも17でも、別に困らないでしょ。",
+            text: "フォントサイズって好きな数字でいいんじゃないですか？ ボク、13でも17でも別に困らないと思っていまして。",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "階段から外れた数字は雑音になります。3〜4段階に絞ると、見出しと本文の関係が一瞬で伝わる。読み手は無意識に「なぜこのサイズなのか」を処理しようとして疲れるんです。",
+            text: "階段から外れた数字は雑音になるんです、マジさん。\n3〜4段階に絞ると、見出しと本文の関係が一瞬で伝わる。\n読み手は無意識に「なぜこのサイズなのか」を処理しようとして疲れてしまうんです。",
           },
           {
             speaker: "maji",
-            emotion: "surprised",
-            text: "余白を増やすだけで、こんなに見やすくなるの？ もったいない気がしてました。",
+            emotion: "question",
+            text: "マジ？\nじゃあサイズを思いつきで決めると、それが読み手の脳に負担をかけている、ということですか？",
           },
           {
             speaker: "master",
             emotion: "standard",
-            text: "余白は呼吸です。詰めるより引く方が難しい。情報量を増やすほど読まれる、というのは思い込み。空けるほど主役が立ちます。",
+            text: "そのとおりです。\n「12 / 14 / 16 / 20 / 24 / 32」のような階段を最初に決めて、その中からしか選ばないと決める。\n選択肢が減ると迷いが消えて、画面に統一感が出るんです、マジさん。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "ボク、余白も気になっていて。詰めて情報を多く見せたほうが親切な気がしているんですが、空けたほうがいいんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "余白は呼吸です、マジさん。\n詰めるより引く方が難しい。\n情報量を増やすほど読まれる、というのは思い込みなんです。\n空けるほど主役が立つし、読み手の目が休まる場所ができる。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なんとなく分かってきました。サイズも余白も「数列」で揃える。13や17のような中途半端な値は雑音になる、ということですね。ボク、Tailwindのspacingがなぜ4の倍数なのか、いま腑に落ちました。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その理解で完璧です。\n本文は line-height: 1.6、見出しは line-height: 1.3 を初期値として覚えておくと、日本語UIの大半は読みやすく仕上がる。\nタイポグラフィは「数列で整える」が本質なんです、マジさん。",
           },
         ]}
       />
+
+      {/* ── COMPARISON ──────────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["キャプション", "本文", "小見出し", "大見出し"]}
+          rows={[
+            {
+              label: "サイズ",
+              cells: ["12〜14px", "16px", "20〜24px", "28〜36px"],
+              highlightCol: 1,
+            },
+            {
+              label: "行間（line-height）",
+              cells: ["1.4〜1.5", "1.6〜1.75", "1.3〜1.4", "1.2〜1.3"],
+              highlightCol: 1,
+            },
+            {
+              label: "上下の余白",
+              cells: ["8〜12px", "16〜24px", "24〜32px", "32〜48px"],
+              highlightCol: 1,
+            },
+            {
+              label: "使う場面",
+              cells: [
+                "補足・ラベル・日付",
+                "記事・説明・本文",
+                "セクション見出し",
+                "ページタイトル・ヒーロー",
+              ],
+              highlightCol: 1,
+            },
+          ]}
+          highlightCol={1}
+          note="すべての値が「8の倍数（または4の倍数）」に収まっている。これがリズムの正体。デザインツールで実測してみると、整ったUIは必ずこの規則性がある。"
+        />
+      </section>
 
       {/* ── SectionDivider ───────────────────────────────────── */}
       <SectionDivider
@@ -358,24 +440,39 @@ export default function TypographyPage() {
 
       {/* ── RelatedLinks ─────────────────────────────────────── */}
       <RelatedLinks
-        items={[
+        groups={[
           {
-            href: "/uiux/color",
-            title: "色と配色のルール",
-            description: "三属性と60-30-10で配色を作る",
-            icon: "Code2",
+            label: "前提として読むページ",
+            items: [
+              {
+                href: "/uiux/color",
+                title: "色と配色のルール",
+                description: "三属性と60-30-10で配色を作る",
+                icon: "Palette",
+              },
+            ],
           },
           {
-            href: "/uiux/diagnose",
-            title: "UIを読み解く・診断する",
-            description: "実際のUIに4原則を当てて点検する",
-            icon: "Rocket",
+            label: "次に読むページ",
+            items: [
+              {
+                href: "/uiux/diagnose",
+                title: "UIを読み解く・診断する",
+                description: "実際のUIに4原則を当てて点検する",
+                icon: "Stethoscope",
+              },
+            ],
           },
         ]}
       />
 
       {/* ── PageDrill ─────────────────────────────────────────── */}
-      <PageDrill questions={typographyQuestions} />
+      <PageDrill
+        groups={[
+          { label: "基礎編ドリル", questions: typographyQuestions },
+          { label: "応用編ドリル", questions: typographyAdvancedQuestions },
+        ]}
+      />
     </div>
   );
 }

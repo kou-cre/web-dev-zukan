@@ -24,6 +24,7 @@ import {
   StackLayer,
 } from "@/components/ConceptDiagram";
 import { MajiDialogue } from "@/components/MajiDialogue";
+import { ComparisonTable } from "@/components/ComparisonTable";
 import { SectionDivider } from "@/components/SectionDivider";
 import {
   DetailSection,
@@ -33,7 +34,8 @@ import {
 } from "@/components/DetailSection";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
-import { colorQuestions } from "@/content/questions/uiux/color";
+import { TermNote } from "@/components/TermNote";
+import { colorQuestions, colorAdvancedQuestions } from "@/content/questions/uiux/color";
 
 export const metadata = {
   title: "色と配色のルール | UIデザイン | Web開発図解",
@@ -71,7 +73,7 @@ export default function ColorPage() {
           "色が伝える意味（赤=危険・緑=成功など）の慣習",
         ]}
         prerequisites={[
-          "デザインの4大原則を知っている（/uiux/principles を読んだ）",
+          { text: "デザインの4大原則を知っている（/uiux/principles を読んだ）", href: "/uiux/principles" },
           "Webサイトを「見やすい / 見にくい」と感じた経験がある",
         ]}
         outOfScope={[
@@ -89,17 +91,17 @@ export default function ColorPage() {
           {
             label: "材料を選ぶ",
             real: "色相・彩度・明度の3属性で色を指定する",
-            metaphor: "三属性",
+            metaphor: "酒の種類・度数・薄め具合",
           },
           {
             label: "割合を決める",
             real: "ベース60% / メイン30% / アクセント10%",
-            metaphor: "60-30-10",
+            metaphor: "カクテルのレシピ比率",
           },
           {
             label: "確認する",
             real: "コントラスト比4.5:1以上を数値で検証",
-            metaphor: "計測",
+            metaphor: "テイスティング",
           },
         ]}
         definition={"配色 = 色相・彩度・明度を ベース60% / メイン30% / アクセント10% の比率で配る作業"}
@@ -116,6 +118,31 @@ export default function ColorPage() {
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
+
+        <TermNote
+          terms={[
+            {
+              word: "HSL",
+              definition: "色を「色相(Hue)・彩度(Saturation)・明度(Lightness)」の3つの数値で表す方法。hsl(0, 80%, 50%) のように書く。数値で色を操作できるため、デザインツールやCSSで広く使われる。",
+            },
+            {
+              word: "色相（Hue）",
+              definition: "色の種類（赤・緑・青など）を0〜360の角度で表した値。0が赤、120が緑、240が青。",
+            },
+            {
+              word: "彩度（Saturation）",
+              definition: "色の鮮やかさを0〜100%で表した値。0%はグレー、100%は最も鮮やか。",
+            },
+            {
+              word: "明度（Lightness）",
+              definition: "色の明るさを0〜100%で表した値。0%は黒、100%は白、50%が最も純粋な色。",
+            },
+            {
+              word: "60-30-10の法則",
+              definition: "配色の黄金比。背景色60%・メインカラー30%・アクセントカラー10%の比率でUIを構成すると整った印象になる。",
+            },
+          ]}
+        />
 
         {/* 概念図A: 色の三属性(HSL) */}
         <ConceptDiagram
@@ -188,25 +215,91 @@ export default function ColorPage() {
           {
             speaker: "maji",
             emotion: "doubt",
-            text: "配色ってセンスっぽいけど、ルールなんてあるの？ 好きな色を3つ並べちゃダメなんですか？",
+            text: "配色ってセンスっぽいですけど、ルールなんてあるんですか？ ボク、好きな色を3つ並べちゃダメなのかな……と思っていまして。",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "60-30-10の法則を覚えるだけで、9割の画面は破綻しません。残り1割で個性を出す、くらいの気持ちでいい。基本ルールがあるから崩しにいける。",
+            text: "60-30-10の法則を覚えるだけで、9割の画面は破綻しません、マジさん。\n残り1割で個性を出す、くらいの気持ちでいい。\n基本ルールがあるからこそ、安心して崩しにいけるんです。",
           },
           {
             speaker: "maji",
-            emotion: "surprised",
-            text: "コントラスト比って数値で決まってるの？ マジ？ 雰囲気で決めてました。",
+            emotion: "question",
+            text: "マジ？\nじゃあアクセントカラーを画面のあちこちに使ったらダメ、ということですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "そのとおりです。\nアクセントを多用するとアクセントが消える。\n「少ないから目立つ」が原則なので、CTAボタンや重要な数字など「ここを見てほしい」場所だけに10%で配る。\nヘッダーも背景もボタンも全部アクセント色だと、結局どこを見ればいいか分からなくなるんです、マジさん。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "ボク、コントラスト比というのが少し気になっていて。あれって本当に数値で決まっているんですか？ 雰囲気で「薄めにしたい」って決めちゃってました。",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "WCAGの4.5:1を覚えるだけで、アクセシビリティの土台が踏めます。文字と背景が薄すぎて読めない、というクレームは数値で防げる。",
+            text: "WCAGという国際基準があるんです、マジさん。\n本文は4.5:1以上、大きな文字は3:1以上が目安。\nChromeのDevToolsで要素を選ぶと「Contrast」の数値が即座に出ます。\n「文字と背景が薄すぎて読めない」というクレームは、数値で事前に防げるんです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なんとなく分かってきました。色は感覚じゃなくて、三属性と60-30-10と4.5:1という数字で扱う、ということですね。ボク、これなら再現できそうです。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その理解で完璧です。\n「もうちょい暗く」「もうちょい派手に」を、彩度・明度の数字で会話できるようになるとデザインレビューが10倍速くなる。\n配色はカクテル、材料と割合と検証で味が決まるんです、マジさん。",
           },
         ]}
       />
+
+      {/* ── COMPARISON ──────────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["RGB", "HSL"]}
+          rows={[
+            {
+              label: "表現軸",
+              cells: [
+                "赤・緑・青の混合量（各0〜255）",
+                "色相・彩度・明度（H: 0〜360 / S, L: 0〜100%）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "人間の感覚との対応",
+              cells: [
+                "対応しにくい（rgb(128,0,128)が何色か直感で分からない）",
+                "色相=色の種類、彩度=鮮やかさ、明度=明るさ（直感的）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "微調整のしやすさ",
+              cells: [
+                "しにくい（3値すべて変える必要がある）",
+                "しやすい（明度だけ動かす・彩度だけ落とす）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "主な用途",
+              cells: [
+                "最終出力値・コード記述（HexはRGBのショートハンド）",
+                "デザイン決定・色の調整フェーズ",
+              ],
+              highlightCol: 1,
+            },
+          ]}
+          highlightCol={1}
+          note="CSSではどちらの記法も使える。デザインを考えるときはHSLで、エンジニアとの連携時はHex（RGB）に変換するのが実務のパターン。"
+        />
+      </section>
 
       {/* ── SectionDivider ───────────────────────────────────── */}
       <SectionDivider
@@ -219,6 +312,23 @@ export default function ColorPage() {
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED DIAGRAMS
         </h2>
+
+        <TermNote
+          terms={[
+            {
+              word: "WCAG",
+              definition: "Web Content Accessibility Guidelines の略。Webアクセシビリティの国際基準。コントラスト比4.5:1以上（AA基準）など、色の使い方のルールが定められている。",
+            },
+            {
+              word: "コントラスト比",
+              definition: "テキストと背景色の明るさの差を数値化したもの。4.5:1以上でWCAG AA基準を満たし、多くの人が読みやすい状態になる。",
+            },
+            {
+              word: "DevTools",
+              definition: "ブラウザに内蔵された開発者向けツール（F12で開く）。要素の色・コントラスト比・レイアウトなどをリアルタイムで確認・検査できる。",
+            },
+          ]}
+        />
 
         {/* 概念図C: コントラスト比とWCAG */}
         <ConceptDiagram
@@ -345,24 +455,39 @@ export default function ColorPage() {
 
       {/* ── RelatedLinks ─────────────────────────────────────── */}
       <RelatedLinks
-        items={[
+        groups={[
           {
-            href: "/uiux/principles",
-            title: "デザインの4大原則",
-            description: "近接・整列・反復・対比でUIを整える",
-            icon: "Code2",
+            label: "前提として読むページ",
+            items: [
+              {
+                href: "/uiux/principles",
+                title: "デザインの4大原則",
+                description: "近接・整列・反復・対比でUIを整える",
+                icon: "MousePointerClick",
+              },
+            ],
           },
           {
-            href: "/uiux/typography",
-            title: "文字と余白のルール",
-            description: "サイズの階段と8の倍数で整えるタイポグラフィ",
-            icon: "Rocket",
+            label: "次に読むページ",
+            items: [
+              {
+                href: "/uiux/typography",
+                title: "文字と余白のルール",
+                description: "サイズの階段と8の倍数で整えるタイポグラフィ",
+                icon: "Type",
+              },
+            ],
           },
         ]}
       />
 
       {/* ── PageDrill ─────────────────────────────────────────── */}
-      <PageDrill questions={colorQuestions} />
+      <PageDrill
+        groups={[
+          { label: "基礎編ドリル", questions: colorQuestions },
+          { label: "応用編ドリル", questions: colorAdvancedQuestions },
+        ]}
+      />
     </div>
   );
 }

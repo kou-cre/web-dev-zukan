@@ -18,7 +18,7 @@ import {
 } from "@/components/DetailSection";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
-import { apiRoutesQuestions } from "@/content/questions/nextjs/api-routes";
+import { apiRoutesQuestions, apiRoutesAdvancedQuestions } from "@/content/questions/nextjs/api-routes";
 
 export const metadata = {
   title: "API Routes | Web開発図解",
@@ -149,12 +149,11 @@ export default function ApiRoutesPage() {
                 <pre className="text-xs text-gray-300 leading-relaxed font-mono whitespace-pre">
 {`app/api/
 ├── users/
-│   └── route.ts
-├── posts/
-│   └── route.ts
-└── users/
-    └── [id]/
-        └── route.ts`}
+│   ├── route.ts
+│   └── [id]/
+│       └── route.ts
+└── posts/
+    └── route.ts`}
                 </pre>
               </div>
               {/* URL対応 */}
@@ -270,32 +269,42 @@ export default function Page() {
           {
             speaker: "maji",
             emotion: "question",
-            text: "API Routeって外部のAPIと何が違うんですか？ マジ？",
+            text: "マジ？\nボク、API Routeと外部APIの違いが気になっていまして。何が違うんですか？",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "外部APIは他の会社が作ったもの。API Routeは自分で作るAPIです。\nデータベースへのアクセスや認証処理を安全にサーバー側で行えるのが強みです。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "route.tsにGETとPOSTの両方を書けるんですか？",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text: "はい。同じファイルにGET・POST・PUT・DELETEを共存させられます。\nそれぞれの関数をexportするだけで自動的に振り分けられます。",
+            text: "外部APIは他の会社が作ったもの、API Routeは自分で作るAPIです、マジさん。\nデータベースへのアクセスや認証処理を安全にサーバー側で行えるのが強みです。",
           },
           {
             speaker: "maji",
             emotion: "doubt",
-            text: "なぜAPIを経由するんですか？ Server Componentで直接データ取得すればいいじゃないですか？",
+            text: "ボク、route.tsというファイル名にしないと動かないのか気になっていて……他の名前ではダメなんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "ダメです、マジさん。\nroute.tsはNext.jsが予約している特別なファイル名で、これがあるフォルダだけがAPIエンドポイントとして認識されます。\npage.tsxと同じ発想で、決まった名前で機能が有効になる仕組みです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "ボク、route.tsにGETとPOSTの両方を書けるのか気になっていて……どうですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "書けます、マジさん。\n同じファイルにGET・POST・PUT・DELETEを共存させられます。\nそれぞれの関数をexportするだけで、HTTPメソッドごとに自動的に振り分けられるんです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "ボク、なぜわざわざAPIを経由するのか気になっていて……Server Componentで直接データ取得すればいいんじゃないかと思っていまして。",
           },
           {
             speaker: "master",
             emotion: "thinking",
-            text: "Server Componentから直接取るのが最もシンプルです。\nAPI Routeが必要なのは: Clientから動的にデータが欲しい場合・他のアプリからも叩かれる場合・フォーム送信（POST）の受け口が必要な場合などですね。",
+            text: "Server Componentから直接取るのが最もシンプルです、マジさん。\nAPI Routeが必要なのは、Clientから動的にデータが欲しい場合、他のアプリからも叩かれる場合、フォーム送信（POST）の受け口が必要な場合などですね。",
           },
         ]}
       />
@@ -412,6 +421,12 @@ export async function POST(request: Request) {
             </div>
           </div>
         </ConceptDiagram>
+
+        {/* Bridge: C → D */}
+        <Bridge
+          from="POSTでデータを受け取る方法が分かった"
+          to="次は単一リソースを扱う動的ルート [id] を見ていく"
+        />
 
         {/* 概念図D: 動的APIルート */}
         <ConceptDiagram
@@ -580,30 +595,45 @@ EXTERNAL_API_KEY=sk-xxxxxx`}
 
       {/* ── RelatedLinks ─────────────────────────────────────── */}
       <RelatedLinks
-        items={[
+        groups={[
           {
-            href: "/nextjs/data-fetching",
-            title: "データフェッチ",
-            description: "Server Componentから外部APIを叩くパターン",
-            icon: "Server",
+            label: "前提として読むページ",
+            items: [
+              {
+                href: "/nextjs/server-component",
+                title: "Server Components",
+                description: "API RouteとServer Componentの使い分けを理解する",
+                icon: "Cloud",
+              },
+              {
+                href: "/nextjs/data-fetching",
+                title: "データフェッチ",
+                description: "Server Componentから外部APIを叩くパターン",
+                icon: "Server",
+              },
+            ],
           },
           {
-            href: "/nextjs/server-component",
-            title: "Server Components",
-            description: "API RouteとServer Componentの使い分け",
-            icon: "Cloud",
-          },
-          {
-            href: "/javascript/fetch",
-            title: "fetch API（JS）",
-            description: "fetchの基本（クライアント側）",
-            icon: "Code2",
+            label: "次に読むページ",
+            items: [
+              {
+                href: "/javascript/fetch",
+                title: "fetch API（JS）",
+                description: "fetchの基本（クライアント側）を改めて確認する",
+                icon: "Code2",
+              },
+            ],
           },
         ]}
       />
 
       {/* ── PageDrill ────────────────────────────────────────── */}
-      <PageDrill questions={apiRoutesQuestions} />
+      <PageDrill
+        groups={[
+          { label: "基礎編ドリル", questions: apiRoutesQuestions },
+          { label: "応用編ドリル", questions: apiRoutesAdvancedQuestions },
+        ]}
+      />
     </div>
   );
 }

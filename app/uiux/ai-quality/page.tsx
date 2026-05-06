@@ -29,6 +29,7 @@ import {
   FlowArrow,
 } from "@/components/ConceptDiagram";
 import { MajiDialogue } from "@/components/MajiDialogue";
+import { ComparisonTable } from "@/components/ComparisonTable";
 import { SectionDivider } from "@/components/SectionDivider";
 import {
   DetailSection,
@@ -38,7 +39,8 @@ import {
 } from "@/components/DetailSection";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
-import { aiQualityQuestions } from "@/content/questions/uiux/ai-quality";
+import { TermNote } from "@/components/TermNote";
+import { aiQualityQuestions, aiQualityAdvancedQuestions } from "@/content/questions/uiux/ai-quality";
 
 export default function UiuxAiQualityPage() {
   return (
@@ -71,7 +73,7 @@ export default function UiuxAiQualityPage() {
           "ダークパターンの典型例と、加害者にならないための視点",
         ]}
         prerequisites={[
-          "デザインの4大原則と診断の手順を理解している",
+          { text: "デザインの4大原則と診断の手順を理解している", href: "/uiux/diagnose" },
           "色のコントラストの基本（4.5:1）を知っている",
         ]}
         outOfScope={[
@@ -215,25 +217,91 @@ export default function UiuxAiQualityPage() {
           {
             speaker: "maji",
             emotion: "doubt",
-            text: "AIに全部任せちゃいけないの？",
+            text: "AIに全部任せちゃダメなんですか？ ボク、Figmaも使えないし、AIが綺麗な画面を出してくれるなら、それでよくないですか……と思っていまして。",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "任せていい。ただし検収の目を持つこと。10原則とWCAGが物差しになる。",
+            text: "任せていいんです、マジさん。\nただし検収の目を持ってください。\nAIは新人デザイナーと同じで、手は速いけれど判断は浅い。\n10原則とWCAGがベテランの「物差し」になります。",
           },
           {
             speaker: "maji",
-            emotion: "surprised",
-            text: "ダークパターンって、悪気なく作っちゃう側にもなるんだ…",
+            emotion: "question",
+            text: "マジ？\nじゃあ「いい感じのログイン画面を作って」と頼むだけだと、AIにとっても困る指示になっている、ということですか？",
           },
           {
             speaker: "master",
             emotion: "standard",
-            text: "ユーザーを騙す設計は短期的に得をしても長期で信用を失う。倫理は最後の品質。",
+            text: "そのとおりです。\n判定基準がないので、AIは「それっぽい」を返すしかなくなる。\n「12カラム / Primary 1個 / 余白8の倍数 / コントラスト4.5:1」のように、数値で判定できる制約を渡してください、マジさん。\n曖昧さを残さないことが、AIには一番効きます。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "ボク、ダークパターンというのが少し気になっていて。退会動線を深くしたり、同意チェックを最初からONにしたり……あれって悪気なく作ってしまう側にもなるんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "なってしまうんです、マジさん。\n「KPIを上げたい」「離脱を減らしたい」という意図が、結果的にユーザーを欺く設計に繋がる。\n短期的には数字が上がっても、長期では信用を失います。\n判断に迷ったら「自分が騙された側だったらどう感じるか」で測ってください。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なんとなく分かってきました。AIの出力は「具体的に指示 → 4ステップ診断 → Before/Afterで直す」のループで仕上げる。倫理は品質の最後の砦、ということですね。ボク、心して使います。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その理解で完璧です。\nAIは①状態の可視性 ②現実とのマッチ ④一貫性 ⑧美的かつ最小限 は得意ですが、⑤エラー予防と⑥認識より想起が苦手。\nここは人が補う領域なんです、マジさん。\n10原則を頭に入れておくと、AI出力の「何かが足りない」が言語化できるようになります。",
           },
         ]}
       />
+
+      {/* ── COMPARISON ──────────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["失敗例（AIがよく出す）", "合格基準"]}
+          rows={[
+            {
+              label: "文字の読みやすさ",
+              cells: [
+                "薄いグレーのテキストで読めない",
+                "コントラスト比4.5:1以上を確保（WCAG AA基準）",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "フォームの親切さ",
+              cells: [
+                "エラー時に入力欄が赤くなるだけ",
+                "エラーメッセージを文字で表示する",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "操作の一貫性",
+              cells: [
+                "ページによってボタンの見た目が違う",
+                "デザインシステムで全ページ統一する",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "情報量",
+              cells: [
+                "1画面に情報が詰め込まれすぎ",
+                "優先度の低い情報を折りたたむ・削除する",
+              ],
+              highlightCol: 1,
+            },
+          ]}
+          highlightCol={1}
+          note="AIが生成したUIは「それっぽい」が細部が甘い。4項目を毎回チェックする習慣が品質の底上げになる。"
+        />
+      </section>
 
       {/* ── SectionDivider */}
       <SectionDivider
@@ -246,6 +314,31 @@ export default function UiuxAiQualityPage() {
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED DIAGRAMS
         </h2>
+
+        <TermNote
+          terms={[
+            {
+              word: "ニールセン10原則",
+              definition:
+                "ユーザビリティ研究者のヤコブ・ニールセンが提唱したUIの古典的チェックリスト。「システム状態の可視性」「ユーザーの自由」など10の原則で構成される。AIが生成したUIの検収に使える。",
+            },
+            {
+              word: "WCAG（ウィーキャグ）",
+              definition:
+                "Web Content Accessibility Guidelines。Webアクセシビリティの国際基準。コントラスト比・代替テキスト・キーボード操作などの基準が定められており、AA基準が一般的な達成目標。",
+            },
+            {
+              word: "ダークパターン",
+              definition:
+                "ユーザーを意図せず誘導・欺くUI設計の総称。「解約ボタンを探しにくくする」「意図しない同意を取る」などが代表例。ユーザーの信頼を損なう。",
+            },
+            {
+              word: "アクセシビリティ",
+              definition:
+                "障害の有無に関わらず、すべての人がWebサービスを利用できるようにする取り組み。視覚・聴覚・運動機能に配慮したUIデザインが求められる。",
+            },
+          ]}
+        />
 
         <ConceptDiagram
           title="概念図C — ニールセン10原則ダイジェスト"
@@ -432,24 +525,34 @@ export default function UiuxAiQualityPage() {
 
       {/* ── RelatedLinks */}
       <RelatedLinks
-        items={[
+        groups={[
           {
-            href: "/uiux/layout",
-            title: "レイアウトと一貫性",
-            description: "グリッド・モバイル・トークンで仕組み化する",
-            icon: "Code2",
-          },
-          {
-            href: "/uiux/diagnose",
-            title: "UIを読み解く・診断する",
-            description: "AI出力を検収するときの診断手順",
-            icon: "Rocket",
+            label: "前提として読むページ",
+            items: [
+              {
+                href: "/uiux/layout",
+                title: "レイアウトと一貫性",
+                description: "グリッド・モバイル・トークンで仕組み化する",
+                icon: "LayoutGrid",
+              },
+              {
+                href: "/uiux/diagnose",
+                title: "UIを読み解く・診断する",
+                description: "AI出力を検収するときの4ステップ診断手順",
+                icon: "Stethoscope",
+              },
+            ],
           },
         ]}
       />
 
       {/* ── PageDrill */}
-      <PageDrill questions={aiQualityQuestions} />
+      <PageDrill
+        groups={[
+          { label: "基礎編ドリル", questions: aiQualityQuestions },
+          { label: "応用編ドリル", questions: aiQualityAdvancedQuestions },
+        ]}
+      />
     </div>
   );
 }

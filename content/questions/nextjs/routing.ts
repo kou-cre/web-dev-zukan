@@ -67,3 +67,58 @@ export const routingQuestions: DrillQuestion[] = [
       "App Router（Next.js 13以降）の最大の違いはServer Componentがデフォルトであること。Pages Routerのページは全てブラウザで実行されるClient Component相当だったが、App RouterではデフォルトでサーバーでReactが動く。Pages RouterもTypeScriptに対応している。両方ともフォルダ構造がURLになるファイルベースルーティングを採用しており、Pages Routerにreact-routerは不要。",
   },
 ];
+
+export const routingAdvancedQuestions: DrillQuestion[] = [
+  {
+    id: "routing-adv-q1",
+    level: "advanced",
+    question: "App RouterのRoute Groupsを使う目的はどれ？",
+    choices: [
+      "URLパスにグループ名を追加して分かりやすくする",
+      "URLパスには影響させずに、フォルダ構造だけでファイルをグループ化する（レイアウト分離等に使う）",
+      "複数のページを1つのTSXファイルにまとめる",
+      "APIルートを通常ページルートと分離する",
+    ],
+    correctIndex: 1,
+    explanation: "Route Groups は `(groupName)` のように括弧でフォルダを作る。URLには影響しない（例: `(dashboard)/settings/page.tsx` → `/settings`）。用途: 認証が必要なページ群に専用の layout.tsx を適用する、マーケティングページと管理画面で異なるヘッダーを使うなど。",
+  },
+  {
+    id: "routing-adv-q2",
+    level: "advanced",
+    question: "App Routerで「ネストしたレイアウト」を実装するとき、正しい説明はどれ？",
+    choices: [
+      "layout.tsxは全ページで同一のものを1つだけ使う",
+      "各ディレクトリにlayout.tsxを配置すると、親のlayoutを保持したまま子のlayoutが追加される",
+      "layout.tsxとpage.tsxは同じファイルに書く必要がある",
+      "layout.tsxはSSGページにしか適用できない",
+    ],
+    correctIndex: 1,
+    explanation: "App Routerではフォルダ階層ごとにlayout.tsxを置けて、入れ子になる。例: app/layout.tsx（全ページのヘッダー）→ app/dashboard/layout.tsx（ダッシュボードのサイドバー）→ app/dashboard/settings/page.tsx（設定ページ）。親のlayoutは保持されたまま子が追加される。",
+  },
+  {
+    id: "routing-adv-q3",
+    level: "advanced",
+    question: "App Routerの `error.tsx` ファイルの役割はどれ？",
+    choices: [
+      "TypeScriptの型エラーをコンパイル時にキャッチする",
+      "そのルートセグメント（とその子）でエラーが発生したときに表示するフォールバックUIを定義する",
+      "ビルドエラーのログを記録するファイル",
+      "404ページを表示するためのファイル（not-found.tsxと同じ）",
+    ],
+    correctIndex: 1,
+    explanation: "error.tsxはReactのError Boundaryを自動で実装する。ランタイムエラー（データ取得失敗・予期しない例外）が発生したとき、ページ全体がクラッシュする代わりに `error.tsx` のUIが表示される。'use client' が必要。not-found.tsxは404専用の別ファイル。",
+  },
+  {
+    id: "routing-adv-q4",
+    level: "advanced",
+    question: "Parallel Routesを使う主なユースケースはどれ？",
+    choices: [
+      "同じURL上で複数の独立したページを同時に表示する（例: ダッシュボードの複数ウィジェット）",
+      "CSSのgridを使って2カラムレイアウトを作る",
+      "2つのAPIを同時にfetchする",
+      "TypeScriptの型を並列で検証する",
+    ],
+    correctIndex: 0,
+    explanation: "Parallel Routesは `@folderName` 構文で定義し、同じページに複数の独立したルートセグメントを表示できる。例: ダッシュボードに `@analytics` と `@revenue` を並べて表示。それぞれ独立してストリーミング・エラーハンドリングできる。Instagramのモーダルギャラリーなどにも応用される。",
+  },
+];

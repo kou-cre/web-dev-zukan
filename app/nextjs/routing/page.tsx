@@ -26,7 +26,7 @@ import {
 } from "@/components/DetailSection";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
-import { routingQuestions } from "@/content/questions/nextjs/routing";
+import { routingQuestions, routingAdvancedQuestions } from "@/content/questions/nextjs/routing";
 
 export const metadata = {
   title: "App Router とファイルベースルーティング | Web開発図解",
@@ -64,8 +64,8 @@ export default function NextjsRoutingPage() {
           "layout.tsx で共通レイアウトを作る方法",
         ]}
         prerequisites={[
-          "Reactコンポーネントが書ける（/react/components を読んだ）",
-          "react-routerのルーティング概念を知っている（/react/routing を読んだ）",
+          "Reactコンポーネントが書ける（Reactカテゴリ準備中）",
+          "react-routerのルーティング概念を知っている（Reactカテゴリ準備中）",
         ]}
         outOfScope={[
           "loading.tsx・error.tsx・not-found.tsxなどのファイル規約（応用編で扱う）",
@@ -401,32 +401,42 @@ export default function NextjsRoutingPage() {
           {
             speaker: "maji",
             emotion: "question",
-            text: "react-routerと何が違うんですか？ マジ？",
+            text: "マジ？\nボク、react-routerとApp Routerが何が違うのかが気になっていまして。",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "react-routerはルートの対応表をコードで書く必要がありました。\nApp Routerはファイルを置くだけで自動でURL対応します。\n対応表を書くという手間が完全になくなります。",
+            text: "react-routerはルートの対応表をコードで書く必要がありました、マジさん。\nApp Routerはファイルを置くだけで自動でURLに対応します。\n対応表を書く手間が完全になくなるんです。",
           },
           {
             speaker: "maji",
-            emotion: "standard",
-            text: "layout.tsxって何枚も置けるんですか？",
+            emotion: "doubt",
+            text: "ボク、フォルダ名がそのままURLになるという仕組みがまだ少し信じられなくて……本当に対応表は一切書かないんですか？",
           },
           {
             speaker: "master",
             emotion: "standard",
-            text: "はい、フォルダごとに置けます。\nネストして、ヘッダーやサイドバーが入れ子になる形で階層的に適用されます。\n例えばapp/dashboard/layout.tsxを置けば、dashboard以下のページだけに追加のレイアウトを適用できます。",
+            text: "本当に書きません、マジさん。\napp/about/page.tsxを置けば「/about」というURLが自動で作られます。\nコード側でルートを宣言する設定ファイルは存在しないんです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "ボク、layout.tsxって何枚も置けるのか気になっていまして。1ページに1つだけですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "フォルダごとに置けます、マジさん。\nネストして、ヘッダーやサイドバーが入れ子になる形で階層的に適用されます。\n例えばapp/dashboard/layout.tsxを置けば、dashboard以下のページだけに追加のレイアウトを適用できるんです。",
           },
           {
             speaker: "maji",
             emotion: "worried",
-            text: "Server Componentって何ですか？",
+            text: "ボク、Server Componentという言葉が出てきて気になっていて……これは何ですか？",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "Next.jsではデフォルトでコンポーネントがサーバーで動きます。\nuseStateを使いたいときだけファイルの先頭に「use client」を書けばクライアント（ブラウザ）で動くようになります。\n基本は「データ取得=Server、ボタン操作=Client」と分けて考えるとシンプルです。",
+            text: "Next.jsではデフォルトでコンポーネントがサーバーで動きます、マジさん。\nuseStateを使いたいときだけファイルの先頭に「use client」を書けばクライアント（ブラウザ）で動くようになる。\n基本は「データ取得=Server、ボタン操作=Client」と分けて考えるとシンプルです。",
           },
         ]}
       />
@@ -576,6 +586,12 @@ export default function NextjsRoutingPage() {
             これらのファイルはNext.jsが予約している特別なファイル名。page.tsx以外は必要なときだけ置けばよい
           </p>
         </ConceptDiagram>
+
+        {/* Bridge: C → D */}
+        <Bridge
+          from="特殊ファイル名が果たす役割が分かった"
+          to="次は動的なURL（[id]）に注目し、URLの値を取り出す方法を見る"
+        />
 
         {/* ── 応用編 ConceptDiagram D: 動的セグメントとuseParams ── */}
         <ConceptDiagram
@@ -772,30 +788,45 @@ export default function BlogPost({ params }: { params: { id: string } }) {
 
       {/* ── RelatedLinks ─────────────────────────────────────── */}
       <RelatedLinks
-        items={[
+        groups={[
           {
-            href: "/nextjs/data-fetching",
-            title: "データフェッチ",
-            description: "App Routerでのデータ取得パターン",
-            icon: "Cloud",
+            label: "前提として読むページ",
+            items: [
+              {
+                href: "/nextjs/intro",
+                title: "Next.js入門",
+                description: "App Routerとは何かを知ってからルーティングを学ぶ",
+                icon: "Triangle",
+              },
+            ],
           },
           {
-            href: "/nextjs/server-component",
-            title: "Server Components",
-            description: "なぜApp RouterのデフォルトがServerなのか",
-            icon: "Server",
-          },
-          {
-            href: "/react/routing",
-            title: "react-router（React）",
-            description: "SPAのルーティングとの比較",
-            icon: "Code2",
+            label: "次に読むページ",
+            items: [
+              {
+                href: "/nextjs/server-component",
+                title: "Server Components",
+                description: "なぜApp RouterのデフォルトがServerなのか",
+                icon: "Server",
+              },
+              {
+                href: "/nextjs/data-fetching",
+                title: "データフェッチ",
+                description: "App Routerでのデータ取得パターン",
+                icon: "Cloud",
+              },
+            ],
           },
         ]}
       />
 
       {/* ── PageDrill ───────────────────────────────────────── */}
-      <PageDrill questions={routingQuestions} />
+      <PageDrill
+        groups={[
+          { label: "基礎編ドリル", questions: routingQuestions },
+          { label: "応用編ドリル", questions: routingAdvancedQuestions },
+        ]}
+      />
     </div>
   );
 }

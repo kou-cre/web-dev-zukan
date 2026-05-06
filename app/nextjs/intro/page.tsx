@@ -24,6 +24,9 @@ import {
   WarningPoint,
 } from "@/components/DetailSection";
 import { RelatedLinks } from "@/components/RelatedLinks";
+import { TermNote } from "@/components/TermNote";
+import { PageDrill } from "@/components/PageDrill";
+import { introQuestions, introAdvancedQuestions } from "@/content/questions/nextjs/intro";
 
 export const metadata = {
   title: "Next.jsをはじめる前のチェックリスト | Web開発図解",
@@ -47,28 +50,24 @@ const checkItems: CheckItem[] = [
     title: "コンポーネントを定義してimport/exportできる",
     example: "export default function Page() { return <div /> }",
     note: "Next.jsの各ページはReactコンポーネント。コンポーネントの基本が分からないとページを作れない。",
-    href: "/react/components",
   },
   {
     num: "02",
     title: "Propsを渡せる",
     example: "<Button label=\"送信\" onClick={handleClick} />",
     note: "コンポーネント間のデータ受け渡しの基本。Next.jsでもReactのProps構文をそのまま使う。",
-    href: "/react/props",
   },
   {
     num: "03",
     title: "useStateで値を持って画面を更新できる",
     example: "const [count, setCount] = useState(0)",
     note: "インタラクティブなUIに必須。ただしNext.jsでは「use client」が必要な場合がある。",
-    href: "/react/state",
   },
   {
     num: "04",
     title: "useEffectでfetchを呼ぶパターンが書ける",
     example: "useEffect(() => { fetch('/api/data').then(...) }, [])",
     note: "Reactのクライアント側データ取得パターン。Next.jsにはServer Componentという代替手段もある。",
-    href: "/react/useeffect",
   },
   {
     num: "05",
@@ -137,7 +136,7 @@ export default function NextjsIntroPage() {
           "Next.jsとReactの関係（ReactはNext.jsの部品）",
         ]}
         prerequisites={[
-          "Reactカテゴリを一通り読んだ（特にコンポーネント・useState・useEffect）",
+          "Reactカテゴリを一通り読んだ（特にコンポーネント・useState・useEffect）※Reactカテゴリは現在準備中",
           "JavaScriptの基礎（const/let・関数・async/await・fetch）を知っている",
         ]}
         outOfScope={[
@@ -187,6 +186,32 @@ export default function NextjsIntroPage() {
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
+
+        {/* TermNote: この図に出てくる言葉 */}
+        <TermNote
+          terms={[
+            {
+              word: "フレームワーク",
+              definition: "アプリを作るための「型（フレーム）」。よく使う機能が最初から組み込まれていて、決まった構造に沿って書けば効率よく開発できる。Reactはライブラリ、Next.jsはそれを包んだフレームワーク。",
+            },
+            {
+              word: "ライブラリ",
+              definition: "特定の機能を提供する部品集。フレームワークと違い「どこで・どう使うか」を自分で決める。ReactはUIを作るためのライブラリ。",
+            },
+            {
+              word: "Server Component",
+              definition: "サーバー側で実行されるReactコンポーネント。データベースアクセスや外部APIとの通信をブラウザに秘密のまま行える。Next.jsではデフォルトでこの形式。",
+            },
+            {
+              word: "ファイルベースルーティング",
+              definition: "ファイルをフォルダに置くだけでURLが自動的に決まる仕組み。app/about/page.tsxを作ると/aboutというURLが自動で生成される。",
+            },
+            {
+              word: "Route Handlers",
+              definition: "Next.jsのAPIエンドポイントを作る仕組み。app/api/xxx/route.tsというファイルを置くと、そのURLでデータを受け取り・返せるAPIが作れる。",
+            },
+          ]}
+        />
 
         {/* 概念図A: Next.jsとReactとJSの位置づけ */}
         <ConceptDiagram
@@ -258,7 +283,7 @@ export default function NextjsIntroPage() {
                       </Link>
                     ) : (
                       <span className="text-xs text-gray-500">
-                        参照先：React基礎知識
+                        参照ページは現在準備中
                       </span>
                     )}
                   </div>
@@ -278,32 +303,42 @@ export default function NextjsIntroPage() {
           {
             speaker: "maji",
             emotion: "worried",
-            text: "マスター……Reactを全部完璧に知らないとダメですか？",
+            text: "マスター……ボク、Reactを全部完璧に知らないとNext.jsを始めちゃダメなんですか？",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "1〜5番が分かれば始められます。\nNext.jsの最初の数ページを読むうちに残りも自然に分かるようになりますよ。",
+            text: "1〜5番が分かれば始められます、マジさん。\nNext.jsの最初の数ページを読むうちに残りも自然に分かるようになりますよ。",
+          },
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "ボク、Reactカテゴリをまだ全部読み終わっていないんですけど、未読のまま始めてもいいんですか？ 少し気になっていて……",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "コンポーネント・Props・useState・useEffect・mapの5つを押さえていれば大丈夫です、マジさん。\n他の項目は出てきたタイミングでReactカテゴリに戻って確認するスタイルで十分追いつけます。",
           },
           {
             speaker: "maji",
             emotion: "question",
-            text: "8番のサーバーとクライアントの違いって、なぜNext.jsで必要なんですか？ マジ？",
-          },
-          {
-            speaker: "master",
-            emotion: "standard",
-            text: "Next.jsの最大の特徴『サーバーでコードを動かせる』を理解するための土台だからです。\nこれを知らないとServer Componentsの話が全く分からなくなります。",
-          },
-          {
-            speaker: "maji",
-            emotion: "standard",
-            text: "つまり、ブラウザだけじゃなくサーバーでもReactが動く、ということですか？",
+            text: "マジ？\nところでボク、チェック項目が9つ並んでいる順番にも意味があるのかと思っていまして。なぜこの順なんですか？",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "まさにそれがNext.jsの本質です。\nReactは元々ブラウザ専用でしたが、Next.jsがサーバー側にも連れ出しました。\nだからサーバー/クライアントの概念が重要になるんです。",
+            text: "上から順に「Reactを書ける土台 → データを扱える土台 → サーバー側を理解する土台」と積み上げています、マジさん。\n01〜05はReactで画面を作る基礎、06〜07はデータの扱い、08〜09はサーバー側の理解、という流れです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "ボク、8番のサーバーとクライアントの違いがなぜNext.jsで必要なのか気になっていて……ここがピンとこないんです。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "Next.jsの最大の特徴『サーバーでReactを動かせる』を理解するための土台だからです、マジさん。\nReactは元々ブラウザ専用でしたが、Next.jsがサーバー側にも連れ出しました。\nだからサーバー/クライアントの概念が重要になるんです。",
           },
         ]}
       />
@@ -448,27 +483,45 @@ export async function POST(request: Request) {
 
       {/* ── RelatedLinks ─────────────────────────────────────── */}
       <RelatedLinks
-        items={[
+        groups={[
           {
-            href: "/nextjs/routing",
-            title: "App Router — ファイルベースルーティング",
-            description: "チェックリストが整ったら次はここへ",
-            icon: "Code2",
+            label: "前提として読むページ",
+            items: [
+              {
+                href: "/kiso/server",
+                title: "サーバーって何？",
+                description: "サーバーとクライアントの違いを確認する",
+                icon: "Database",
+              },
+              {
+                href: "/javascript/async",
+                title: "非同期処理（async/await）",
+                description: "Server Componentでも使う非同期処理の基礎",
+                icon: "Code2",
+              },
+            ],
           },
           {
-            href: "/react/components",
-            title: "コンポーネント（React）",
-            description: "Reactの基本単位を確認する",
-            icon: "Server",
-          },
-          {
-            href: "/kiso/server",
-            title: "サーバーって何？",
-            description: "サーバーとクライアントの違いを確認する",
-            icon: "Database",
+            label: "次に読むページ",
+            items: [
+              {
+                href: "/nextjs/routing",
+                title: "App Router — ファイルベースルーティング",
+                description: "ファイル配置だけでURLができる仕組み",
+                icon: "Code2",
+              },
+            ],
           },
         ]}
       />
+
+      {/* ── PageDrill ────────────────────────────────────────── */}
+      <PageDrill
+          groups={[
+            { label: "基礎編ドリル", questions: introQuestions },
+            { label: "応用編ドリル", questions: introAdvancedQuestions },
+          ]}
+        />
     </div>
   );
 }

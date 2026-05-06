@@ -18,7 +18,7 @@ import {
 } from "@/components/DetailSection";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
-import { serverComponentQuestions } from "@/content/questions/nextjs/server-component";
+import { serverComponentQuestions, serverComponentAdvancedQuestions } from "@/content/questions/nextjs/server-component";
 
 export const metadata = {
   title: "Server Components | Next.js | Web開発図解",
@@ -57,7 +57,7 @@ export default function ServerComponentPage() {
         ]}
         prerequisites={[
           "useStateとuseEffectを知っている（/react/state と /react/useeffect を読んだ）",
-          "データフェッチの基本を知っている（/nextjs/data-fetching を読んだ）",
+          "App Routerの基本を知っている（/nextjs/routing を読んだ）",
         ]}
         outOfScope={[
           "Server→Clientへのprops（シリアライズ制約）（応用編で扱う）",
@@ -314,32 +314,42 @@ export function LikeButton({ count }: { count: number }) {
           {
             speaker: "maji",
             emotion: "worried",
-            text: "全部 'use client' にしたらダメなんですか？",
+            text: "ボク、全部 'use client' にしてしまっていいんですか？\n書き分けるのが大変そうで気になっていまして。",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "ダメではないですが、パフォーマンスが下がります。\nClientにするとそのコードがブラウザに送られてJSバンドルが重くなる。サーバーでできる処理はServerに任せるのがNext.jsの設計思想です。",
+            text: "ダメではないですが、パフォーマンスが下がります、マジさん。\nClientにするとそのコードがブラウザに送られてJSバンドルが重くなる。\nサーバーでできる処理はServerに任せるのがNext.jsの設計思想です。",
+          },
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "ボク、JSバンドルが重くなるという話が少し気になっていて……どのくらい違うんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "ページ全体をClientにすると、データ表示だけのコンポーネントもすべてブラウザに送られてしまいます、マジさん。\n小さなページなら気になりませんが、規模が大きくなると初期表示の時間に影響してくるんです。",
           },
           {
             speaker: "maji",
             emotion: "question",
-            text: "useStateを使いたいだけで 'use client' を書くのが面倒に感じます……マジ？",
+            text: "マジ？\nでもボク、useStateを使いたいだけで 'use client' を書くのが少し面倒に感じていまして……",
           },
           {
             speaker: "master",
             emotion: "standard",
-            text: "最初は面倒に感じますよね。\nでも慣れると 'use client' がある=インタラクティブな部品、という読み方ができて逆に分かりやすくなります。",
+            text: "最初は面倒に感じますよね、マジさん。\nでも慣れると 'use client' がある=インタラクティブな部品、という読み方ができて逆に分かりやすくなります。\n境界線として活かすのがコツです。",
           },
           {
             speaker: "maji",
             emotion: "standard",
-            text: "'use client' を書いたファイルの子コンポーネントはどうなるの？",
+            text: "子コンポーネントはどうなるんですか？ボクが気になっているのはそこです。",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "自動的にClient扱いになります。\n'use client' は境界線です。その境界を越えた子孫はすべてClientになる。だからなるべく末端の小さなコンポーネントにだけ書くのがベストプラクティスです。",
+            text: "自動的にClient扱いになります、マジさん。\n'use client' は境界線です。その境界を越えた子孫はすべてClientになる。\nだからなるべく末端の小さなコンポーネントにだけ書くのがベストプラクティスです。",
           },
         ]}
       />
@@ -487,6 +497,12 @@ return <LikeButton count={data.likes} title={data.title} />;
             </pre>
           </div>
         </ConceptDiagram>
+
+        {/* Bridge C → D */}
+        <Bridge
+          from="Server→Clientへ渡せるpropsの制約が分かった"
+          to="では制約を回避する代表的な構造を見ていく"
+        />
 
         {/* 概念図D: Client内にServerをchildrenで差し込む */}
         <ConceptDiagram
@@ -659,30 +675,45 @@ export default async function Page() {
 
       {/* ── RelatedLinks ─────────────────────────────────────── */}
       <RelatedLinks
-        items={[
+        groups={[
           {
-            href: "/nextjs/data-fetching",
-            title: "データフェッチ",
-            description: "Server Componentでのデータ取得パターン",
-            icon: "Server",
+            label: "前提として読むページ",
+            items: [
+              {
+                href: "/nextjs/routing",
+                title: "App Router — ファイルベースルーティング",
+                description: "ルーティングの仕組みを知ってから読む",
+                icon: "Code2",
+              },
+            ],
           },
           {
-            href: "/nextjs/api-routes",
-            title: "API Routes",
-            description: "サーバー側でAPIエンドポイントを作る",
-            icon: "Cloud",
-          },
-          {
-            href: "/react/useeffect",
-            title: "useEffect（React）",
-            description: "Client ComponentでのuseEffectの使い方を復習",
-            icon: "Code2",
+            label: "次に読むページ",
+            items: [
+              {
+                href: "/nextjs/data-fetching",
+                title: "データフェッチ",
+                description: "Server Componentを使ったデータ取得の具体的な実装",
+                icon: "Server",
+              },
+              {
+                href: "/nextjs/api-routes",
+                title: "API Routes",
+                description: "サーバー側でAPIエンドポイントを作る",
+                icon: "Cloud",
+              },
+            ],
           },
         ]}
       />
 
       {/* ── PageDrill ─────────────────────────────────────────── */}
-      <PageDrill questions={serverComponentQuestions} />
+      <PageDrill
+        groups={[
+          { label: "基礎編ドリル", questions: serverComponentQuestions },
+          { label: "応用編ドリル", questions: serverComponentAdvancedQuestions },
+        ]}
+      />
     </div>
   );
 }

@@ -18,7 +18,7 @@ import {
 } from "@/components/DetailSection";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
-import { dataFetchingQuestions } from "@/content/questions/nextjs/data-fetching";
+import { dataFetchingQuestions, dataFetchingAdvancedQuestions } from "@/content/questions/nextjs/data-fetching";
 
 export const metadata = {
   title: "データフェッチ | Next.js | Web開発図解",
@@ -59,6 +59,7 @@ export default function DataFetchingPage() {
           "async/awaitとfetchを知っている（/javascript/async と /javascript/fetch を読んだ）",
           "Reactコンポーネントを書ける（/react/components を読んだ）",
           "App Routerの基本を知っている（/nextjs/routing を読んだ）",
+          "Server ComponentとClient Componentの違いを知っている（/nextjs/server-component を読んだ）",
         ]}
         outOfScope={[
           "fetchのキャッシュオプション（cache: force-cache / no-store）（応用編で扱う）",
@@ -276,32 +277,42 @@ export default async function UserList() {
           {
             speaker: "maji",
             emotion: "worried",
-            text: "asyncをつけるだけで自動的にサーバーで動くんですか？",
+            text: "ボク、asyncをつけるだけで自動的にサーバーで動くのか気になっていまして……本当にそれだけなんですか？",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "そうです。Next.jsのServer Componentはデフォルトでサーバー実行。asyncにするとawaitが書けるようになる。追加の設定は不要です。",
+            text: "そうです、マジさん。\nNext.jsのServer Componentはデフォルトでサーバー実行。\nasyncにするとawaitが書けるようになるだけで、追加の設定は不要です。",
+          },
+          {
+            speaker: "maji",
+            emotion: "doubt",
+            text: "ボク、ブラウザに届く時点でデータが入っているという感覚がまだ掴めなくて……useEffectのときの空の状態とは何が違うんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "useEffectのときはブラウザに空のHTMLが届いてからJSが動いてfetchを始めます、マジさん。\nServer Componentはサーバー側でfetchが完了してからHTMLを組み立てるので、ブラウザに届いた最初の瞬間からデータが入っているんです。",
           },
           {
             speaker: "maji",
             emotion: "question",
-            text: "useEffect+fetchとどっちを使えばいいんですか？ マジ？",
+            text: "マジ？\nボク、useEffect+fetchとServer Componentでどちらを使えばいいのか気になっていて……",
           },
           {
             speaker: "master",
             emotion: "standard",
-            text: "Server Componentでのfetchが使えるならそちらが推奨です。\nただしuseStateで状態を持ちたい場合は 'use client' とuseEffect+fetchの組み合わせが必要になります。",
+            text: "Server Componentでのfetchが使えるならそちらが推奨です、マジさん。\nただしuseStateで状態を持ちたい場合は 'use client' とuseEffect+fetchの組み合わせが必要になります。",
           },
           {
             speaker: "maji",
             emotion: "standard",
-            text: "ローカルのfake APIじゃなくて本物のAPIを使うとき、URLはどこに書くの？",
+            text: "ボク、本物のAPIを使うときにURLはどこに書けばいいのか気になっていて……コードに直書きでいいんですか？",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "直接コードに書いてOKです。\nただしAPIキーなどの秘密情報は環境変数（.env）に入れて process.env.API_KEY で参照するのがルール。コードにそのまま書くと漏洩リスクがあります。",
+            text: "URLは直接コードに書いてOKです、マジさん。\nただしAPIキーなどの秘密情報は環境変数（.env）に入れて process.env.API_KEY で参照するのがルール。\nコードにそのまま書くと漏洩リスクがあります。",
           },
         ]}
       />
@@ -419,6 +430,12 @@ fetch(url, { next: { revalidate: 60 } })`}</code>
             「どれを使うか」はコンテンツの更新頻度とパフォーマンス要件のトレードオフで決める
           </p>
         </ConceptDiagram>
+
+        {/* Bridge C → D */}
+        <Bridge
+          from="キャッシュ戦略の3パターンが分かった"
+          to="次はデータ取得中のローディング表示をSuspenseで制御する方法を見る"
+        />
 
         {/* 概念図D: SuspenseでローディングUI制御 */}
         <ConceptDiagram
@@ -565,30 +582,45 @@ const [users, posts] = await Promise.all([
 
       {/* ── RelatedLinks ─────────────────────────────────────── */}
       <RelatedLinks
-        items={[
+        groups={[
           {
-            href: "/nextjs/server-component",
-            title: "Server Components",
-            description: "なぜデフォルトがServerなのかを深掘り",
-            icon: "Server",
+            label: "前提として読むページ",
+            items: [
+              {
+                href: "/nextjs/server-component",
+                title: "Server Components",
+                description: "なぜデフォルトがServerなのか・'use client'の境界線を解説",
+                icon: "Server",
+              },
+              {
+                href: "/javascript/fetch",
+                title: "fetch API（JS）",
+                description: "fetchの基本（クライアント側）を確認する",
+                icon: "Code2",
+              },
+            ],
           },
           {
-            href: "/nextjs/api-routes",
-            title: "API Routes",
-            description: "自分でAPIエンドポイントを作る",
-            icon: "Cloud",
-          },
-          {
-            href: "/javascript/fetch",
-            title: "fetch API（JS）",
-            description: "fetchの基本を確認する",
-            icon: "Code2",
+            label: "次に読むページ",
+            items: [
+              {
+                href: "/nextjs/api-routes",
+                title: "API Routes",
+                description: "自分でAPIエンドポイントを作る",
+                icon: "Cloud",
+              },
+            ],
           },
         ]}
       />
 
       {/* ── PageDrill ─────────────────────────────────────────── */}
-      <PageDrill questions={dataFetchingQuestions} />
+      <PageDrill
+        groups={[
+          { label: "基礎編ドリル", questions: dataFetchingQuestions },
+          { label: "応用編ドリル", questions: dataFetchingAdvancedQuestions },
+        ]}
+      />
     </div>
   );
 }

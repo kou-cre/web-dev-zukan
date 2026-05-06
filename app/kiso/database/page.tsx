@@ -99,7 +99,7 @@ export default function DatabasePage() {
 
       {/* ── 基礎編 CONCEPT DIAGRAMS ─────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
@@ -341,7 +341,7 @@ export default function DatabasePage() {
 
       {/* ── 比較表（基礎編） ────────────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           COMPARISON
         </h2>
         <ComparisonTable
@@ -403,7 +403,7 @@ export default function DatabasePage() {
 
       {/* ── 応用編 CONCEPT DIAGRAMS ─────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED — SQL クエリの実行フロー
         </h2>
 
@@ -520,7 +520,7 @@ export default function DatabasePage() {
           SQL の実行フローが分かりました。次は「複数の操作をまとめて扱う」トランザクションの仕組みを見ていきます。
         </p>
 
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
           ADVANCED — トランザクションと ACID
         </h2>
 
@@ -661,7 +661,7 @@ export default function DatabasePage() {
           トランザクションが分かりました。最後に「インデックスがあるとなぜ検索が速くなるか」を見ていきます。
         </p>
 
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
           ADVANCED — インデックス
         </h2>
 

@@ -24,6 +24,7 @@ import {
   StackLayer,
 } from "@/components/ConceptDiagram";
 import { MajiDialogue } from "@/components/MajiDialogue";
+import { ComparisonTable } from "@/components/ComparisonTable";
 import { SectionDivider } from "@/components/SectionDivider";
 import {
   DetailSection,
@@ -33,7 +34,8 @@ import {
 } from "@/components/DetailSection";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
-import { seeingQuestions } from "@/content/questions/uiux/seeing";
+import { TermNote } from "@/components/TermNote";
+import { seeingQuestions, seeingAdvancedQuestions } from "@/content/questions/uiux/seeing";
 
 export const metadata = {
   title: "UIを見る目を養う | UIデザイン | Web開発図解",
@@ -117,6 +119,27 @@ export default function SeeingPage() {
           CONCEPT DIAGRAMS
         </h2>
 
+        <TermNote
+          terms={[
+            {
+              word: "Z型レイアウト",
+              definition: "視線が左上→右上→左下→右下とZ字に動くパターン。情報量が少ないシンプルなページに多い。",
+            },
+            {
+              word: "F型レイアウト",
+              definition: "視線が左上から横へ流れ、少し下がってまた横→縦に読む視線パターン。テキスト中心のページに多い。",
+            },
+            {
+              word: "ぼかし観察",
+              definition: "目を細めてUIをぼかして見る観察法。装飾・色・文字の細部が消え、レイアウトとコントラストの骨格だけが見えるようになる。",
+            },
+            {
+              word: "情報階層",
+              definition: "UIの要素を重要度に応じて「大→中→小」の視覚的な強弱でグループ化した構造。コントラストや大きさで表現する。",
+            },
+          ]}
+        />
+
         {/* 概念図A: UIはどこにいる？ */}
         <ConceptDiagram
           title="概念図A — UIはどこにいる？"
@@ -196,25 +219,91 @@ export default function SeeingPage() {
           {
             speaker: "maji",
             emotion: "doubt",
-            text: "デザインってセンスでしょ？俺、絵心ないから無理ですよ。",
+            text: "デザインってセンスじゃないんですか？ボク、絵心ゼロなので「目を養う」と言われても無理だと思っていまして。",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "センスの正体は観察と原則です。料理人が「塩を一つまみ」と言葉にできるのと同じで、UIも目を仕込めば見えるようになる。生まれつきのものじゃない。",
+            text: "センスの正体は観察と原則です、マジさん。\n料理人が「塩を一つまみ」と言葉にできるのと同じで、UIも目を仕込めば見えるようになる。\n生まれつきのものではなく、後天的に身につく技術なんです。",
           },
           {
             speaker: "maji",
-            emotion: "surprised",
-            text: "目を細めるだけで骨格が見えるの？ そんな簡単な話なんですか？",
+            emotion: "question",
+            text: "マジ？\nじゃあ「なんとなくいい」で止まっちゃうのは、ボクのセンスがないからじゃなくて、観察と言語化の練習が足りないだけ、ということですか？",
           },
           {
             speaker: "master",
             emotion: "standard",
-            text: "装飾を削ぐと骨格が見える、というだけの話です。骨格が分かれば「なんかいい」が言葉になる。それが目を仕込む第一歩。",
+            text: "そのとおりです。\n「なんとなくいい」は第1層の直感。\nそこから「揃ってる・余白が広い」と気づくのが第2層の観察。\n「整列と対比で階層を作っている」と原則で説明できるのが第3層の言語化です。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "ボク、「ぼかし観察」というのが少し気になっていて。目を細めるだけで本当に骨格って見えるんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "見えます、マジさん。\n目を細めると装飾・色・文字の細部が消えて、レイアウトとコントラストの「骨格」だけが残るんです。\n良いUIはぼかしても主役が分かる。\n逆に「なんとなく雑」なUIは、ぼかすと階層がぼやけて主役が消える。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なんとなく分かってきました。要は「装飾に騙されずに骨格を見る訓練」をすればいいんですね。ボク、今日からスマホアプリをぼかして見てみます。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その姿勢が完璧です。\n良いUIを見て「なぜ良いか」を3行で書く習慣をつけるだけで、3ヶ月で見える景色が変わります。\nセンスは才能ではなく訓練の蓄積なんです、マジさん。",
           },
         ]}
       />
+
+      {/* ── COMPARISON ──────────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["センスで見る", "原則で見る"]}
+          rows={[
+            {
+              label: "評価の言葉",
+              cells: [
+                "「なんかいい」「なんか変」で終わる",
+                "「近接が取れていないから散漫に見える」と説明できる",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "改善の方向性",
+              cells: [
+                "何を変えればいいか分からない",
+                "原則に照らして具体的な修正点を出せる",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "再現性",
+              cells: [
+                "毎回「感覚で決める」",
+                "原則に従えば誰でも似た結論に至る",
+              ],
+              highlightCol: 1,
+            },
+            {
+              label: "フィードバック",
+              cells: [
+                "「なんか違う」とだけ伝える",
+                "「整列がズレているのでここを揃えて」と伝えられる",
+              ],
+              highlightCol: 1,
+            },
+          ]}
+          highlightCol={1}
+          note="原則を知ると「センス」の正体が言語化できる。「いいUI」を言葉にできれば、誰かに伝えることも、自分で改善することもできる。"
+        />
+      </section>
 
       {/* ── SectionDivider ───────────────────────────────────── */}
       <SectionDivider
@@ -327,24 +416,34 @@ export default function SeeingPage() {
 
       {/* ── RelatedLinks ─────────────────────────────────────── */}
       <RelatedLinks
-        items={[
+        groups={[
           {
-            href: "/uiux/principles",
-            title: "デザインの4大原則",
-            description: "近接・整列・反復・対比 — 整ったUIの正体",
-            icon: "Code2",
-          },
-          {
-            href: "/kiso/server",
-            title: "Webの基礎から始める",
-            description: "サーバー・データベース・PWAの基礎概念",
-            icon: "Server",
+            label: "次に読むページ",
+            items: [
+              {
+                href: "/uiux/principles",
+                title: "デザインの4大原則",
+                description: "近接・整列・反復・対比 — 整ったUIの正体",
+                icon: "MousePointerClick",
+              },
+              {
+                href: "/uiux/diagnose",
+                title: "UIを読み解く・診断する",
+                description: "「なぜ良いか」「何が悪いか」を言葉にする力を養う",
+                icon: "Stethoscope",
+              },
+            ],
           },
         ]}
       />
 
       {/* ── PageDrill ─────────────────────────────────────────── */}
-      <PageDrill questions={seeingQuestions} />
+      <PageDrill
+        groups={[
+          { label: "基礎編ドリル", questions: seeingQuestions },
+          { label: "応用編ドリル", questions: seeingAdvancedQuestions },
+        ]}
+      />
     </div>
   );
 }

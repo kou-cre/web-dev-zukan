@@ -20,12 +20,14 @@ import { Hero } from "@/components/Hero";
 import { Prerequisites } from "@/components/Prerequisites";
 import { OnePageSummary } from "@/components/OnePageSummary";
 import { Bridge } from "@/components/Bridge";
+import { TermNote } from "@/components/TermNote";
 import {
   ConceptDiagram,
   FlowCard,
   FlowArrow,
 } from "@/components/ConceptDiagram";
 import { MajiDialogue } from "@/components/MajiDialogue";
+import { ComparisonTable } from "@/components/ComparisonTable";
 import { SectionDivider } from "@/components/SectionDivider";
 import {
   DetailSection,
@@ -35,7 +37,7 @@ import {
 } from "@/components/DetailSection";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
-import { partsQuestions } from "@/content/questions/uiux/parts";
+import { partsQuestions, partsAdvancedQuestions } from "@/content/questions/uiux/parts";
 
 export default function UiuxPartsPage() {
   return (
@@ -66,7 +68,7 @@ export default function UiuxPartsPage() {
           "フォームのエラー設計を「事前ガード」として組む考え方",
         ]}
         prerequisites={[
-          "デザインの4大原則を理解している",
+          { text: "デザインの4大原則を理解している", href: "/uiux/principles" },
           "色とコントラストの基本を理解している",
         ]}
         outOfScope={[
@@ -114,6 +116,31 @@ export default function UiuxPartsPage() {
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
+
+        <TermNote
+          terms={[
+            {
+              word: "Primary / Secondary ボタン",
+              definition: "最も重要な操作（Primary）と補助的な操作（Secondary）のボタン。Primary は塗りつぶし・Secondary は枠線のみ（アウトライン）で区別するのが一般的。",
+            },
+            {
+              word: "Ghost ボタン",
+              definition: "背景色なし・枠線なし・テキストのみのボタン。控えめな操作（キャンセル・詳細など）に使う。",
+            },
+            {
+              word: "Destructive ボタン",
+              definition: "取り消しできない危険な操作（削除・退会など）に使う赤系ボタン。誤クリックを防ぐため目立たせつつも確認ダイアログをセットで使う。",
+            },
+            {
+              word: "Disabled（無効）状態",
+              definition: "ボタンや入力欄が操作できない状態。グレーアウトして表示し、なぜ無効なのか分かるツールチップやテキストを添えることが推奨。",
+            },
+            {
+              word: "Placeholder",
+              definition: "入力欄に何も入力していないときに表示されるヒント文字。入力後は消えるため「ラベル」の代わりに使うと、入力中に何を入れるべきか分からなくなる（禁じ手）。",
+            },
+          ]}
+        />
 
         <ConceptDiagram
           title="概念図A — ボタンの4階層"
@@ -235,25 +262,93 @@ export default function UiuxPartsPage() {
           {
             speaker: "maji",
             emotion: "doubt",
-            text: "ボタンって作って終わりじゃないの？",
+            text: "ボタンって作って終わり、ではないんですか？ ボク、見た目さえ整っていればOKだと思っていまして。",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "状態が本体。Hover無しのボタンは「押せるか分からない扉」と同じ。",
+            text: "状態が本体なんです、マジさん。\nDefault・Hover・Active・Focus・Disabled の5つの状態を漏れなく作るのがプロの仕事。\nHover無しのボタンは「押せるか分からない扉」と同じで、ユーザーが触っていいか不安になるんです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "question",
+            text: "マジ？\n5つもあるんですか。Focusっていうのは、どんなときの状態ですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "standard",
+            text: "キーボードのTabキーで操作したときに、いまどこに焦点があるかを示す状態です。\nマウスでテストするだけだと気づきにくいんです、マジさん。\nCSSで outline: none と書くだけで終わらせるとアクセシビリティが破綻します。\n必ず box-shadow など別の表現を入れてください。",
           },
           {
             speaker: "maji",
             emotion: "worried",
-            text: "フォーム作ったけどエラーがズレた位置に出てきてる…",
+            text: "ボク、フォームを作ったんですが、エラーがズレた位置に出てきてしまって。それと、placeholderにラベルを書いていたのも気になっていて……。",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "エラーは「事後通知」より「事前ガード」。入力中に分かる方が10倍親切。",
+            text: "エラーは「事後通知」より「事前ガード」が10倍親切です、マジさん。\n送信ボタンを押した後にまとめて出すのではなく、入力中にその場で教える。\nそれと、placeholderに情報を載せるのは禁じ手です。\n入力を始めると消えるので、ユーザーが文脈を失ってしまうんです。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なんとなく分かってきました。ラベル・補助テキスト・エラーは別の役割で、それぞれを混ぜずに設計する、ということですね。ボク、placeholderを使い回していたのを反省しています。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その理解で完璧です。\nボタンの4階層（Primary・Secondary・Ghost・Destructive）も同じ考え方で、1画面にPrimaryは1つが原則。\n複数のPrimaryは「主役不在のドラマ」と同じで、ユーザーが迷子になるんです、マジさん。",
           },
         ]}
       />
+
+      {/* ── COMPARISON ──────────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["Primary", "Secondary", "Ghost", "Destructive"]}
+          rows={[
+            {
+              label: "見た目",
+              cells: [
+                "塗りつぶし・ブランドカラー",
+                "枠線のみ・透明背景",
+                "テキストのみ",
+                "赤系・危険を示す色",
+              ],
+              highlightCol: 0,
+            },
+            {
+              label: "使う場面",
+              cells: [
+                "メインアクション（送信・保存）",
+                "サブアクション（キャンセル）",
+                "補助操作（詳細を見る）",
+                "削除・取り消し不可の操作",
+              ],
+            },
+            {
+              label: "画面内での数",
+              cells: [
+                "1〜2個まで",
+                "Primaryとセットで使う",
+                "複数可",
+                "1個まで（目立ちすぎ注意）",
+              ],
+              highlightCol: 0,
+            },
+            {
+              label: "重みづけ",
+              cells: ["最重要", "重要", "低", "要注意"],
+              highlightCol: 0,
+            },
+          ]}
+          highlightCol={0}
+          note="1つの画面に複数のPrimaryボタンを置くと「どれを押せばいいか」が分からなくなる。Primaryは画面に1〜2個が原則。"
+        />
+      </section>
 
       {/* ── SectionDivider */}
       <SectionDivider
@@ -397,24 +492,45 @@ export default function UiuxPartsPage() {
 
       {/* ── RelatedLinks */}
       <RelatedLinks
-        items={[
+        groups={[
           {
-            href: "/uiux/diagnose",
-            title: "UIを読み解く・診断する",
-            description: "「なぜ良いか」「何が悪いか」を言葉にする力を養う",
-            icon: "Code2",
+            label: "前提として読むページ",
+            items: [
+              {
+                href: "/uiux/principles",
+                title: "デザインの4大原則",
+                description: "近接・整列・反復・対比 — パーツ設計の骨格",
+                icon: "MousePointerClick",
+              },
+              {
+                href: "/uiux/diagnose",
+                title: "UIを読み解く・診断する",
+                description: "「なぜ良いか」「何が悪いか」を言葉にする力を養う",
+                icon: "Stethoscope",
+              },
+            ],
           },
           {
-            href: "/uiux/layout",
-            title: "レイアウトと一貫性",
-            description: "グリッド・モバイル・トークンで画面全体を仕組みで揃える",
-            icon: "Rocket",
+            label: "次に読むページ",
+            items: [
+              {
+                href: "/uiux/layout",
+                title: "レイアウトと一貫性",
+                description: "グリッド・モバイル・トークンで画面全体を仕組みで揃える",
+                icon: "LayoutGrid",
+              },
+            ],
           },
         ]}
       />
 
       {/* ── PageDrill */}
-      <PageDrill questions={partsQuestions} />
+      <PageDrill
+        groups={[
+          { label: "基礎編ドリル", questions: partsQuestions },
+          { label: "応用編ドリル", questions: partsAdvancedQuestions },
+        ]}
+      />
     </div>
   );
 }

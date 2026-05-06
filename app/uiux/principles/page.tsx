@@ -20,6 +20,7 @@ import {
   FlowArrow,
 } from "@/components/ConceptDiagram";
 import { MajiDialogue } from "@/components/MajiDialogue";
+import { ComparisonTable } from "@/components/ComparisonTable";
 import { SectionDivider } from "@/components/SectionDivider";
 import {
   DetailSection,
@@ -29,7 +30,8 @@ import {
 } from "@/components/DetailSection";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
-import { principlesQuestions } from "@/content/questions/uiux/principles";
+import { TermNote } from "@/components/TermNote";
+import { principlesQuestions, principlesAdvancedQuestions } from "@/content/questions/uiux/principles";
 
 export const metadata = {
   title: "デザインの4大原則 | UIデザイン | Web開発図解",
@@ -66,7 +68,7 @@ export default function PrinciplesPage() {
           "UIを点検するときの原則チェック順",
         ]}
         prerequisites={[
-          "「UIを見る目」の3層モデルを知っている（/uiux/seeing を読んだ）",
+          { text: "「UIを見る目」の3層モデルを知っている（/uiux/seeing を読んだ）", href: "/uiux/seeing" },
           "良いUI / 悪いUIを直感的に区別したことがある",
         ]}
         outOfScope={[
@@ -111,6 +113,27 @@ export default function PrinciplesPage() {
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
+
+        <TermNote
+          terms={[
+            {
+              word: "近接（Proximity）",
+              definition: "関係のある要素を近くに、ない要素は離して配置する原則。距離で「このグループはひとまとまり」と伝える。",
+            },
+            {
+              word: "整列（Alignment）",
+              definition: "要素の端や中央を見えない縦横のラインに揃える原則。揃ったラインが少ないほど画面がスッキリして見える。",
+            },
+            {
+              word: "反復（Repetition）",
+              definition: "同じ役割の要素には同じ見た目を繰り返し使う原則。ボタンや見出しのスタイルを統一することで一貫性が生まれる。",
+            },
+            {
+              word: "対比（Contrast）",
+              definition: "主役と脇役の差（サイズ・色・太さ）を思い切ってつける原則。差が大きいほど情報の優先度が明確に伝わる。",
+            },
+          ]}
+        />
 
         {/* 概念図A: 4原則の俯瞰マップ */}
         <ConceptDiagram
@@ -190,25 +213,85 @@ export default function PrinciplesPage() {
           {
             speaker: "maji",
             emotion: "doubt",
-            text: "原則とか言われても、結局センスじゃないの？ 守って整ったって、それは普通のUIなんじゃ。",
+            text: "原則とか言われても、結局センスなのではないですか？ ボク、4つ守って整ったとしても、それって普通のUIにしかならないと思っていまして。",
           },
           {
             speaker: "master",
             emotion: "explain",
-            text: "4原則は文法と同じです。守るだけで意味が通る。崩すのは守ったあとでいい。文法を知らずに崩しても、ただの誤字脱字になる。",
+            text: "4原則は文法と同じです、マジさん。\n守るだけで意味が通る。\n崩すのは守ったあとでいい。\n文法を知らずに崩しても、それはただの誤字脱字になってしまうんです。",
           },
           {
             speaker: "maji",
             emotion: "question",
-            text: "整列してないだけで、こんなに違うの？ マジ？",
+            text: "マジ？\nじゃあ整列してないだけで、ボクが「なんか雑」と感じていたUIは、本当に整列の問題だったということですか？",
           },
           {
             speaker: "master",
             emotion: "standard",
-            text: "揃ってないUIは「読み手の脳に余計な仕事をさせる」んです。それだけで疲れる。整列は「読み手への思いやり」だと思ってください。",
+            text: "そうです。\n揃ってないUIは「読み手の脳に余計な仕事をさせる」んです。\nそれだけで疲れる。\n整列は「読み手への思いやり」だと思ってください、マジさん。",
+          },
+          {
+            speaker: "maji",
+            emotion: "worried",
+            text: "ボク、4つの順番が気になっていて。点検するときって、整列・近接・対比・反復のどれから見ればいいんですか？",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "整列から見るのが正解です、マジさん。\nまず骨格である整列を整えてから、近接でグループを作る。\n次に対比で主役と脇役の差をつけて、最後に反復で同じ役割を同じ見た目に揃える。\nこの順だと「整列が崩れたまま対比だけ盛る」という事故が起きません。",
+          },
+          {
+            speaker: "maji",
+            emotion: "standard",
+            text: "なんとなく分かってきました。4原則は単独ではなく、重なって効く。だから順番を守って点検する、ということですね。ボク、今度から整列から見てみます。",
+          },
+          {
+            speaker: "master",
+            emotion: "explain",
+            text: "その理解で完璧です。\nCTAボタンひとつをとっても、対比・整列・近接の3つが同時に効いている。\n「なぜ目立つか」を分解できれば、自分のUIでも再現できます。\n4原則は単語帳のようなもので、覚えるほど解像度が上がるんです、マジさん。",
           },
         ]}
       />
+
+      {/* ── COMPARISON ──────────────────────────────────────── */}
+      <section className="mb-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
+          COMPARISON
+        </h2>
+        <ComparisonTable
+          headers={["近接", "整列", "反復", "対比"]}
+          rows={[
+            {
+              label: "目的",
+              cells: [
+                "関連するものをグループ化する",
+                "要素を見えない線で揃える",
+                "同じ役割は同じ見た目に統一する",
+                "重要なものを目立たせる",
+              ],
+            },
+            {
+              label: "読み手への効果",
+              cells: [
+                "「これは一緒に考えていいんだ」と伝わる",
+                "視線が自然に流れる",
+                "迷いなく読み進められる",
+                "視線の優先順位が決まる",
+              ],
+            },
+            {
+              label: "よくある失敗",
+              cells: [
+                "関係ないものが近くに配置されている",
+                "中央揃えの乱用",
+                "ページごとに異なるボタンスタイル",
+                "全部同じ大きさ・色で単調",
+              ],
+            },
+          ]}
+          note="4原則は独立して働くわけではない。ほとんどのUIは複数の原則を同時に適用している。"
+        />
+      </section>
 
       {/* ── SectionDivider ───────────────────────────────────── */}
       <SectionDivider
@@ -349,28 +432,55 @@ export default function PrinciplesPage() {
             主役の見出しは本文の2倍以上のサイズにする・色を完全に変える・太字を使う、など「迷ったら大胆に」が対比の基本姿勢。
           </KeyPoint>
         </DetailBlock>
+
+        <DetailBlock heading={"4. 反復 — 同じ役割は同じ見た目に"}>
+          <p>
+            反復（Repetition）は、同じ役割を持つ要素に同じスタイルを繰り返し使う原則。ボタンは常に同じ色・角丸・サイズ、見出しは常に同じフォントサイズ・太さで統一することで一貫性が生まれる。
+          </p>
+          <p>
+            よくあるミスは「このページのボタンだけ違う色にした」「ここだけ見出しのサイズを変えた」という例外を作ってしまうケース。例外が増えると読み手は「これは別の意味があるのか？」と考えてしまい、脳の負荷が上がる。
+          </p>
+          <KeyPoint>
+            反復はデザインシステムの土台になる原則。ボタン・カード・見出しなど繰り返し使う要素をコンポーネントとして切り出す習慣が、自然と反復を担保する仕組みになる。
+          </KeyPoint>
+        </DetailBlock>
       </DetailSection>
 
       {/* ── RelatedLinks ─────────────────────────────────────── */}
       <RelatedLinks
-        items={[
+        groups={[
           {
-            href: "/uiux/seeing",
-            title: "UIを見る目を養う",
-            description: "「なんかいい」を3層で言語化する",
-            icon: "Code2",
+            label: "前提として読むページ",
+            items: [
+              {
+                href: "/uiux/seeing",
+                title: "UIを見る目を養う",
+                description: "「なんかいい」を3層で言語化する",
+                icon: "Eye",
+              },
+            ],
           },
           {
-            href: "/uiux/color",
-            title: "色と配色のルール",
-            description: "三属性と60-30-10で配色を作る",
-            icon: "Rocket",
+            label: "次に読むページ",
+            items: [
+              {
+                href: "/uiux/color",
+                title: "色と配色のルール",
+                description: "三属性と60-30-10で配色を作る",
+                icon: "Palette",
+              },
+            ],
           },
         ]}
       />
 
       {/* ── PageDrill ─────────────────────────────────────────── */}
-      <PageDrill questions={principlesQuestions} />
+      <PageDrill
+        groups={[
+          { label: "基礎編ドリル", questions: principlesQuestions },
+          { label: "応用編ドリル", questions: principlesAdvancedQuestions },
+        ]}
+      />
     </div>
   );
 }

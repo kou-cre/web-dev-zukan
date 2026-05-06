@@ -101,7 +101,7 @@ export default function VariablesPage() {
 
       {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
@@ -317,7 +317,7 @@ export default function VariablesPage() {
 
       {/* ── 比較表（基礎編 — ホイスティング行なし） ────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           COMPARISON
         </h2>
         <ComparisonTable
@@ -356,7 +356,7 @@ export default function VariablesPage() {
 
       {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED — ホイスティングとTDZ
         </h2>
 
@@ -575,7 +575,7 @@ export default function VariablesPage() {
         </ConceptDiagram>
 
         {/* ── 応用編 クロージャ ── */}
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
           ADVANCED — クロージャ
         </h2>
 
@@ -819,7 +819,7 @@ export default function VariablesPage() {
         </ConceptDiagram>
 
         {/* ── 応用編 プリミティブ型 ── */}
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
           ADVANCED — データのコピーとメモリ
         </h2>
 

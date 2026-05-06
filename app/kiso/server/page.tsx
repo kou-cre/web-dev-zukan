@@ -88,7 +88,7 @@ export default function ServerPage() {
 
       {/* ── 基礎編 CONCEPT DIAGRAMS ─────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
@@ -316,7 +316,7 @@ export default function ServerPage() {
 
       {/* ── 比較表（基礎編） ────────────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           COMPARISON
         </h2>
         <ComparisonTable
@@ -384,7 +384,7 @@ export default function ServerPage() {
 
       {/* ── 応用編 CONCEPT DIAGRAMS ─────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED — HTTP の詳細フロー
         </h2>
 

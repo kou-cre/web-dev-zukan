@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Trophy, ThumbsUp, Dumbbell, GraduationCap, Check, X } from "lucide-react";
+import { Trophy, ThumbsUp, Dumbbell, GraduationCap, Check, X, ChevronRight } from "lucide-react";
 
 export interface DrillQuestion {
   id: string;
@@ -9,13 +9,26 @@ export interface DrillQuestion {
   choices: string[];
   correctIndex: number;
   explanation: string;
+  level?: "basic" | "advanced";
 }
 
-interface PageDrillProps {
+interface DrillGroup {
+  label: string;
   questions: DrillQuestion[];
 }
 
-export function PageDrill({ questions }: PageDrillProps) {
+interface PageDrillProps {
+  questions?: DrillQuestion[];
+  groups?: DrillGroup[];
+}
+
+function SingleGroupDrill({
+  questions,
+  onComplete,
+}: {
+  questions: DrillQuestion[];
+  onComplete?: (score: number) => void;
+}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -76,24 +89,250 @@ export function PageDrill({ questions }: PageDrillProps) {
 
   if (finished) {
     const score = results.filter(Boolean).length;
+
+    if (onComplete) {
+      return (
+        <div className="rounded-xl border p-6 text-center" style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}>
+          <div className="flex justify-center mb-3">
+            {score === questions.length
+              ? <Trophy className="w-8 h-8 text-yellow-400" />
+              : score >= questions.length / 2
+              ? <ThumbsUp className="w-8 h-8 text-blue-400" />
+              : <Dumbbell className="w-8 h-8 text-orange-400" />}
+          </div>
+          <p className="text-lg font-bold text-white mb-1">{score} / {questions.length} 正解</p>
+          <p className="text-sm text-gray-400 mb-5">
+            {score === questions.length
+              ? "完璧！次のセクションへどうぞ。"
+              : score >= questions.length / 2
+              ? "いい調子。応用編でさらに深掘りしましょう。"
+              : "もう一度読み返してから応用編に進むとより定着します。"}
+          </p>
+          <button
+            onClick={() => onComplete(score)}
+            className="inline-flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-medium transition-colors"
+            style={{ backgroundColor: "#10b981", color: "#0f1117" }}
+          >
+            応用編ドリルへ <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="rounded-xl border p-6 text-center" style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}>
+        <div className="flex justify-center mb-3">
+          {score === questions.length
+            ? <Trophy className="w-10 h-10 text-yellow-400" />
+            : score >= questions.length / 2
+            ? <ThumbsUp className="w-10 h-10 text-blue-400" />
+            : <Dumbbell className="w-10 h-10 text-orange-400" />}
+        </div>
+        <p className="text-xl font-bold text-white mb-1">
+          {score} / {questions.length} 正解
+        </p>
+        <p className="text-sm text-gray-400 mb-5">
+          {score === questions.length
+            ? "完璧！このページの内容はバッチリ。"
+            : score >= questions.length / 2
+            ? "いい調子。もう一度読み返すとより定着します。"
+            : "もう一度ページを読んでから再挑戦してみましょう。"}
+        </p>
+        <button
+          onClick={handleReset}
+          className="px-5 py-2 rounded-lg text-sm font-medium transition-colors"
+          style={{ backgroundColor: "#10b981", color: "#0f1117" }}
+        >
+          もう一度
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl border p-5" style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}>
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-xs text-gray-500">
+          Q{currentIndex + 1} / {questions.length}
+        </span>
+        <div className="flex gap-1">
+          {questions.map((_, i) => (
+            <div
+              key={i}
+              className="w-2 h-2 rounded-full"
+              style={{
+                backgroundColor:
+                  i < results.length
+                    ? results[i]
+                      ? "#10b981"
+                      : "#ef4444"
+                    : i === currentIndex
+                    ? "#6b7280"
+                    : "#374151",
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <p className="text-sm font-medium text-white mb-4 leading-relaxed">{current.question}</p>
+
+      <p className="hidden sm:flex items-center gap-1.5 text-xs text-gray-400 mb-3">
+        <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>A</kbd>
+        <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>B</kbd>
+        <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>C</kbd>
+        <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>D</kbd>
+        <span>で選択 /</span>
+        <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>Enter</kbd>
+        <span>で回答</span>
+      </p>
+
+      <div className="space-y-2 mb-4">
+        {current.choices.map((choice, i) => {
+          const label = ["A", "B", "C", "D"][i];
+          let borderColor = "#2d3048";
+          let bgColor = "#0f1117";
+          let textColor = "#e5e7eb";
+
+          if (submitted) {
+            if (i === current.correctIndex) {
+              borderColor = "#10b981";
+              bgColor = "#052e16";
+              textColor = "#34d399";
+            } else if (i === selectedIndex) {
+              borderColor = "#ef4444";
+              bgColor = "#1c0a0a";
+              textColor = "#fca5a5";
+            } else {
+              textColor = "#6b7280";
+            }
+          } else if (selectedIndex === i) {
+            borderColor = "#e5e7eb";
+            bgColor = "#1e2130";
+          }
+
+          return (
+            <button
+              key={i}
+              onClick={() => handleSelect(i)}
+              disabled={submitted}
+              className="w-full text-left rounded-lg border px-3 py-2.5 text-sm transition-colors flex items-start gap-2"
+              style={{ borderColor, backgroundColor: bgColor, color: textColor }}
+            >
+              <span className="font-mono font-bold text-xs w-4 flex-shrink-0 mt-0.5">{label}</span>
+              <span className="leading-relaxed">{choice}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {!submitted && (
+        <>
+          <button
+            onClick={handleSubmit}
+            disabled={selectedIndex === null}
+            className="w-full py-2 rounded-lg text-sm font-medium transition-colors mb-1"
+            style={{
+              backgroundColor: selectedIndex !== null ? "#10b981" : "#1a1d2a",
+              color: selectedIndex !== null ? "#0f1117" : "#9ca3af",
+              border: "1px solid",
+              borderColor: selectedIndex !== null ? "#10b981" : "#2d3048",
+              cursor: selectedIndex !== null ? "pointer" : "not-allowed",
+            }}
+          >
+            回答する
+          </button>
+          {selectedIndex === null && (
+            <p className="text-xs text-gray-500 text-center mt-1.5">選択肢を選んでから回答してください</p>
+          )}
+        </>
+      )}
+
+      {submitted && (
+        <div
+          className="rounded-lg p-4 mb-4 border"
+          style={{
+            backgroundColor: selectedIndex === current.correctIndex ? "#052e16" : "#1c0a0a",
+            borderColor: selectedIndex === current.correctIndex ? "#10b981" : "#ef4444",
+          }}
+        >
+          <p className="text-xs font-semibold mb-1"
+            style={{ color: selectedIndex === current.correctIndex ? "#10b981" : "#ef4444" }}>
+            {selectedIndex === current.correctIndex ? (
+              <span className="flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5" /> 正解！
+              </span>
+            ) : (
+              <span className="flex items-center gap-1.5">
+                <X className="w-3.5 h-3.5" /> 不正解
+              </span>
+            )}
+          </p>
+          <p className="text-xs font-semibold text-amber-400 mb-1 flex items-center gap-1">
+            <GraduationCap className="w-3.5 h-3.5" />
+            マスターのワンポイント
+          </p>
+          <p className="text-xs text-gray-300 leading-relaxed">{current.explanation}</p>
+        </div>
+      )}
+
+      {submitted && (
+        <button
+          onClick={handleNext}
+          className="w-full py-2 rounded-lg text-sm font-medium transition-colors"
+          style={{ backgroundColor: "#10b981", color: "#0f1117" }}
+        >
+          {currentIndex < questions.length - 1 ? "次の問題へ →" : "結果を見る"}
+        </button>
+      )}
+    </div>
+  );
+}
+
+export function PageDrill({ questions, groups }: PageDrillProps) {
+  const resolvedGroups: DrillGroup[] = groups ?? (questions ? [{ label: "", questions }] : []);
+  const [groupIndex, setGroupIndex] = useState(0);
+  const [groupScores, setGroupScores] = useState<number[]>([]);
+  const [allDone, setAllDone] = useState(false);
+
+  function handleGroupComplete(score: number) {
+    const newScores = [...groupScores, score];
+    setGroupScores(newScores);
+    if (groupIndex < resolvedGroups.length - 1) {
+      setGroupIndex(groupIndex + 1);
+    } else {
+      setAllDone(true);
+    }
+  }
+
+  function handleReset() {
+    setGroupIndex(0);
+    setGroupScores([]);
+    setAllDone(false);
+  }
+
+  const isMultiGroup = resolvedGroups.length > 1;
+  const currentGroup = resolvedGroups[groupIndex];
+
+  if (allDone) {
+    const totalScore = groupScores.reduce((a, b) => a + b, 0);
+    const totalQuestions = resolvedGroups.reduce((a, g) => a + g.questions.length, 0);
     return (
       <section className="mb-10">
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">DRILL</h2>
         <div className="rounded-xl border p-6 text-center" style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}>
           <div className="flex justify-center mb-3">
-            {score === questions.length
+            {totalScore === totalQuestions
               ? <Trophy className="w-10 h-10 text-yellow-400" />
-              : score >= questions.length / 2
+              : totalScore >= totalQuestions / 2
               ? <ThumbsUp className="w-10 h-10 text-blue-400" />
               : <Dumbbell className="w-10 h-10 text-orange-400" />}
           </div>
-          <p className="text-xl font-bold text-white mb-1">
-            {score} / {questions.length} 正解
-          </p>
+          <p className="text-xl font-bold text-white mb-1">{totalScore} / {totalQuestions} 正解</p>
           <p className="text-sm text-gray-400 mb-5">
-            {score === questions.length
-              ? "完璧！このページの内容はバッチリ。"
-              : score >= questions.length / 2
+            {totalScore === totalQuestions
+              ? "完璧！基礎編・応用編をすべて正解しました。"
+              : totalScore >= totalQuestions / 2
               ? "いい調子。もう一度読み返すとより定着します。"
               : "もう一度ページを読んでから再挑戦してみましょう。"}
           </p>
@@ -111,143 +350,17 @@ export function PageDrill({ questions }: PageDrillProps) {
 
   return (
     <section className="mb-10">
-      <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">DRILL</h2>
-      <div className="rounded-xl border p-5" style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}>
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-xs text-gray-500">
-            Q{currentIndex + 1} / {questions.length}
-          </span>
-          <div className="flex gap-1">
-            {questions.map((_, i) => (
-              <div
-                key={i}
-                className="w-2 h-2 rounded-full"
-                style={{
-                  backgroundColor:
-                    i < results.length
-                      ? results[i]
-                        ? "#10b981"
-                        : "#ef4444"
-                      : i === currentIndex
-                      ? "#6b7280"
-                      : "#374151",
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        <p className="text-sm font-medium text-white mb-4 leading-relaxed">{current.question}</p>
-
-        <p className="hidden sm:flex items-center gap-1.5 text-xs text-gray-400 mb-3">
-          <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>A</kbd>
-          <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>B</kbd>
-          <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>C</kbd>
-          <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>D</kbd>
-          <span>で選択 /</span>
-          <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono text-gray-300" style={{ backgroundColor: "#1e2130", border: "1px solid #4b5280" }}>Enter</kbd>
-          <span>で回答</span>
+      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">DRILL</h2>
+      {isMultiGroup && (
+        <p className="text-xs text-gray-500 mb-3">
+          {currentGroup.label} — {groupIndex + 1} / {resolvedGroups.length}
         </p>
-
-        <div className="space-y-2 mb-4">
-          {current.choices.map((choice, i) => {
-            const label = ["A", "B", "C", "D"][i];
-            let borderColor = "#2d3048";
-            let bgColor = "#0f1117";
-            let textColor = "#e5e7eb";
-
-            if (submitted) {
-              if (i === current.correctIndex) {
-                borderColor = "#10b981";
-                bgColor = "#052e16";
-                textColor = "#34d399";
-              } else if (i === selectedIndex) {
-                borderColor = "#ef4444";
-                bgColor = "#1c0a0a";
-                textColor = "#fca5a5";
-              } else {
-                textColor = "#6b7280";
-              }
-            } else if (selectedIndex === i) {
-              borderColor = "#e5e7eb";
-              bgColor = "#1e2130";
-            }
-
-            return (
-              <button
-                key={i}
-                onClick={() => handleSelect(i)}
-                disabled={submitted}
-                className="w-full text-left rounded-lg border px-3 py-2.5 text-sm transition-colors flex items-start gap-2"
-                style={{ borderColor, backgroundColor: bgColor, color: textColor }}
-              >
-                <span className="font-mono font-bold text-xs w-4 flex-shrink-0 mt-0.5">{label}</span>
-                <span className="leading-relaxed">{choice}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {!submitted && (
-          <>
-            <button
-              onClick={handleSubmit}
-              disabled={selectedIndex === null}
-              className="w-full py-2 rounded-lg text-sm font-medium transition-colors mb-1"
-              style={{
-                backgroundColor: selectedIndex !== null ? "#10b981" : "#1a1d2a",
-                color: selectedIndex !== null ? "#0f1117" : "#9ca3af",
-                border: "1px solid",
-                borderColor: selectedIndex !== null ? "#10b981" : "#2d3048",
-                cursor: selectedIndex !== null ? "pointer" : "not-allowed",
-              }}
-            >
-              回答する
-            </button>
-            {selectedIndex === null && (
-              <p className="text-xs text-gray-500 text-center mt-1.5">選択肢を選んでから回答してください</p>
-            )}
-          </>
-        )}
-
-        {submitted && (
-          <div
-            className="rounded-lg p-4 mb-4 border"
-            style={{
-              backgroundColor: selectedIndex === current.correctIndex ? "#052e16" : "#1c0a0a",
-              borderColor: selectedIndex === current.correctIndex ? "#10b981" : "#ef4444",
-            }}
-          >
-            <p className="text-xs font-semibold mb-1"
-              style={{ color: selectedIndex === current.correctIndex ? "#10b981" : "#ef4444" }}>
-              {selectedIndex === current.correctIndex ? (
-                <span className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5" /> 正解！
-                </span>
-              ) : (
-                <span className="flex items-center gap-1.5">
-                  <X className="w-3.5 h-3.5" /> 不正解
-                </span>
-              )}
-            </p>
-            <p className="text-xs font-semibold text-amber-400 mb-1 flex items-center gap-1">
-              <GraduationCap className="w-3.5 h-3.5" />
-              マスターのワンポイント
-            </p>
-            <p className="text-xs text-gray-300 leading-relaxed">{current.explanation}</p>
-          </div>
-        )}
-
-        {submitted && (
-          <button
-            onClick={handleNext}
-            className="w-full py-2 rounded-lg text-sm font-medium transition-colors"
-            style={{ backgroundColor: "#10b981", color: "#0f1117" }}
-          >
-            {currentIndex < questions.length - 1 ? "次の問題へ →" : "結果を見る"}
-          </button>
-        )}
-      </div>
+      )}
+      <SingleGroupDrill
+        key={groupIndex}
+        questions={currentGroup.questions}
+        onComplete={isMultiGroup ? handleGroupComplete : undefined}
+      />
     </section>
   );
 }

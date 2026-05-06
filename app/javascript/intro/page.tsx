@@ -88,7 +88,7 @@ export default function JavaScriptIntroPage() {
 
       {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
@@ -287,7 +287,7 @@ export default function JavaScriptIntroPage() {
 
       {/* ── DevTools の使い方（独立セクション） ─────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           DEVTOOLS
         </h2>
 
@@ -354,7 +354,7 @@ export default function JavaScriptIntroPage() {
 
       {/* ── console.log の使い方（コードブロック） ───────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONSOLE.LOG
         </h2>
 
@@ -393,7 +393,7 @@ console.log(true);        // → true`}
 
       {/* ── エラーが出たときの対処法 ─────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ERROR HANDLING — 最初の対処法
         </h2>
 

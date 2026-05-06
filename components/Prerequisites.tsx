@@ -1,8 +1,11 @@
+import Link from "next/link";
 import { CheckCircle2, BookOpen, ArrowRight } from "lucide-react";
+
+type PrerequisiteItem = string | { text: string; href: string };
 
 interface PrerequisitesProps {
   learn: string[];
-  prerequisites: string[];
+  prerequisites: PrerequisiteItem[];
   outOfScope: string[];
 }
 
@@ -39,7 +42,13 @@ export function Prerequisites({ learn, prerequisites, outOfScope }: Prerequisite
           {prerequisites.map((item, i) => (
             <li key={i} className="text-sm text-gray-300 leading-relaxed flex gap-2">
               <span className="text-blue-500 flex-shrink-0 mt-0.5">▸</span>
-              <span>{item}</span>
+              {typeof item === "string" ? (
+                <span>{item}</span>
+              ) : (
+                <Link href={item.href} className="underline underline-offset-2 hover:text-blue-300 transition-colors">
+                  {item.text}
+                </Link>
+              )}
             </li>
           ))}
         </ul>

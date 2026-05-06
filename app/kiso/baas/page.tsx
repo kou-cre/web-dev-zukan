@@ -105,7 +105,7 @@ export default function BaasPage() {
 
       {/* ── 基礎編 CONCEPT DIAGRAMS ─────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
@@ -385,7 +385,7 @@ export default function BaasPage() {
 
       {/* ── 比較表（基礎編） ────────────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           COMPARISON
         </h2>
         <ComparisonTable
@@ -449,7 +449,7 @@ export default function BaasPage() {
 
       {/* ── 応用編 CONCEPT DIAGRAMS ─────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED — Firebase の認証フロー
         </h2>
 
@@ -540,7 +540,7 @@ export default function BaasPage() {
           認証フローが分かりました。次は「Firestore がどんな構造でデータを持っているか」を見ていきます。
         </p>
 
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
           ADVANCED — Firestore のデータ構造
         </h2>
 
@@ -642,7 +642,7 @@ export default function BaasPage() {
           Firestore の構造が分かりました。最後に「BaaS を使うと何が不要になるか」を全体像として確認します。
         </p>
 
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4 mt-10">
           ADVANCED — BaaS が不要にする作業
         </h2>
 

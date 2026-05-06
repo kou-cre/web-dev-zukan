@@ -26,7 +26,7 @@ const pages: {
     iconColor: "#fb923c",
     title: "Firebase Auth",
     description: "認証の仕組みとメール・Googleログインの実装",
-    status: "準備中",
+    status: "完成",
   },
   {
     href: "/firebase/security-rules",
@@ -34,7 +34,7 @@ const pages: {
     iconColor: "#fb923c",
     title: "セキュリティルール",
     description: "アクセス制御の書き方と本番運用パターン",
-    status: "準備中",
+    status: "完成",
   },
   {
     href: "/firebase/realtime",
@@ -42,7 +42,7 @@ const pages: {
     iconColor: "#fb923c",
     title: "リアルタイム購読",
     description: "onSnapshot で変更を受け取る仕組みと React 連携",
-    status: "準備中",
+    status: "完成",
   },
 ];
 

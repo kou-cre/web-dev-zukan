@@ -31,8 +31,8 @@ const categories: {
     icon: Atom,
     iconColor: "#60a5fa",
     title: "React",
-    description: "コンポーネント・props・state・Hooks",
-    status: "準備中",
+    description: "コンポーネント・props・state・Hooks・ルーティング",
+    status: "完成",
   },
   {
     href: "/nextjs",

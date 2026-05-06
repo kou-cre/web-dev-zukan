@@ -32,6 +32,9 @@ import {
   KeyPoint,
   WarningPoint,
 } from "@/components/DetailSection";
+import { Timeline } from "@/components/Timeline";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { CorrectionCard } from "@/components/CorrectionCard";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { diagnoseQuestions, diagnoseAdvancedQuestions } from "@/content/questions/uiux/diagnose";
@@ -455,36 +458,93 @@ export default function UiuxDiagnosePage() {
       {/* ── DetailSection */}
       <DetailSection title="詳細解説">
         <DetailBlock heading="1. 目を細めて骨格を見る">
-          <p>
-            UIを診断するときの最初のコツは「目を細めて見る」。装飾やテキストの細部がボケて、整列・余白・コントラストといった骨格だけが残る。整ったUIはぼかしても整って見えるし、崩れているUIはぼかすと崩れがそのまま現れる。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            UIを診断するときの最初のコツは「目を細めて見る」。装飾が消えて、整列・余白・コントラストの骨格だけが残る。整ったUIはぼかしても整って見え、崩れているUIはぼかすと崩れがそのまま現れる。
           </p>
-          <p>
-            色やフォントから入ると、整列が崩れていることに気づきにくい。骨格 → 4原則 → 色と余白 の順で観点を切り替えると、修正すべき箇所が浮かび上がる。
-          </p>
+          <Timeline
+            items={[
+              {
+                year: "Step 1",
+                label: "目を細めて骨格を見る",
+                description: "装飾・色・フォントの細部を消す。整列・余白・コントラストの骨格だけを見る。",
+                accentColor: "violet",
+              },
+              {
+                year: "Step 2",
+                label: "4原則でチェックする",
+                description: "整列 → 近接 → 対比 → 反復 の順で原則の言葉に翻訳する。「整列が崩れている」「対比がない」と具体的に言語化する。",
+                accentColor: "violet",
+              },
+              {
+                year: "Step 3",
+                label: "色と余白を数値で確認する",
+                description: "コントラスト比をDevToolsで確認する（4.5:1以上）。余白が8の倍数に揃っているかを確認する。",
+                accentColor: "violet",
+              },
+              {
+                year: "Step 4",
+                label: "コスパの順に直す",
+                description: "「整列 → 余白 → 色 → 文字」の順で手を入れる。骨格が崩れたまま色をいじっても効果は出ない。",
+                accentColor: "violet",
+              },
+            ]}
+          />
           <KeyPoint>
             診断は観察の順序が命。「全体の骨格 → 部分のディテール」の順で見る。
           </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading="2. AIスロップを見抜く4つのサイン">
-          <p>
-            AIが生成するUIには「スロップ」と呼ばれる典型症状がある。代表的なのは ①余白が一定すぎる ②色が全部主張する ③フォント・サイズがバラバラ ④何が大事か読めない の4つ。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            AIが生成するUIには典型症状がある。代表的な4つを知っておくと、診断の出発点になる。
           </p>
-          <p>
-            特に①の「余白が一定」は厄介で、見出しと本文の余白が同じだと階層が消える。AIは綺麗に並べるのは得意だが、意図的な強弱を入れるのが苦手。スロップに気づけるかは、AI時代のデザインリテラシー。
-          </p>
+          <UseCaseGrid
+            cols={2}
+            items={[
+              {
+                Icon: Ruler,
+                title: "① 余白が一定すぎる",
+                subtitle: "階層が消えるサイン",
+                description: "見出しと本文の余白が同じだと階層が消える。AIは「均等に並べる」のは得意だが強弱の判断が苦手。",
+                accentColor: "violet",
+              },
+              {
+                Icon: Sparkles,
+                title: "② 色が全部主張する",
+                subtitle: "優先度が消えるサイン",
+                description: "アクセントカラーをあちこちに使うと「全部目立つ = 何も目立たない」になる。60-30-10の比率が崩れているサイン。",
+                accentColor: "violet",
+              },
+              {
+                Icon: Type,
+                title: "③ フォント・サイズがバラバラ",
+                subtitle: "リズムが崩れるサイン",
+                description: "タイプスケール（階段）が守られていない。中途半端なサイズが混在するとノイズになる。",
+                accentColor: "violet",
+              },
+              {
+                Icon: HelpCircle,
+                title: "④ 何が大事か分からない",
+                subtitle: "意図がないサイン",
+                description: "「なんとなく綺麗」だが主役不在。AIは形を整えるのは得意だが、情報の優先度の設計が弱い。",
+                accentColor: "violet",
+              },
+            ]}
+          />
           <WarningPoint>
             「なんとなく綺麗」は要注意のサイン。意図が読めないUIは、AIスロップの可能性が高い。
           </WarningPoint>
         </DetailBlock>
 
         <DetailBlock heading="3. 優先順位をつけて直す">
-          <p>
-            診断で問題が10個見つかっても、全部直すのはコストが大きい。コスパマップ（コスト × 効果）で考えて、左上の「低コスト・高効果」から手を入れる。整列の修正がここに該当することが多い。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            診断で問題が10個見つかっても、全部直すのはコストが大きい。コスパマップ（コスト × 効果）で考えて、低コスト・高効果から手を入れる。
           </p>
-          <p>
-            右下の「高コスト・低効果」（=全部作り直す）は最後の手段。新人ほど「いっそ作り直そう」となりがちだが、ベテランほど「整列だけ直して80点にする」ような効くポイントを選ぶ。
-          </p>
+          <CorrectionCard
+            misconception="問題が多ければ「いっそ作り直したほうが早い」と判断する"
+            correction="コスパマップで整理して「整列だけ直して80点にする」ような効くポイントを選ぶ"
+            reason="全部作り直すのは最後の手段。ベテランほど「整列の修正は5分でできるが効果が大きい」と知っている。骨格を直せば、色や装飾は後から速く決まる。"
+          />
           <KeyPoint>
             修正の順序は「整列 → 余白 → 色 → 文字」。コスパの高い順に手を入れる。
           </KeyPoint>

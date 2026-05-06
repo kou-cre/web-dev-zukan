@@ -32,6 +32,9 @@ import {
   KeyPoint,
   WarningPoint,
 } from "@/components/DetailSection";
+import { CodeBlock } from "@/components/CodeBlock";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { CorrectionCard } from "@/components/CorrectionCard";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { TermNote } from "@/components/TermNote";
@@ -417,36 +420,69 @@ export default function ColorPage() {
       {/* ── DetailSection ─────────────────────────────────────── */}
       <DetailSection title="詳細解説">
         <DetailBlock heading={"1. 色の三属性で話す"}>
-          <p>
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
             色を「赤・青・緑」のような名前で語ると、どんな赤かが伝わらない。色相・彩度・明度の3つの数字で話せるようになると、チームでの共通言語になる。
           </p>
-          <p>
-            CSSなら hsl(0, 80%, 50%) のように書ける。これは「赤・鮮やか・標準的な明るさ」という意味。「もう少し落ち着かせたい」は「彩度を60%に下げる」と具体的な操作にできる。
-          </p>
+          <CodeBlock
+            title="color.css"
+            language="css"
+            code={`/* NG: 名前で語ると「どんな赤?」が伝わらない */
+color: red;
+
+/* OK: HSLなら3軸で会話できる */
+color: hsl(0, 80%, 50%);   /* 赤・鮮やか・標準の明るさ */
+color: hsl(0, 40%, 50%);   /* 赤・落ち着いた・標準の明るさ（彩度を下げた） */
+color: hsl(0, 80%, 35%);   /* 赤・鮮やか・暗め（明度を下げた） */`}
+          />
           <KeyPoint>
             「もうちょい暗く」「もうちょい派手に」を、彩度・明度の数字で会話できるようにする。これだけでデザインレビューが10倍速くなる。
           </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading={"2. 60-30-10で比率を固定する"}>
-          <p>
-            画面に色を置くときは、面積比を「60% / 30% / 10%」で固定する。たとえば白背景60%、グレーのカード30%、ブランドカラーのCTA 10%、という具合。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            画面に色を置くときは、面積比を「60% / 30% / 10%」で固定する。この比率を守ると「どこを見ればいいか」が自然に決まる。アクセントが少ないからこそアクセントとして機能する。
           </p>
-          <p>
-            この比率を守ると、画面の中で「どこを見ればいいか」が自然に決まる。アクセントが少ないからこそアクセントとして機能する。
-          </p>
+          <UseCaseGrid
+            cols={3}
+            items={[
+              {
+                Icon: LayoutDashboard,
+                title: "60% — ベース",
+                subtitle: "背景・大きな面",
+                description: "白・薄いグレー・ダークなど落ち着いた色。画面の大半を占める基盤。",
+                accentColor: "fuchsia",
+              },
+              {
+                Icon: PaintBucket,
+                title: "30% — メイン",
+                subtitle: "カード・ヘッダー",
+                description: "ブランドカラーが入る位置。コンポーネントや主要ブロックの色。",
+                accentColor: "fuchsia",
+              },
+              {
+                Icon: Star,
+                title: "10% — アクセント",
+                subtitle: "CTAボタン・強調",
+                description: "少ないからこそ目立つ。ここが多すぎるとアクセントが消える。",
+                accentColor: "fuchsia",
+              },
+            ]}
+          />
           <WarningPoint>
             アクセントカラーをヘッダー全体・背景・ボタンすべてに使うと、アクセントが消える。「少ないから目立つ」を肝に銘じる。
           </WarningPoint>
         </DetailBlock>
 
         <DetailBlock heading={"3. コントラストを数字で確認する"}>
-          <p>
-            WCAGはアクセシビリティの国際基準で、本文のコントラスト比は4.5:1以上が必要とされている。これを満たさないと、視力が弱い人や明るい屋外で画面を見る人が文字を読めない。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            WCAGはアクセシビリティの国際基準で、本文のコントラスト比は4.5:1以上が必要。これを満たさないと、視力が弱い人や屋外で画面を見る人が文字を読めない。ChromeのDevToolsで即確認できる。
           </p>
-          <p>
-            ChromeのDevToolsで要素を選ぶと「Contrast」の数値が即座に出る。デザイン段階で確認するクセをつければ、本番投入後の指摘で慌てずに済む。
-          </p>
+          <CorrectionCard
+            misconception="「なんとなく薄め」「おしゃれっぽく薄くしたい」という感覚でテキスト色を決める"
+            correction="DevToolsの「Contrast Ratio」で4.5:1以上を確認してから色を確定する"
+            reason="視覚的に「いい感じ」でも、コントラスト比が2〜3:1程度の配色は多い。数値で判定するクセをつければ指摘ゼロになる。"
+          />
           <KeyPoint>
             コントラスト比4.5:1は「文字と背景の明るさの差」の指標。雰囲気で「薄めにしたい」と判断する前に、必ず数値を見る。
           </KeyPoint>

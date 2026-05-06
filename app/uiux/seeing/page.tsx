@@ -32,6 +32,9 @@ import {
   KeyPoint,
   WarningPoint,
 } from "@/components/DetailSection";
+import { Timeline } from "@/components/Timeline";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { CorrectionCard } from "@/components/CorrectionCard";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { TermNote } from "@/components/TermNote";
@@ -378,38 +381,89 @@ export default function SeeingPage() {
       {/* ── DetailSection ─────────────────────────────────────── */}
       <DetailSection title="詳細解説">
         <DetailBlock heading="1. センスとは何か — 観察と原則の積み重ね">
-          <p>
-            「センスがある人」は、生まれつき特別な感性を持っているわけではない。良いUIを大量に見てきて、なぜ良いかを言語化してきた結果、瞬時に判断できるようになっただけ。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            「センスがある人」は生まれつき特別な感性を持っているわけではない。良いUIを大量に見てきて、なぜ良いかを言語化してきた結果、瞬時に判断できるようになっただけ。観察と言語化の往復がセンスを作る。
           </p>
-          <p>
-            観察と言語化を繰り返すと「整列が効いている」「コントラストで主役を作っている」という感覚が言葉になり、自分が作るときも再現できるようになる。これが「センス」の正体。
-          </p>
+          <Timeline
+            items={[
+              {
+                year: "Step 1",
+                label: "良いUIを見る",
+                description: "お気に入りのアプリやサイトを「観察の素材」として集める。毎日触っているものが一番いい教材。スクリーンショットを保存する習慣をつけるだけで始められる。",
+                accentColor: "rose",
+              },
+              {
+                year: "Step 2",
+                label: "なぜ良いか3行で書く",
+                description: "「整列が効いている」「余白が広い」「主役がはっきりしている」など、原則の言葉で3行にまとめる。「かっこいい」で止めない。",
+                accentColor: "rose",
+              },
+              {
+                year: "Step 3",
+                label: "自分のUIに応用する",
+                description: "観察で覚えた「整列」「対比」「近接」を、自分が作るUIに当てはめる。再現できて初めて「身についた」と言える。",
+                accentColor: "rose",
+              },
+            ]}
+          />
           <KeyPoint>
             センスは才能ではなく訓練。良いUIを見て、なぜ良いかをノートに3行で書く習慣をつけるだけで、3ヶ月で見える景色が変わる。
           </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading="2. 名前をつけると見える">
-          <p>
-            「対比」「整列」「近接」のような名前を覚えると、それまで「なんとなく整っている」と感じていたものが「対比で階層を作っている」と見えるようになる。これは色の名前を覚えると風景の解像度が上がるのと同じ現象。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            「対比」「整列」「近接」のような名前を覚えると、それまで「なんとなく整っている」と感じていたものが「対比で階層を作っている」と見えるようになる。単語が増えるほど解像度が上がる。
           </p>
-          <p>
-            次のページで扱う4大原則（近接・整列・反復・対比）は、UIを観察するための「単語帳」だと思って覚える。単語が増えるほど見える解像度が上がる。
-          </p>
+          <UseCaseGrid
+            cols={2}
+            items={[
+              {
+                Icon: Eye,
+                title: "直感で止まる",
+                subtitle: "第1層",
+                description: "「なんかいい」「なんとなく好き」で止まる。言葉がないので再現できない。",
+                accentColor: "pink",
+              },
+              {
+                Icon: Search,
+                title: "要素に気づく",
+                subtitle: "第2層",
+                description: "「揃ってる」「余白が広い」「主役がはっきりしている」と具体的な要素を見つける。",
+                accentColor: "pink",
+              },
+              {
+                Icon: MessageSquare,
+                title: "原則で話す",
+                subtitle: "第3層",
+                description: "「整列と対比で階層を作っている」と原則の名前で説明できる。この段階から再現できるようになる。",
+                accentColor: "pink",
+              },
+              {
+                Icon: Layers,
+                title: "自分のUIに応用する",
+                subtitle: "第4層",
+                description: "言語化できた原則を自分の制作に当てはめる。「名前を持つ言葉」があるから再現できる。",
+                accentColor: "pink",
+              },
+            ]}
+          />
           <KeyPoint>
             観察→言語化のループでは「名前を持つ言葉」で書くこと。「いい感じ」では訓練にならない。
           </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading="3. ぼかして骨格を確認する訓練">
-          <p>
-            自分が作ったUIや、参考にしたいUIを、目を細めて見る / スクリーンショットを軽くぼかして見る。装飾が消えるので、骨格（レイアウト・コントラスト・余白）だけが残る。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            自分が作ったUIや、参考にしたいUIを目を細めて見る。装飾が消えるので、骨格（レイアウト・コントラスト・余白）だけが残る。ぼかしても主役が分かるUIは整っている証拠。
           </p>
-          <p>
-            ぼかしても主役が分かるUIは整っている。ぼかすと「どこを見ればいいか分からない」UIは、装飾で誤魔化している可能性が高い。
-          </p>
+          <CorrectionCard
+            misconception="装飾（グラデーション・影・鮮やかな色）を足すと、UIが良く見える"
+            correction="装飾より先に骨格を整える。骨格が崩れていると、装飾を盛るほど雑に見える"
+            reason="ぼかして骨格が見えなくなるUIは、装飾で誤魔化している状態。良いUIはぼかしても主役が分かる。"
+          />
           <WarningPoint>
-            装飾（色・影・グラデーション）で見栄えを補うクセはやめる。骨格が崩れていると、装飾を盛るほど雑に見える。まず骨格を整える。
+            装飾（色・影・グラデーション）で見栄えを補うクセはやめる。まず骨格を整える。
           </WarningPoint>
         </DetailBlock>
       </DetailSection>

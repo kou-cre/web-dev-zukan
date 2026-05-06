@@ -35,6 +35,9 @@ import {
   KeyPoint,
   WarningPoint,
 } from "@/components/DetailSection";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { Timeline } from "@/components/Timeline";
+import { CorrectionCard } from "@/components/CorrectionCard";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { partsQuestions, partsAdvancedQuestions } from "@/content/questions/uiux/parts";
@@ -439,51 +442,99 @@ export default function UiuxPartsPage() {
       {/* ── DetailSection */}
       <DetailSection title="詳細解説">
         <DetailBlock heading="1. ボタンの4階層と1画面1Primary原則">
-          <p>
-            ボタンには役割の階層がある。Primary（主役）・Secondary（副）・Ghost/Text（弱）・Destructive（破壊的）の4種類。これを使い分けることで、ユーザーは画面の中で何が一番重要かを瞬時に判断できる。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            ボタンには役割の階層がある。これを使い分けることで、ユーザーは画面の中で何が一番重要かを瞬時に判断できる。1画面にPrimaryは1つが原則。
           </p>
-          <p>
-            原則は「1画面にPrimaryは1つ」。複数あるとユーザーが迷う。補助アクションはSecondaryやGhostに格下げして、本当にやってほしい操作だけをPrimaryにする。
-          </p>
+          <UseCaseGrid
+            cols={2}
+            items={[
+              {
+                Icon: Square,
+                title: "Primary",
+                subtitle: "1画面に1〜2個まで",
+                description: "この画面でいちばんやってほしいこと。送信・保存・次へ。塗りつぶしでブランドカラーを使う。",
+                accentColor: "indigo",
+              },
+              {
+                Icon: Circle,
+                title: "Secondary",
+                subtitle: "Primaryとセットで使う",
+                description: "補助アクション。キャンセル・戻る。枠線のみ（アウトライン）で控えめに見せる。",
+                accentColor: "indigo",
+              },
+              {
+                Icon: Ghost,
+                title: "Ghost / Text",
+                subtitle: "複数配置可",
+                description: "弱いアクション。詳細を見る・ダウンロードなど。背景・枠線なしのテキストだけ。",
+                accentColor: "indigo",
+              },
+              {
+                Icon: AlertTriangle,
+                title: "Destructive",
+                subtitle: "1個まで・慎重に使う",
+                description: "削除・退会など取り消せない操作。赤系で危険を示す。確認ダイアログとセット。",
+                accentColor: "indigo",
+              },
+            ]}
+          />
           <KeyPoint>
             Primaryは1画面に1つ。複数のPrimaryは「主役不在のドラマ」と同じで、ユーザーは迷子になる。
           </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading="2. 5つの状態を漏れなく作る">
-          <p>
-            ボタンには Default・Hover・Active・Focus・Disabled の5つの状態がある。Defaultしか作らないと「動くけれど押せるか分からない」UIになる。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            ボタンには5つの状態がある。Defaultしか作らないと「動くけれど押せるか分からない」UIになる。特にFocusはキーボード操作のために必須で、マウスだけでテストすると気づけない。
           </p>
-          <p>
-            特に忘れがちなのが Focus（キーボードフォーカス）。マウス操作だけでテストすると気づかない。タブキーで操作したときに、いまどこに焦点があるか視覚的に分かる必要がある。CSSで{" "}
-            <code
-              className="px-1.5 py-0.5 rounded text-xs font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#a5b4fc" }}
-            >
-              outline: none
-            </code>
-            だけで終わらせると、アクセシビリティが破綻する。
-          </p>
+          <Timeline
+            items={[
+              {
+                year: "Default",
+                label: "通常時",
+                description: "ボタンの基本の見た目。「押せる」ことが見た目で分かる必要がある。",
+                accentColor: "blue",
+              },
+              {
+                year: "Hover",
+                label: "マウスオン",
+                description: "カーソルを乗せたときに色が少し変わる。「押せる」と確認できる。",
+                accentColor: "blue",
+              },
+              {
+                year: "Active",
+                label: "押下中",
+                description: "クリック・タップ中の状態。押し込まれた感覚を出す（暗くする・影を消す）。",
+                accentColor: "blue",
+              },
+              {
+                year: "Focus",
+                label: "キーボードフォーカス（忘れがち）",
+                description: "Tabキーで移動したときに「今ここ」を示す。outline を消すだけで終わらせない。box-shadow など別の表現を入れる。",
+                accentColor: "blue",
+              },
+              {
+                year: "Disabled",
+                label: "無効状態",
+                description: "操作できないことをグレーアウトで示す。なぜ無効なのかをツールチップ等で補足する。",
+                accentColor: "blue",
+              },
+            ]}
+          />
           <WarningPoint>
             outline を消したら、必ず別のフォーカス表現（box-shadow など）を入れる。
           </WarningPoint>
         </DetailBlock>
 
         <DetailBlock heading="3. フォームは事前ガードで設計する">
-          <p>
-            エラー設計には「事後通知」と「事前ガード」がある。送信ボタンを押した後にまとめてエラーを出すのが事後通知、入力中にその場で教えるのが事前ガード。事前ガードの方が10倍親切。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            エラー設計には「事後通知」と「事前ガード」がある。送信後にまとめて出すのが事後通知、入力中にその場で教えるのが事前ガード。事前ガードの方が10倍親切。
           </p>
-          <p>
-            また、placeholder
-            だけに「メールアドレスを入力」のような情報を載せるのは禁じ手。入力を始めると消えるため、ユーザーは何を入れる欄か忘れる。ラベルは常に表示し、placeholder は具体例（
-            <code
-              className="px-1.5 py-0.5 rounded text-xs font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#a5b4fc" }}
-            >
-              example@mail.com
-            </code>
-            ）にとどめる。
-          </p>
+          <CorrectionCard
+            misconception="送信ボタンを押した後に、まとめてエラーを表示すれば十分"
+            correction="入力中にリアルタイムでエラーを表示する「事前ガード」で設計する"
+            reason="事後通知だと「入力し直すために何度もやり取りする」ストレスが生まれる。事前ガードは「ここで何を入れればいいか」をその場で教えられる。"
+          />
           <KeyPoint>
             ラベル・補助テキスト・エラーは別の役割。役割を混ぜずに設計する。
           </KeyPoint>

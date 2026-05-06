@@ -28,6 +28,8 @@ import {
   KeyPoint,
   WarningPoint,
 } from "@/components/DetailSection";
+import { CodeBlock } from "@/components/CodeBlock";
+import { CorrectionCard } from "@/components/CorrectionCard";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { TermNote } from "@/components/TermNote";
@@ -506,50 +508,73 @@ export default function UiuxLayoutPage() {
       {/* ── DetailSection */}
       <DetailSection title="詳細解説">
         <DetailBlock heading="1. 12カラムグリッドで間取りする">
-          <p>
-            Webデザインの事実上の標準は12カラム。なぜ12かというと、2・3・4・6で割り切れて、1/2、1/3、1/4、1/6 のレイアウトが自然に作れるから。8カラムや16カラムでは出せない柔軟性がある。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            Webデザインの事実上の標準は12カラム。2・3・4・6で割り切れるので、1/2・1/3・1/4・1/6のレイアウトが自然に作れる。Figmaでも、TailwindのCSSでも、考え方は同じ。
           </p>
-          <p>
-            グリッドは content（カラム本体）/ gap（ガター）/ margin（外余白）の3要素でできている。Figma のレイアウトグリッド機能でも、Tailwind の{" "}
-            <code
-              className="px-1.5 py-0.5 rounded text-xs font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#93c5fd" }}
-            >
-              grid-cols-12
-            </code>{" "}
-            でも、考え方は同じ。
-          </p>
+          <CodeBlock
+            title="grid-layout.tsx"
+            language="tsx"
+            code={`{/* 12は2・3・4・6で割り切れる — すべて自然に組める */}
+
+{/* 2カラム（各6） */}
+<div className="grid grid-cols-12 gap-4">
+  <div className="col-span-6">左半分</div>
+  <div className="col-span-6">右半分</div>
+</div>
+
+{/* 3カラム（各4） */}
+<div className="grid grid-cols-12 gap-4">
+  <div className="col-span-4">1/3</div>
+  <div className="col-span-4">1/3</div>
+  <div className="col-span-4">1/3</div>
+</div>
+
+{/* サイドバー付き（3+9） */}
+<div className="grid grid-cols-12 gap-4">
+  <div className="col-span-3">サイドバー</div>
+  <div className="col-span-9">メインコンテンツ</div>
+</div>`}
+          />
           <KeyPoint>
             12カラムを意識して設計すると、モバイルへの分割（1/2、1/3）が自動で決まる。
           </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading="2. モバイルファーストで設計する理由">
-          <p>
-            モバイルから設計するのは「制約から始める」アプローチ。狭い幅の中で「本当に必要な情報」を選び抜く必要があるため、結果的に情報の優先度が研ぎ澄まされる。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            モバイルから設計するのは「制約から始める」アプローチ。狭い幅の中で「本当に必要な情報」を選び抜く必要があるため、情報の優先度が研ぎ澄まされる。
           </p>
-          <p>
-            また、PC版を後から広げるのは比較的簡単。逆にPC版で作り込んだ画面をモバイルに縮めるのは、削るべき情報の判断が後回しになりがちで、難しい。
-          </p>
+          <CorrectionCard
+            misconception="PC版を先に作り込んでから、モバイル版に縮める"
+            correction="モバイル（320px）から設計して、画面が広くなるにつれてレイアウトを拡張する"
+            reason="PC版から縮めると「削るべき情報の判断」が後回しになり詰む。モバイルから始めると「何を残すか」を最初に決められる。"
+          />
           <WarningPoint>
             PC版から作るとモバイルで詰む。狭い幅の中で何を残すかを最初に決める。
           </WarningPoint>
         </DetailBlock>
 
         <DetailBlock heading="3. デザイントークンで一貫性を仕組み化する">
-          <p>
-            「画面ごとにカラーコードを直書き」は事故の元。微妙に違う青が画面に散らばり、ブランド変更のときに数十箇所を直す羽目になる。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            「画面ごとにカラーコードを直書き」は事故の元。微妙に違う青が画面に散らばり、ブランド変更のときに数十箇所を直す羽目になる。名前で中央管理すれば定義1箇所の変更で全画面に反映される。
           </p>
-          <p>
-            色やサイズに{" "}
-            <code
-              className="px-1.5 py-0.5 rounded text-xs font-mono"
-              style={{ backgroundColor: "#0f1117", color: "#93c5fd" }}
-            >
-              primary-500
-            </code>{" "}
-            のような名前をつけて中央管理しておけば、定義1箇所の変更で全画面に反映される。これが「デザインがコードになる」感覚。一貫性は気合いではなく仕組みで守る。
-          </p>
+          <CodeBlock
+            title="design-tokens.css"
+            language="css"
+            code={`/* NG: 直書きすると「微妙に違う青」が画面に散らばる */
+.btn-primary { background: #3b82f6; }
+.header      { background: #3B82F6; }  /* 大文字/小文字の違い */
+.badge       { background: #3b82f7; }  /* 1桁違う */
+
+/* OK: トークンで中央管理する */
+:root {
+  --color-primary: #3b82f6;
+}
+.btn-primary { background: var(--color-primary); }
+.header      { background: var(--color-primary); }
+.badge       { background: var(--color-primary); }
+/* → ブランド変更は :root の1行だけ変えれば全画面に反映 */`}
+          />
           <KeyPoint>
             トークン化は実装速度より「変更耐性」のメリットが大きい。
           </KeyPoint>

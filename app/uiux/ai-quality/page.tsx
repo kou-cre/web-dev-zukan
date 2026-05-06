@@ -37,6 +37,8 @@ import {
   KeyPoint,
   WarningPoint,
 } from "@/components/DetailSection";
+import { CorrectionCard } from "@/components/CorrectionCard";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { TermNote } from "@/components/TermNote";
@@ -484,39 +486,98 @@ export default function UiuxAiQualityPage() {
       {/* ── DetailSection */}
       <DetailSection title="詳細解説">
         <DetailBlock heading="1. AIに正確に指示する方法">
-          <p>
-            AIに「いい感じに作って」と頼むと、判定基準がないので「それっぽい」が返ってくるだけ。代わりに「12カラム / Primary 1個 / 余白8の倍数 / コントラスト4.5:1」のように、判定可能な制約を渡す。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            AIに「いい感じに作って」と頼むと、判定基準がないので「それっぽい」が返ってくるだけ。代わりに判定可能な制約を渡す。曖昧さを残さないことが、AIには一番効く。
           </p>
-          <p>
-            プロンプトに含めるべき要素は、①レイアウト（カラム数）②階層（Primary数）③余白（単位）④色（コントラスト基準）⑤対象ユーザー の5つ。これだけ揃えると、出力品質が安定する。
-          </p>
+          <CorrectionCard
+            misconception="「いい感じのログイン画面を作って」と頼む — AIが判断してくれるはず"
+            correction="「12カラム / Primaryボタン1個 / 余白8の倍数 / コントラスト4.5:1 / 日本語UI のログイン画面を作って」と制約を数値で渡す"
+            reason="判定基準がないとAIは「それっぽい」を返すしかない。数値で判定できる制約を渡すと、出力品質が安定して修正回数が減る。"
+          />
           <KeyPoint>
             AIは「数値で判定できる制約」が好物。曖昧さを残さず渡す。
           </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading="2. ニールセン10原則でチェックする">
-          <p>
-            ニールセン10原則は、UIユーザビリティの古典。1994年に発表されてから今でも使われている。AI時代に再び価値が上がっているのは、AIの出力を検収する「物差し」として機能するから。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            ニールセン10原則はUIユーザビリティの古典。AI出力を検収する「物差し」として機能する。特にAIが落としがちな原則を知っておくと、「何かが足りない」を言語化できる。
           </p>
-          <p>
-            特にAIが落としがちなのは ⑤エラー予防 と ⑥認識より想起。AIは「とりあえず動く画面」は作れるが、「事前にエラーを防ぐ」「ユーザーが覚えなくて済むように選択肢を提示する」といった配慮は弱い。ここは人が補う。
-          </p>
+          <UseCaseGrid
+            cols={2}
+            items={[
+              {
+                Icon: ShieldAlert,
+                title: "⑤ エラー予防",
+                subtitle: "AIが落としがち",
+                description: "エラーが起きる前に防ぐ設計。AIは「エラーが出たら表示する」はできるが「事前に防ぐ」配慮は弱い。",
+                accentColor: "sky",
+              },
+              {
+                Icon: Brain,
+                title: "⑥ 認識より想起",
+                subtitle: "AIが落としがち",
+                description: "ユーザーが覚えなくても済むように選択肢を常時表示する。AIは「機能を並べる」のが得意だが文脈の連続性が弱い。",
+                accentColor: "sky",
+              },
+              {
+                Icon: Activity,
+                title: "① 状態の可視性",
+                subtitle: "AIが比較的得意",
+                description: "今どこにいるか・何中かをUIが示す。ローディングインジケーター・パンくずリストなど。",
+                accentColor: "sky",
+              },
+              {
+                Icon: Minimize2,
+                title: "⑧ 美的かつ最小限",
+                subtitle: "AIが比較的得意",
+                description: "不要な情報・装飾を削る。ただし「最小限」の判断は甘い場合があるので確認する。",
+                accentColor: "sky",
+              },
+            ]}
+          />
           <KeyPoint>
             10原則を頭に入れておくと、AI出力の「何かが足りない」が言語化できる。
           </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading="3. ダークパターンを知り、加害者にならない">
-          <p>
-            ダークパターンとは、ユーザーを騙したり誘導したりする設計のこと。退会動線をわざと深くする、同意チェックを最初からONにする、カウントダウンで焦らせるなどが典型例。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            ダークパターンとはユーザーを騙したり誘導したりする設計のこと。悪気なく作ってしまうケースも多い。短期的には数字が上がっても、長期では信用を失う。
           </p>
-          <p>
-            悪気なく作ってしまうケースも多い。「KPIを上げたい」「離脱を減らしたい」という意図が、結果的にユーザーを欺く設計に繋がる。短期的には数字が上がっても、長期では信用を失う。倫理は品質の最後の砦。
-          </p>
-          <p>
-            並行して大事なのが WCAG（Web Content Accessibility Guidelines）。コントラスト 4.5:1 以上、フォーカスが見える、キーボードだけで操作できる、画像に代替テキスト — この4つを押さえるだけで、見える人にも見えにくい人にも届くUIになる。
-          </p>
+          <UseCaseGrid
+            cols={2}
+            items={[
+              {
+                Icon: RotateCcw,
+                title: "退会動線が異常に深い",
+                subtitle: "やりがちなダークパターン",
+                description: "登録は1クリック、退会は5ステップ以上。ユーザーは疲れて諦める。信頼を壊す設計。",
+                accentColor: "sky",
+              },
+              {
+                Icon: Eye,
+                title: "同意チェックがデフォルトON",
+                subtitle: "やりがちなダークパターン",
+                description: "利用規約・マーケティング同意が最初からチェック済み。GDPR違反にもなりえる。",
+                accentColor: "sky",
+              },
+              {
+                Icon: Globe,
+                title: "キーボードだけで操作できる",
+                subtitle: "WCAGの基本",
+                description: "マウスを使えないユーザーへの対応。Tabキーで全操作ができるか確認する。",
+                accentColor: "sky",
+              },
+              {
+                Icon: CheckCircle2,
+                title: "コントラスト 4.5:1 以上",
+                subtitle: "WCAGの基本",
+                description: "文字と背景のコントラスト比。視力が弱い人・屋外で使う人への配慮。DevToolsで確認できる。",
+                accentColor: "sky",
+              },
+            ]}
+          />
           <WarningPoint>
             「KPIを上げる設計」と「ダークパターン」の境目は薄い。判断に迷ったら「自分が騙された側だったらどう感じるか」で測る。
           </WarningPoint>

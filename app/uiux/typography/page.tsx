@@ -32,6 +32,9 @@ import {
   KeyPoint,
   WarningPoint,
 } from "@/components/DetailSection";
+import { Timeline } from "@/components/Timeline";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { CorrectionCard } from "@/components/CorrectionCard";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { TermNote } from "@/components/TermNote";
@@ -402,38 +405,107 @@ export default function TypographyPage() {
       {/* ── DetailSection ─────────────────────────────────────── */}
       <DetailSection title="詳細解説">
         <DetailBlock heading={"1. タイプスケール — サイズは階段で管理する"}>
-          <p>
-            タイプスケールは、フォントサイズの種類を数列で固定する考え方。「12 / 14 / 16 / 20 / 24 / 32」のような階段を作っておき、デザイン中はこの中からしか選ばない。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            タイプスケールは、フォントサイズを数列で固定する考え方。「12 / 14 / 16 / 20 / 24 / 32」の階段を決めておき、この中からしか選ばない。実際に使うのは3〜4段階に絞るのが基本。
           </p>
-          <p>
-            実際に使うのは3〜4段階に絞る。本文・見出し・注記の3階層が見えれば、情報の優先順位が読み手に伝わる。階段を増やすほど階層が曖昧になり、逆に分かりにくくなる。
-          </p>
+          <Timeline
+            items={[
+              {
+                year: "32px",
+                label: "ヒーロー / 最上位見出し",
+                description: "ランディングページのキャッチコピー・ページの主役。1ページに1〜2箇所が上限。",
+                accentColor: "violet",
+              },
+              {
+                year: "24px",
+                label: "セクション見出し（h2）",
+                description: "ページ内の大きな区切り。前後の余白で「ここから話題が変わる」と伝える。",
+                accentColor: "violet",
+              },
+              {
+                year: "20px",
+                label: "サブ見出し（h3）",
+                description: "セクション内の小見出し。本文より大きく、h2より小さい中間のサイズ。",
+                accentColor: "violet",
+              },
+              {
+                year: "16px",
+                label: "本文（基準）",
+                description: "ブラウザのデフォルト。読みやすさの基準値。これを中心に上下に展開する。",
+                accentColor: "violet",
+              },
+              {
+                year: "14px",
+                label: "UI要素 / ラベル",
+                description: "ボタン・タグ・補助テキスト。本文より小さく、情報の補足に使う。",
+                accentColor: "violet",
+              },
+              {
+                year: "12px",
+                label: "注記 / キャプション",
+                description: "著作権表示・画像の説明文・最小限の補足。これより小さくすると読みにくい。",
+                accentColor: "violet",
+              },
+            ]}
+          />
           <KeyPoint>
-            最初は「16px / 20px / 32px」のような3段階だけで作ってみる。物足りなければあとから足す。引き算的に設計するのが基本。
+            最初は「16px / 20px / 32px」の3段階だけで作る。物足りなければあとから足す。引き算的に設計するのが基本。
           </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading={"2. 8の倍数ルール — 余白の選択肢を絞る"}>
-          <p>
-            余白の値も「4 / 8 / 16 / 24 / 32」のような8の倍数に揃える。Tailwind CSSもMaterial Designもこの考え方で作られている。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            余白の値も「4 / 8 / 16 / 24 / 32」に揃える。Tailwind CSSもMaterial Designもこの考え方で作られている。絞ると選択肢が減り、迷いが消え、画面に統一感が出る。
           </p>
-          <p>
-            絞ると選択肢が減り、迷いが消える。13や17のような中途半端な値は「他とちょっと違う」というノイズを画面に持ち込む。読み手は無意識にそれを処理しようとして疲れる。
-          </p>
+          <UseCaseGrid
+            cols={2}
+            items={[
+              {
+                Icon: Box,
+                title: "4px",
+                subtitle: "超小余白",
+                description: "アイコンと文字の隙間・バッジの内側。最小単位。",
+                accentColor: "violet",
+              },
+              {
+                Icon: Box,
+                title: "8px",
+                subtitle: "小余白",
+                description: "ボタンの内側・リスト項目間。UI要素の基本単位。",
+                accentColor: "violet",
+              },
+              {
+                Icon: Box,
+                title: "16px",
+                subtitle: "標準余白",
+                description: "カード内コンテンツ間・フォームの要素間。もっとも使う値。",
+                accentColor: "violet",
+              },
+              {
+                Icon: Box,
+                title: "24〜32px",
+                subtitle: "大余白",
+                description: "セクション間・カード同士の間隔・ページの外余白。",
+                accentColor: "violet",
+              },
+            ]}
+          />
           <WarningPoint>
-            「ピクセル単位で微調整したい」気持ちは分かるが、それは階段が崩れているサインかもしれない。まず階段に乗せ直す。
+            「ピクセル単位で微調整したい」気持ちは、階段が崩れているサインかもしれない。まず階段に乗せ直す。
           </WarningPoint>
         </DetailBlock>
 
         <DetailBlock heading={"3. 行間と書体の使い分け"}>
-          <p>
-            行間（line-height）は「文字サイズに対する倍率」で指定する。本文は1.5〜1.7、見出しは1.2〜1.3が定番。日本語は文字の密度が高いので、欧文より少し広めの行間が読みやすい。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            行間（line-height）は「文字サイズに対する倍率」で指定する。日本語は文字の密度が高いので、欧文より少し広めが読みやすい。
           </p>
-          <p>
-            書体は「本文用」と「見出し用」で分けることもあるが、初心者のうちは1書体で統一する方が事故が少ない。Noto Sans JP・游ゴシック・ヒラギノなどは本文・見出しの両方で使える。
-          </p>
+          <CorrectionCard
+            misconception="行間は1.0〜1.2で詰めると、プロっぽくスタイリッシュに見える"
+            correction="本文は1.5〜1.7、見出しは1.2〜1.3が適切。詰めすぎると行の読み始めが分からなくなる"
+            reason="日本語の文字はラテン文字より縦幅が大きい。行間が狭すぎると行同士がくっついて見え、どこで目を折り返せばいいか分からなくなる。"
+          />
           <KeyPoint>
-            本文 line-height: 1.6 / 見出し line-height: 1.3、を初期値として覚える。これで日本語UIの大半は読みやすく仕上がる。
+            本文 line-height: 1.6 / 見出し line-height: 1.3 を初期値として覚える。これで日本語UIの大半は読みやすく仕上がる。
           </KeyPoint>
         </DetailBlock>
       </DetailSection>

@@ -28,6 +28,9 @@ import {
   KeyPoint,
   WarningPoint,
 } from "@/components/DetailSection";
+import { CorrectionCard } from "@/components/CorrectionCard";
+import { UseCaseGrid } from "@/components/UseCaseGrid";
+import { Timeline } from "@/components/Timeline";
 import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { TermNote } from "@/components/TermNote";
@@ -398,50 +401,109 @@ export default function PrinciplesPage() {
       {/* ── DetailSection ─────────────────────────────────────── */}
       <DetailSection title="詳細解説">
         <DetailBlock heading={"1. 近接 — まとめるだけで変わる"}>
-          <p>
-            近接（Proximity）は、関係のある要素同士を物理的に近くに置き、関係のない要素は離して配置する原則。距離だけで「これはひとつのまとまり」と読み手に伝える。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            近接は、関係のある要素同士を物理的に近くに置き、関係のない要素は離して配置する原則。距離だけで「これはひとつのまとまり」と読み手に伝える。
           </p>
-          <p>
-            よくあるミスは「ラベルと入力欄の間隔」と「項目間の間隔」が同じになっているケース。これだと読み手は「どこからどこまでがひとつの項目か」が分からず、無意識に脳の負荷が上がる。
-          </p>
+          <CorrectionCard
+            misconception="ラベルと入力欄の間隔も、フォームの各項目間の間隔も、すべて均等に揃えればきれいに見える"
+            correction="ラベルと入力欄の間隔は項目間の間隔より明らかに狭く取る。距離の差で関係性を伝える"
+            reason="間隔が均等だと「どこからどこまでがひとつの項目か」が分からず、脳の負荷が上がる。近接が機能するのは「差」があるとき。"
+          />
           <KeyPoint>
             ラベルと入力欄の間隔は、項目間の間隔より明らかに狭く取る。距離の差で関係性を伝えるのが近接の本質。
           </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading={"2. 整列 — 見えないラインを探せ"}>
-          <p>
-            整列（Alignment）は、要素の左端・右端・中央のいずれかが同じ縦軸に揃っている状態のこと。揃えるラインが画面の中で減るほど整って見える。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            整列は、要素の左端・右端・中央のいずれかが同じ縦軸に揃っている状態のこと。揃えるラインが画面の中で減るほど整って見える。
           </p>
-          <p>
-            よくあるミスは「中央揃え・左揃え・右揃えが混ざっている」状態。読み手の目は揃ったラインを無意識に探すので、揃ってないと視線が迷子になる。基本は左揃えで統一する。
-          </p>
+          <CorrectionCard
+            misconception="中央揃えはバランスが良く見えるので、テキストや要素を中央揃えで配置する"
+            correction="基本は左揃えで統一する。揃えるラインを1本に絞ると、視線が自然に流れる"
+            reason="中央揃え・左揃え・右揃えが混ざると、読み手の目は揃ったラインを無意識に探して迷子になる。中央揃えはヒーロー等のごく限られた場所に留める。"
+          />
           <WarningPoint>
             「なんとなく真ん中に配置」を繰り返すとラインが増えてバラバラに見える。左揃えにしてラインを1本にするだけで整う。
           </WarningPoint>
         </DetailBlock>
 
         <DetailBlock heading={"3. 対比 — 差をつけるなら大胆に"}>
-          <p>
-            対比（Contrast）はサイズ・色・太さ・形などで主役と脇役の差をつける原則。差が大きいほど階層がはっきり伝わる。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            対比はサイズ・色・太さ・形などで主役と脇役の差をつける原則。差が大きいほど階層がはっきり伝わる。よくある場面を覚えておくと使いやすい。
           </p>
-          <p>
-            よくあるミスは「少しだけ大きい」「少しだけ濃い」という中途半端な対比。これは差ではなく「ノイズ」として読まれる。やるなら2倍・3倍と思い切ってつける。
-          </p>
+          <UseCaseGrid
+            cols={2}
+            items={[
+              {
+                Icon: Contrast,
+                title: "見出し vs 本文",
+                subtitle: "サイズで対比",
+                description: "見出しは本文の2倍以上のサイズにする。「少しだけ大きい」はノイズになる。",
+                accentColor: "rose",
+              },
+              {
+                Icon: MousePointerClick,
+                title: "CTAボタン vs 他のボタン",
+                subtitle: "色で対比",
+                description: "主役のボタンだけ目立つ色にする。他を地味にするほどCTAが目立つ。",
+                accentColor: "rose",
+              },
+              {
+                Icon: AlignVerticalJustifyCenter,
+                title: "重要テキスト vs 補助テキスト",
+                subtitle: "太さ・明度で対比",
+                description: "重要な情報は太字・明るい色、補助情報はグレー。差を思い切ってつける。",
+                accentColor: "rose",
+              },
+              {
+                Icon: Group,
+                title: "アクティブ状態 vs 非アクティブ",
+                subtitle: "背景色で対比",
+                description: "選択中のタブ・メニューは背景色で明確に区別する。中途半端な差はノイズ。",
+                accentColor: "rose",
+              },
+            ]}
+          />
           <KeyPoint>
             主役の見出しは本文の2倍以上のサイズにする・色を完全に変える・太字を使う、など「迷ったら大胆に」が対比の基本姿勢。
           </KeyPoint>
         </DetailBlock>
 
         <DetailBlock heading={"4. 反復 — 同じ役割は同じ見た目に"}>
-          <p>
-            反復（Repetition）は、同じ役割を持つ要素に同じスタイルを繰り返し使う原則。ボタンは常に同じ色・角丸・サイズ、見出しは常に同じフォントサイズ・太さで統一することで一貫性が生まれる。
+          <p className="text-sm text-gray-300 leading-relaxed mb-4">
+            反復は、同じ役割を持つ要素に同じスタイルを繰り返し使う原則。例外を作るたびに読み手の脳に「これは別の意味があるのか？」という疑問が生まれ、負荷が上がる。
           </p>
-          <p>
-            よくあるミスは「このページのボタンだけ違う色にした」「ここだけ見出しのサイズを変えた」という例外を作ってしまうケース。例外が増えると読み手は「これは別の意味があるのか？」と考えてしまい、脳の負荷が上がる。
-          </p>
+          <Timeline
+            items={[
+              {
+                year: "最初",
+                label: "ボタンのスタイルを統一する",
+                description: "Primary / Secondary / Ghost の見た目を決め、全ページで同じにする。ページごとに違うボタンを作らない。",
+                accentColor: "rose",
+              },
+              {
+                year: "次に",
+                label: "見出しのルールを決める",
+                description: "h2は常に24px・太字、h3は常に20px・中太など、フォントの使い方を固定する。",
+                accentColor: "rose",
+              },
+              {
+                year: "さらに",
+                label: "カード・フォームを統一する",
+                description: "カードの角丸・シャドウ・内側余白を全箇所で同一に。フォームの入力欄の高さも揃える。",
+                accentColor: "rose",
+              },
+              {
+                year: "結果",
+                label: "デザインシステムが生まれる",
+                description: "反復を徹底すると「コンポーネント」として切り出せる。変更が1箇所で全画面に反映される仕組みになる。",
+                accentColor: "rose",
+              },
+            ]}
+          />
           <KeyPoint>
-            反復はデザインシステムの土台になる原則。ボタン・カード・見出しなど繰り返し使う要素をコンポーネントとして切り出す習慣が、自然と反復を担保する仕組みになる。
+            反復はデザインシステムの土台になる原則。繰り返し使う要素をコンポーネントとして切り出す習慣が、自然と反復を担保する仕組みになる。
           </KeyPoint>
         </DetailBlock>
       </DetailSection>

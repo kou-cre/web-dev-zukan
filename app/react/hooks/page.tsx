@@ -11,6 +11,7 @@ import {
   Layers,
   Repeat,
 } from "lucide-react";
+import Link from "next/link";
 
 import { Hero } from "@/components/Hero";
 import { Prerequisites } from "@/components/Prerequisites";
@@ -38,6 +39,11 @@ export const metadata = {
 export default function HooksPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
+      <div className="mb-6">
+        <Link href="/react" className="text-xs text-gray-500 hover:text-white transition-colors">
+          ← React に戻る
+        </Link>
+      </div>
 
       <Hero
         category="React"
@@ -96,7 +102,7 @@ export default function HooksPage() {
 
       {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
@@ -332,7 +338,7 @@ export function Counter() {
 
       {/* ── 比較表（基礎編） ───────────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           COMPARISON
         </h2>
         <ComparisonTable
@@ -385,7 +391,7 @@ export function Counter() {
 
       {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED — 実装パターンと最適化
         </h2>
 
@@ -674,6 +680,12 @@ if (isLoggedIn) {
             title: "Context",
             description: "useContextもカスタムHooksに隠蔽するのが定石",
             icon: "Database",
+          },
+          {
+            href: "/react/routing",
+            title: "ルーティング（react-router）",
+            description: "URLに応じてコンポーネントを切り替えるReactアプリの仕上げ",
+            icon: "Rocket",
           },
         ]}
       />

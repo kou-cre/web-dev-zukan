@@ -9,6 +9,7 @@ import {
   Layers,
   AlertTriangle,
 } from "lucide-react";
+import Link from "next/link";
 
 import { Hero } from "@/components/Hero";
 import { Prerequisites } from "@/components/Prerequisites";
@@ -36,6 +37,11 @@ export const metadata = {
 export default function StatePage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
+      <div className="mb-6">
+        <Link href="/react" className="text-xs text-gray-500 hover:text-white transition-colors">
+          ← React に戻る
+        </Link>
+      </div>
 
       <Hero
         category="React"
@@ -77,7 +83,7 @@ export default function StatePage() {
 
       {/* ── 基礎編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           CONCEPT DIAGRAMS
         </h2>
 
@@ -383,7 +389,7 @@ export default function StatePage() {
 
       {/* ── 比較表（基礎編） ─────────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           COMPARISON
         </h2>
         <ComparisonTable
@@ -422,7 +428,7 @@ export default function StatePage() {
 
       {/* ── 応用編 CONCEPT DIAGRAMS ────────────────────────── */}
       <section className="mb-10">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-4">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">
           ADVANCED — イミュータブル更新とuseReducer
         </h2>
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Puzzle, ArrowDownToLine, Database, Zap, Share2, Wrench } from "lucide-react";
+import { BookOpen, Puzzle, ArrowDownToLine, Database, Zap, Share2, Wrench, Map } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 const pages: {
@@ -9,7 +9,17 @@ const pages: {
   title: string;
   description: string;
   status: string;
+  isStart?: boolean;
 }[] = [
+  {
+    href: "/react/intro",
+    icon: BookOpen,
+    iconColor: "#60a5fa",
+    title: "はじめに読む",
+    description: "ReactをはじめるためのJSチェックリスト — この10項目が分かれば準備完了",
+    status: "完成",
+    isStart: true,
+  },
   {
     href: "/react/components",
     icon: Puzzle,
@@ -58,6 +68,14 @@ const pages: {
     description: "ロジックを再利用可能な関数に切り出す技術",
     status: "完成",
   },
+  {
+    href: "/react/routing",
+    icon: Map,
+    iconColor: "#c084fc",
+    title: "ルーティング（react-router）",
+    description: "URLが変わると見せるコンポーネントが変わる仕組み",
+    status: "完成",
+  },
 ];
 
 export default function ReactHubPage() {
@@ -69,25 +87,39 @@ export default function ReactHubPage() {
         </Link>
       </div>
       <h1 className="text-2xl font-bold text-white mb-2">React</h1>
-      <p className="text-sm text-gray-400 mb-8">
-        UIを「部品」として組み立てる考え方。コンポーネント・Props・State・Hooks の4本柱を押さえる。
+      <p className="text-sm text-gray-400 mb-2">
+        JavaScriptのライブラリ。UIを「部品」として組み立てる考え方を順番に学ぶ。
+      </p>
+      <p className="text-xs text-gray-500 mb-8">
+        ← 上から順番に読むことを推奨。各ページに前提リンクあり。
       </p>
       <div className="space-y-2">
-        {pages.map((page) => {
+        {pages.map((page, index) => {
           const Icon = page.icon;
           return (
             <Link
               key={page.href}
               href={page.href}
               className="group flex items-center gap-4 rounded-xl border p-4 transition-colors hover:border-blue-500/40"
-              style={{ backgroundColor: "#1a1d2a", borderColor: "#2d3048" }}
+              style={{
+                backgroundColor: page.isStart ? "rgba(96,165,250,0.05)" : "#1a1d2a",
+                borderColor: page.isStart ? "rgba(96,165,250,0.3)" : "#2d3048",
+              }}
             >
-              <Icon size={20} style={{ color: page.iconColor }} className="flex-shrink-0" />
+              <div className="flex-shrink-0 flex items-center gap-2">
+                <span className="text-xs text-gray-600 w-4 text-right">{index + 1}</span>
+                <Icon size={20} style={{ color: page.iconColor }} />
+              </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-0.5">
                   <p className="text-sm font-semibold text-white group-hover:text-blue-400 transition-colors">
                     {page.title}
                   </p>
+                  {page.isStart && (
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                      ここから
+                    </span>
+                  )}
                   <span
                     className="text-xs px-1.5 py-0.5 rounded-full"
                     style={{

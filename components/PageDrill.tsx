@@ -22,6 +22,19 @@ interface PageDrillProps {
   groups?: DrillGroup[];
 }
 
+function shuffleQuestion(q: DrillQuestion): DrillQuestion {
+  const order = Array.from({ length: q.choices.length }, (_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return {
+    ...q,
+    choices: order.map((i) => q.choices[i]),
+    correctIndex: order.indexOf(q.correctIndex),
+  };
+}
+
 function SingleGroupDrill({
   questions,
   onComplete,
@@ -29,13 +42,14 @@ function SingleGroupDrill({
   questions: DrillQuestion[];
   onComplete?: (score: number) => void;
 }) {
+  const [shuffled, setShuffled] = useState(() => questions.map(shuffleQuestion));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [results, setResults] = useState<boolean[]>([]);
   const [finished, setFinished] = useState(false);
 
-  const current = questions[currentIndex];
+  const current = shuffled[currentIndex];
 
   function handleSelect(i: number) {
     if (submitted) return;
@@ -59,6 +73,7 @@ function SingleGroupDrill({
   }
 
   function handleReset() {
+    setShuffled(questions.map(shuffleQuestion));
     setCurrentIndex(0);
     setSelectedIndex(null);
     setSubmitted(false);
@@ -156,7 +171,7 @@ function SingleGroupDrill({
           Q{currentIndex + 1} / {questions.length}
         </span>
         <div className="flex gap-1">
-          {questions.map((_, i) => (
+          {shuffled.map((_, i) => (
             <div
               key={i}
               className="w-2 h-2 rounded-full"

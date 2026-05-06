@@ -40,7 +40,7 @@ const categories: {
     iconColor: "#e2e8f0",
     title: "Next.js",
     description: "App Router・Server Components・API Routes",
-    status: "準備中",
+    status: "完成",
   },
   {
     href: "/firebase",

@@ -14,6 +14,8 @@ const accentMap: Record<string, { border: string; bg: string; titleColor: string
   orange:  { border: "rgba(249,115,22,0.6)",  bg: "rgba(249,115,22,0.06)",  titleColor: "#fdba74", iconColor: "#fb923c" },
   red:     { border: "rgba(239,68,68,0.6)",   bg: "rgba(239,68,68,0.06)",   titleColor: "#fca5a5", iconColor: "#f87171" },
   green:   { border: "rgba(74,222,128,0.7)",  bg: "rgba(74,222,128,0.10)",  titleColor: "#86efac", iconColor: "#4ade80" },
+  pink:    { border: "rgba(236,72,153,0.6)",  bg: "rgba(236,72,153,0.06)",  titleColor: "#f9a8d4", iconColor: "#f472b6" },
+  fuchsia: { border: "rgba(217,70,239,0.6)",  bg: "rgba(217,70,239,0.06)",  titleColor: "#f0abfc", iconColor: "#e879f9" },
 };
 
 interface ConceptDiagramProps {

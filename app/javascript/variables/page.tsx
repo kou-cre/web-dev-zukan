@@ -1138,22 +1138,22 @@ console.log(counter()); // → 3
       <RelatedLinks
         items={[
           {
-            href: "/javascript/async",
-            title: "非同期処理",
-            description: "Promise / async・await の世界",
+            href: "/javascript/dom",
+            title: "DOM操作",
+            description: "次のステップ。JSでHTMLを動かす",
             icon: "Code2",
           },
           {
-            href: "/javascript/modules",
-            title: "ESモジュール",
-            description: "import / export でファイルを跨ぐ",
-            icon: "Rocket",
+            href: "/javascript/intro",
+            title: "はじめに読む",
+            description: "JSの前提知識を確認したいときに",
+            icon: "Server",
           },
           {
-            href: "/kiso/server",
-            title: "サーバーって何？",
-            description: "JSが動く「もう一方の世界」を知る",
-            icon: "Server",
+            href: "/javascript/async-basics",
+            title: "同期と非同期の違い",
+            description: "変数の次に学ぶ非同期処理の入口",
+            icon: "Rocket",
           },
         ]}
       />

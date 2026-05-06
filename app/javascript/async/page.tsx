@@ -5,9 +5,7 @@ import {
   CheckCircle2,
   XCircle,
   ListChecks,
-  PlayCircle,
   Layers,
-  Zap,
   GitBranch,
   Link2,
   Combine,
@@ -36,9 +34,9 @@ import { TermNote } from "@/components/TermNote";
 import { asyncQuestions } from "@/content/questions/javascript/async";
 
 export const metadata = {
-  title: "非同期処理 | Web開発図解",
+  title: "Promise と async/await | Web開発図解",
   description:
-    "JavaScriptの非同期処理を図解で解説。Promise・async/await・イベントループの仕組みまで一気に掴む。",
+    "JavaScriptのPromiseの3状態とasync/awaitの書き方を図解で解説。.then()/.catch()/.finally()の使い分けと並列処理のPromise.allまで。",
 };
 
 export default function AsyncPage() {
@@ -46,12 +44,12 @@ export default function AsyncPage() {
     <div className="max-w-3xl mx-auto px-4 py-10">
       <Hero
         category="JavaScript"
-        title="非同期処理"
+        title="Promise と async/await"
         subtitle={
-          "「待つ」ことをコードで表現する技術——PromiseとAsync/Awaitの正体"
+          "非同期処理の結果を受け取る仕組み——番号札とその受け取り方"
         }
         body={
-          "シングルスレッドのJavaScriptが、なぜ通信中も固まらずに動けるのか。番号札のたとえで一気に掴む。"
+          "Promiseの3状態とasync/awaitの書き方を図解で掴む。fetch APIを使う前に必ず押さえたいページ。"
         }
         accentColor="amber"
       />
@@ -59,24 +57,24 @@ export default function AsyncPage() {
       {/* ── 前提知識ボックス ────────────────────────────────── */}
       <Prerequisites
         learn={[
-          "同期と非同期の違い（なぜ非同期が必要なのか）",
           "Promiseとは何か（3つの状態と基本的な使い方）",
-          "async/awaitの書き方（Promiseを読みやすく書く方法）",
+          "async/awaitで非同期コードを読みやすく書く方法",
+          ".then() / .catch() / .finally() の使い分け",
         ]}
         prerequisites={[
-          "関数を書けること（function f() {} の書き方を知っている）",
+          "同期と非同期の違いを知っていること（/javascript/async-basicsを読んだ）",
           "コールバック関数を見たことがある（関数を引数として渡す書き方）",
           "console.log() を使ったことがある",
         ]}
         outOfScope={[
-          "イベントループとマイクロタスクキューの詳細な仕組み",
+          "イベントループとマイクロタスクキューの詳細な仕組み（応用編で扱う）",
           "Promise.race / Promise.any など全メソッドの網羅比較（応用編で扱う）",
           "ジェネレーター関数（Generator）",
         ]}
       />
 
       <OnePageSummary
-        keyMessage="JavaScriptはシングルスレッド（同時に1つのことしかできない）で動くため、時間のかかる処理（通信・ファイル読込など）を「待つ間も他のことを進める」仕組みが必要になる。それが非同期処理。Promiseは「将来の結果を約束するオブジェクト」で、async/awaitはそれを同期的に書けるようにした糖衣構文。"
+        keyMessage="Promiseは『将来の結果を約束するオブジェクト』。pending（待機中）→ fulfilled（成功）or rejected（失敗）の3状態を持つ。async/awaitはPromiseを上から下に読めるように書き直した糖衣構文で、裏では必ずPromiseが動いている。"
         metaphorTitle="ファミレスの注文システム"
         metaphorPoints={[
           {
@@ -109,92 +107,8 @@ export default function AsyncPage() {
           CONCEPT DIAGRAMS
         </h2>
 
-        <p className="text-sm text-gray-400 leading-relaxed mb-6">
-          まずは「同期と非同期の違い」を図で確認します。その後、非同期処理の主役である Promise の仕組みを見ていきます。
-        </p>
-
-        {/* TermNote: 基礎編に出てくる言葉 */}
-        <TermNote
-          terms={[
-            {
-              word: "シングルスレッド",
-              definition:
-                "JavaScriptが「同時に1つのことしかできない」という性質。レジが1台しかないお店のようなもの。",
-            },
-            {
-              word: "同期処理",
-              definition:
-                "前の処理が終わるまで次の処理を始めない方式。料理ができるまでレジの前に立ち続けるイメージ。",
-            },
-            {
-              word: "非同期処理",
-              definition:
-                "時間のかかる処理を「後で結果を受け取る」形で投げておき、その間に他の処理を進める方式。番号札を受け取って席で待つイメージ。",
-            },
-            {
-              word: "コールバック関数",
-              definition:
-                "「処理が終わったときに呼び出してほしい関数」として渡す関数のこと。「終わったらこれを実行して」という予約のようなもの。",
-            },
-          ]}
-        />
-
-        {/* ── 概念図A: 同期 vs 非同期のフロー比較 ── */}
-        <ConceptDiagram
-          title="概念図A — 同期 vs 非同期のフロー比較"
-          description="同じ3つのタスクを、同期と非同期で実行したときの違い。"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* 同期 */}
-            <div
-              className="rounded-xl border p-4"
-              style={{ borderColor: "#2d3048", backgroundColor: "#0f1117" }}
-            >
-              <p className="text-xs font-semibold text-gray-400 mb-3 text-center">
-                同期処理（直列）
-              </p>
-              <div className="flex flex-col items-center gap-1">
-                <FlowCard Icon={PlayCircle} title="タスク1 開始" subtitle="重い処理" />
-                <FlowArrow label="完了まで待つ" direction="down" />
-                <FlowCard Icon={PlayCircle} title="タスク2 開始" subtitle="ここまで待たされる" muted />
-                <FlowArrow label="完了まで待つ" direction="down" />
-                <FlowCard Icon={PlayCircle} title="タスク3 開始" subtitle="さらに待たされる" muted />
-              </div>
-              <p className="text-xs text-gray-500 mt-3 text-center leading-relaxed">
-                合計時間 ＝ 全タスクの所要時間の合計
-              </p>
-            </div>
-
-            {/* 非同期 */}
-            <div
-              className="rounded-xl border p-4"
-              style={{ borderColor: "rgba(245,158,11,0.4)", backgroundColor: "rgba(245,158,11,0.05)" }}
-            >
-              <p className="text-xs font-semibold text-amber-400 mb-3 text-center">
-                非同期処理（並行）
-              </p>
-              <div className="flex flex-col items-center gap-1">
-                <FlowCard Icon={Zap} title="タスク1 開始" subtitle="投げっぱなし" />
-                <FlowArrow label="即次へ" direction="down" />
-                <FlowCard Icon={Zap} title="タスク2 開始" subtitle="投げっぱなし" />
-                <FlowArrow label="即次へ" direction="down" />
-                <FlowCard Icon={Zap} title="タスク3 開始" subtitle="投げっぱなし" />
-                <FlowArrow label="完了通知" direction="down" />
-                <FlowCard Icon={CheckCircle2} title="完了したものから順に処理" subtitle="待ち時間が重なる" />
-              </div>
-              <p className="text-xs text-amber-300 mt-3 text-center leading-relaxed">
-                合計時間 ≒ 一番遅いタスクの時間
-              </p>
-            </div>
-          </div>
-          <p className="text-xs text-gray-600 text-center mt-4">
-            非同期は「速く処理する」のではなく「待ち時間を重ねて全体を短くする」のがポイント。
-          </p>
-        </ConceptDiagram>
-
-        {/* bridge */}
         <p className="text-sm text-gray-400 leading-relaxed mb-6 px-1">
-          同期と非同期の違いが分かりました。次は「非同期処理の結果をどう受け取るか」を担う Promise という仕組みを見ていきます。
+          Promiseの3状態を確認しましょう。pending→fulfilled/rejectedの一方向の遷移は変更不可です。
         </p>
 
         {/* TermNote: Promise図に出てくる言葉 */}
@@ -223,9 +137,9 @@ export default function AsyncPage() {
           ]}
         />
 
-        {/* ── 概念図B: Promiseの3状態 ── */}
+        {/* ── 概念図A: Promiseの3状態 ── */}
         <ConceptDiagram
-          title="概念図B — Promiseの3つの状態"
+          title="概念図A — Promiseの3つの状態"
           description="Promiseは生成直後は pending（待機中）。やがて fulfilled（成功）か rejected（失敗）のどちらかに解決され、その後は変わらない。"
         >
           <div className="flex flex-col items-center gap-1">
@@ -299,9 +213,9 @@ export default function AsyncPage() {
           fetch は次のページで詳しく学びます。ここでは「サーバーにデータを取りに行くPromiseを返す関数」として読んでください。
         </p>
 
-        {/* ── 概念図C: async/await の変換イメージ ── */}
+        {/* ── 概念図B: async/await の変換イメージ ── */}
         <ConceptDiagram
-          title="概念図C — async/await の変換イメージ"
+          title="概念図B — async/await の変換イメージ"
           description="同じ意味のコードを、Promiseチェーンと async/await で並べて比較する。"
         >
           <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-center gap-3">
@@ -373,19 +287,19 @@ export default function AsyncPage() {
             speaker: "maji",
             emotion: "doubt",
             text:
-              "マスター、「非同期処理」って言葉自体がよくわからないんですよ……。ボク、「同期」と何が違うんですか？ 同じ時刻に動くか動かないか、みたいな話ですか？",
+              "マスター、Promiseって名前からして『約束』ですよね。でも何を約束しているんですか？ 誰が誰に？",
           },
           {
             speaker: "master",
             emotion: "explain",
             text:
-              "いえ、時刻の話ではないんですよ、マジさん。ファミレスを思い浮かべてください。\n同期処理は「料理ができるまでレジの前で立ち続ける」状態。後ろのお客様は一歩も進めません。\n非同期処理は「番号札を受け取って席で待つ」状態。料理ができたら呼ばれるので、それまで他のお客様も注文できる。\nサーバーが固まらないというのは、こういう仕組みのことなんです。",
+              "JavaScriptがあなたに約束するんです、マジさん。\n『この処理、時間がかかるけど、終わったら必ず結果を教えます』という約束。\nその約束オブジェクトが Promise です。封筒を渡されるイメージで、中身は今はまだ入っていない——でも必ず後で届く。",
           },
           {
             speaker: "maji",
             emotion: "question",
             text:
-              "マジ？\nじゃあ `await` って書くと、何を「待っている」ことになるんですか？ 待つと言われると、また料理ができるまでレジで立ってる気がしてきます……。",
+              "マジ？\nじゃあ `await` って書くと、何を「待っている」ことになるんですか？ 待つと言われると、レジの前で立ち続けてる気がしてきます……。",
           },
           {
             speaker: "master",
@@ -1000,22 +914,22 @@ results.forEach(r => {
       <RelatedLinks
         items={[
           {
-            href: "/javascript/fetch",
-            title: "fetch API",
-            description: "非同期処理の代表選手。サーバーと話す入口。",
-            icon: "Cloud",
+            href: "/javascript/async-basics",
+            title: "同期と非同期の違い",
+            description: "このページの前提。Promiseが生まれた背景",
+            icon: "Timer",
           },
           {
-            href: "/javascript/variables",
-            title: "変数とスコープ",
-            description: "let / const とブロックスコープの基礎。",
-            icon: "Code2",
+            href: "/javascript/fetch",
+            title: "fetch API",
+            description: "Promiseを返す代表選手。サーバーと話す入口",
+            icon: "Download",
           },
           {
             href: "/javascript/error",
             title: "エラーハンドリング",
-            description: "try / catch と例外の扱い方をまとめて掴む。",
-            icon: "Server",
+            description: "try / catch と async エラーの扱い方",
+            icon: "AlertTriangle",
           },
         ]}
       />

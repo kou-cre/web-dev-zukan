@@ -48,7 +48,7 @@ const categories: {
     iconColor: "#fb923c",
     title: "Firebase",
     description: "Firestore・Auth・セキュリティルール",
-    status: "準備中",
+    status: "完成",
   },
   {
     href: "/pwa",

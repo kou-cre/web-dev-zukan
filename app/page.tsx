@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen, Braces, Atom, Triangle, Flame, Smartphone, Rocket, GitBranch, Palette } from "lucide-react";
+import { BookOpen, Braces, Atom, Triangle, Flame, Smartphone, Rocket, GitBranch, Palette, Terminal, Code2, FileCode2, Bug, ClipboardCheck, Layers, Wand2, Shield, Eye } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 const categories: {
@@ -80,6 +80,78 @@ const categories: {
     iconColor: "#f472b6",
     title: "UIデザイン",
     description: "近接・整列・反復・対比・配色・文字・診断・実装",
+    status: "完成",
+  },
+  {
+    href: "/env",
+    icon: Terminal,
+    iconColor: "#94a3b8",
+    title: "開発環境セットアップ",
+    description: "Node.js・npm・VSCode・ターミナル基本操作",
+    status: "完成",
+  },
+  {
+    href: "/html-css",
+    icon: Code2,
+    iconColor: "#f97316",
+    title: "HTML / CSS基礎",
+    description: "Flexbox・Grid・レスポンシブ・CSS変数",
+    status: "完成",
+  },
+  {
+    href: "/typescript",
+    icon: FileCode2,
+    iconColor: "#4f85c8",
+    title: "TypeScript",
+    description: "型・interface・型推論・Reactでの型付け",
+    status: "準備中",
+  },
+  {
+    href: "/debug",
+    icon: Bug,
+    iconColor: "#f87171",
+    title: "デバッグ・エラー対処",
+    description: "DevTools・スタックトレース・エラーの読み方",
+    status: "準備中",
+  },
+  {
+    href: "/css-framework",
+    icon: Wand2,
+    iconColor: "#22d3ee",
+    title: "CSSフレームワーク",
+    description: "Tailwind CSS・shadcn/ui・コンポーネント設計",
+    status: "完成",
+  },
+  {
+    href: "/form",
+    icon: ClipboardCheck,
+    iconColor: "#4ade80",
+    title: "フォーム・バリデーション",
+    description: "React Hook Form・Zod・エラー表示UX",
+    status: "準備中",
+  },
+  {
+    href: "/state",
+    icon: Layers,
+    iconColor: "#2dd4bf",
+    title: "状態管理",
+    description: "TanStack Query・Zustand・クライアント/サーバー",
+    status: "準備中",
+  },
+  {
+    href: "/security",
+    icon: Shield,
+    iconColor: "#fbbf24",
+    title: "セキュリティ基礎",
+    description: "環境変数・XSS・CORS・APIキー管理",
+    status: "準備中",
+  },
+  {
+    href: "/seo",
+    icon: Eye,
+    iconColor: "#a3e635",
+    title: "SEO・アクセシビリティ",
+    description: "OGP・Lighthouse・WAI-ARIA・メタデータ",
     status: "完成",
   },
 ];

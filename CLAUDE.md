@@ -29,6 +29,29 @@ Next.js 15（App Router）+ TypeScript + Tailwind CSS + lucide-react で構築�
 | fetch API | `/javascript/fetch` | ✅ 完成 |
 | ESモジュール | `/javascript/modules` | ✅ 完成 |
 | エラーハンドリング | `/javascript/error` | ✅ 完成 |
+| 開発環境セットアップ ハブ | `/env` | ✅ 完成 |
+| Node.js と npm | `/env/nodejs` | ✅ 完成 |
+| VSCode と拡張機能 | `/env/vscode` | ✅ 完成 |
+| ターミナル基本コマンド | `/env/terminal` | ✅ 完成 |
+| package.json の読み方 | `/env/package-json` | ✅ 完成 |
+| HTML / CSS基礎ハブ | `/html-css` | ✅ 完成 |
+| セマンティックHTML | `/html-css/semantic` | ✅ 完成 |
+| Flexbox | `/html-css/flexbox` | ✅ 完成 |
+| Grid | `/html-css/grid` | ✅ 完成 |
+| レスポンシブデザイン | `/html-css/responsive` | ✅ 完成 |
+| CSS変数 | `/html-css/css-variables` | ✅ 完成 |
+| TypeScript ハブ | `/typescript` | ✅ 完成 |
+| 型とは何か | `/typescript/what-is-type` | ✅ 完成 |
+| 基本型と型推論 | `/typescript/basic-types` | ✅ 完成 |
+| interface と type | `/typescript/interface-type` | ✅ 完成 |
+| React での型付け | `/typescript/react-types` | ✅ 完成 |
+| ジェネリクス入門 | `/typescript/generics` | ✅ 完成 |
+| セキュリティ基礎ハブ | `/security` | ✅ 完成 |
+| 環境変数とシークレット管理 | `/security/env-vars` | ✅ 完成 |
+| XSS | `/security/xss` | ✅ 完成 |
+| CORS | `/security/cors` | ✅ 完成 |
+| CSRF | `/security/csrf` | ✅ 完成 |
+| APIキー漏洩の対処 | `/security/api-key-leak` | ✅ 完成 |
 | React / Next.js / Firebase / PWA詳細 / 本番運用 | — | 未作成 |
 
 ---
@@ -108,7 +131,16 @@ Next.js 15（App Router）+ TypeScript + Tailwind CSS + lucide-react で構築�
 | Git / GitHub | rebase -i（履歴整形） | `fuchsia` |
 | Git / GitHub | cherry-pick | `green` |
 | Git / GitHub | コンフリクト解消 | `stone` |
-| 次カテゴリ以降 | React / Next.js etc | 未割り当て |
+| 開発環境セットアップ | — | `slate` (#94a3b8) |
+| HTML / CSS基礎 | — | `orange` (#f97316) |
+| TypeScript | — | `blue-custom` (#4f85c8) |
+| デバッグ・エラー対処 | — | `red` (#f87171) |
+| CSSフレームワーク | — | `cyan` (#22d3ee) |
+| フォーム・バリデーション | — | `green` (#4ade80) |
+| 状態管理 | — | `teal` (#2dd4bf) |
+| セキュリティ基礎 | — | `amber` (#fbbf24) |
+| SEO・アクセシビリティ | — | `lime` (#a3e635) |
+| その他（React / Next.js etc） | — | 未割り当て |
 
 ### アイコン
 
@@ -174,9 +206,18 @@ npm_config_cache=/tmp/npm-cache npm run dev
 2. ~~**基礎概念カテゴリ 5ページ**~~ — ✅ 完了（2026-05-01）
 3. ~~**JavaScript カテゴリ 6ページ**~~ — ✅ 完了（2026-05-01）
 4. **React カテゴリ**（コンポーネント・Props・State・Hooks・ルーティング・Context など）
-5. **Next.js カテゴリ**（App Router・SSR/SSG・API Routes・デプロイなど）
+5. **Next.js カテゴリ**（App Router・SSR/SSG・API Routes・Server Actions など）
 6. **Firebase カテゴリ**（Auth・Firestore・Storage・Cloud Functionsなど）
 7. **本番運用カテゴリ**（CI/CD・監視・セキュリティなど）
+8. **開発環境セットアップ カテゴリ**（Node.js・npm・VSCode・ターミナル）— Opus分析で最優先と判定
+9. **HTML/CSS基礎 カテゴリ**（Flexbox・Grid・レスポンシブ・CSS変数）— 同上
+10. **TypeScript カテゴリ**（型・interface・型推論・Reactでの型付け）— 同上
+11. **デバッグ・エラー対処 カテゴリ**（DevTools・スタックトレース）— 同上
+12. **CSSフレームワーク カテゴリ**（Tailwind CSS・shadcn/ui）
+13. **フォーム・バリデーション カテゴリ**（React Hook Form・Zod）
+14. **状態管理 カテゴリ**（TanStack Query・Zustand）
+15. **セキュリティ基礎 カテゴリ**（環境変数・XSS・CORS）
+16. **SEO・アクセシビリティ カテゴリ**（OGP・Lighthouse・WAI-ARIA）
 
 ---
 

@@ -16,6 +16,12 @@ const accentMap: Record<string, { border: string; bg: string; titleColor: string
   green:   { border: "rgba(74,222,128,0.7)",  bg: "rgba(74,222,128,0.10)",  titleColor: "#86efac", iconColor: "#4ade80" },
   pink:    { border: "rgba(236,72,153,0.6)",  bg: "rgba(236,72,153,0.06)",  titleColor: "#f9a8d4", iconColor: "#f472b6" },
   fuchsia: { border: "rgba(217,70,239,0.6)",  bg: "rgba(217,70,239,0.06)",  titleColor: "#f0abfc", iconColor: "#e879f9" },
+  slate:   { border: "rgba(100,116,139,0.6)", bg: "rgba(100,116,139,0.08)", titleColor: "#cbd5e1", iconColor: "#94a3b8" },
+  stone:   { border: "rgba(120,113,108,0.6)", bg: "rgba(120,113,108,0.08)", titleColor: "#d6d3d1", iconColor: "#a8a29e" },
+  indigo:  { border: "rgba(99,102,241,0.6)",  bg: "rgba(99,102,241,0.06)",  titleColor: "#a5b4fc", iconColor: "#818cf8" },
+  teal:    { border: "rgba(20,184,166,0.6)",  bg: "rgba(20,184,166,0.06)",  titleColor: "#5eead4", iconColor: "#2dd4bf" },
+  purple:  { border: "rgba(168,85,247,0.6)",  bg: "rgba(168,85,247,0.06)",  titleColor: "#d8b4fe", iconColor: "#c084fc" },
+  "#4f85c8": { border: "rgba(79,133,200,0.6)", bg: "rgba(79,133,200,0.06)", titleColor: "#93c5fd", iconColor: "#60a5fa" },
 };
 
 interface ConceptDiagramProps {

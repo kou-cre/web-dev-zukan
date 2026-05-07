@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Cloud, Triangle, Database, Server, Flame, Smartphone, Rocket, Code2, LayoutGrid, Stethoscope, Eye, Palette, Type, MousePointerClick, Sparkles, LucideProps } from "lucide-react";
+import { Cloud, Triangle, Database, Server, Flame, Smartphone, Rocket, Code2, LayoutGrid, Stethoscope, Eye, Palette, Type, MousePointerClick, Sparkles, Tag, FileSearch, Accessibility, Gauge, Search, Shield, LucideProps } from "lucide-react";
 import { ElementType } from "react";
 
 const iconMap: Record<string, ElementType<LucideProps>> = {
@@ -18,6 +18,12 @@ const iconMap: Record<string, ElementType<LucideProps>> = {
   Type,
   MousePointerClick,
   Sparkles,
+  Tag,
+  FileSearch,
+  Accessibility,
+  Gauge,
+  Search,
+  Shield,
 };
 
 interface RelatedLinkItem {

@@ -304,7 +304,7 @@ export default function ResponsivePage() {
           },
           {
             speaker: "maji",
-            emotion: "tearful",
+            emotion: "worried",
             text: "あぁ……ボクが何時間もかかって作ったレスポンシブ対応が、Tailwindでは1行で……。\nこれは感動なのか、悔しいのか……",
           },
         ]}

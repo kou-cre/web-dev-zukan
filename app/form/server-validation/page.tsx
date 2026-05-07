@@ -305,7 +305,7 @@ export default function ServerValidationPage() {
           },
           {
             speaker: "maji",
-            emotion: "confident",
+            emotion: "standard",
             text: "なるほど！ つまりクライアントもサーバーも同じZodスキーマで守る、2重の防衛線ということですね！ ボク今後は必ずサーバーバリデーションも書きます！",
           },
         ]}

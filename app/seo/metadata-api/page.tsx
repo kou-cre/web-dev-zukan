@@ -320,7 +320,7 @@ export default function BlogPage({ params }: { params: { slug: string } }) {
           },
           {
             speaker: "maji",
-            emotion: "down",
+            emotion: "worried",
             text: "あ……ボク、最初 Client Component のファイルに metadata を書こうとしていました。\nエラーになって意味が分からなかったんですが、そういうことだったんですね……。",
           },
           {

@@ -289,7 +289,7 @@ export default function WaiAriaPage() {
           },
           {
             speaker: "maji",
-            emotion: "rebel",
+            emotion: "doubt",
             text: "でも、デザインの都合で button タグを使えなくて、div に onClick を付けることってよくありますよね？\nそういうときはどうすればいいんですか？",
           },
           {
@@ -309,7 +309,7 @@ export default function WaiAriaPage() {
           },
           {
             speaker: "maji",
-            emotion: "confident",
+            emotion: "standard",
             text: "分かりました！ まず button / input / nav などセマンティックタグを使い切る。\nどうしても div で作るときだけ role と tabindex と onKeyDown の3点セットを付ける。\nアイコンボタンには aria-label を付けてスクリーンリーダーに名前を伝える。これでいいですか？",
           },
           {

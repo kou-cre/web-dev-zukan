@@ -314,12 +314,12 @@ export default function CsrfPage() {
           },
           {
             speaker: "master",
-            emotion: "serious",
+            emotion: "thinking",
             text: "マジさん、そこは慎重に考えてください。\n『デフォルトで守られている場合も多い』と『何もしなくていい』は違います。\nSameSite=Laxはサブドメインからのリクエストには効かない場合があります。\nまたCookieの設定を明示していないと、古いブラウザや環境で意図しない動作をする可能性がある。\n大事なフォーム（決済・メール変更・パスワード変更）には、CSRFトークンを明示的に実装するのが安全なエンジニアリングです。",
           },
           {
             speaker: "maji",
-            emotion: "confident",
+            emotion: "standard",
             text: "なるほど！\nCSRFはCORSと別物。フォームのPOSTを悪用する攻撃。\n対策は①SameSite Cookieの設定（Lax or Strict）と②CSRFトークン。\n大事なフォームには両方やるのが安全、ということですね！\nCORSと混同しないように、名前と内容をセットで覚えます。",
           },
         ]}

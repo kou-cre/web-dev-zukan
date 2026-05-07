@@ -162,7 +162,7 @@ export default function XssPage() {
         {/* ── 概念図B: Reactのエスケープ ── */}
         <ConceptDiagram
           title="概念図B"
-          description="ReactのJSXは中括弧 {"{}"} で表示する値を自動でエスケープする"
+          description={"ReactのJSXは中括弧 {} で表示する値を自動でエスケープする"}
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div
@@ -245,7 +245,7 @@ export default function XssPage() {
           {
             speaker: "master",
             emotion: "explain",
-            text: "落ち着いてください、マジさん。\nReactを使って、JSXの {"{"} {"}"} で値を表示しているなら、実はほぼ安全なんです。\n飲食店の掲示板に例えると——お客さんが書いたコメントをそのまま貼ると危ない。\nでもReactは貼り出す前に、{"<script>"} のような特殊文字を『ただの文字』に書き換えてから貼ってくれる。\nだから悪意のあるコードが動かない仕組みになっています。",
+            text: "落ち着いてください、マジさん。\nReactを使って、JSXの {} で値を表示しているなら、実はほぼ安全なんです。\n飲食店の掲示板に例えると——お客さんが書いたコメントをそのまま貼ると危ない。\nでもReactは貼り出す前に、<script> のような特殊文字を『ただの文字』に書き換えてから貼ってくれる。\nだから悪意のあるコードが動かない仕組みになっています。",
           },
           {
             speaker: "maji",
@@ -255,7 +255,7 @@ export default function XssPage() {
           {
             speaker: "master",
             emotion: "standard",
-            text: "通常の {"{"} {"}"} を使った表示は、Reactが自動でエスケープします。\nただ、ひとつだけ注意が必要な場所があります。\n『dangerouslySetInnerHTML』という特別な書き方を使うときです。",
+            text: "通常の {} を使った表示は、Reactが自動でエスケープします。\nただ、ひとつだけ注意が必要な場所があります。\n『dangerouslySetInnerHTML』という特別な書き方を使うときです。",
           },
           {
             speaker: "maji",
@@ -269,7 +269,7 @@ export default function XssPage() {
           },
           {
             speaker: "maji",
-            emotion: "down",
+            emotion: "worried",
             text: "……なるほど。ボク、以前にブログのHTMLをそのまま表示するために dangerouslySetInnerHTML を使ったことがあって……。\nそれって、もしかして危なかったですか？",
           },
           {
@@ -279,8 +279,8 @@ export default function XssPage() {
           },
           {
             speaker: "maji",
-            emotion: "confident",
-            text: "わかりました！\n・{"{"} {"}"} で表示 → Reactが自動で守ってくれる（通常はこれだけでOK）\n・dangerouslySetInnerHTML → ユーザー入力を渡すときはサニタイズが必要\nこれがXSSの基本ですね。\nボクのアプリは通常のJSXしか使っていないので、安心していいんですね！",
+            emotion: "standard",
+            text: "わかりました！\n・{} で表示 → Reactが自動で守ってくれる（通常はこれだけでOK）\n・dangerouslySetInnerHTML → ユーザー入力を渡すときはサニタイズが必要\nこれがXSSの基本ですね。\nボクのアプリは通常のJSXしか使っていないので、安心していいんですね！",
           },
         ]}
       />

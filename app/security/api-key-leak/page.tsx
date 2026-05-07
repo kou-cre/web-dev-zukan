@@ -252,7 +252,7 @@ export default function ApiKeyLeakPage() {
         turns={[
           {
             speaker: "maji",
-            emotion: "panic",
+            emotion: "worried",
             text: "マスター！！ やってしまいました！！\n.env.local を .gitignore に入れ忘れたまま git push してしまって……！\nもうGitHubに乗ってしまったんですが、どうすればいいですか！？",
           },
           {
@@ -282,7 +282,7 @@ export default function ApiKeyLeakPage() {
           },
           {
             speaker: "maji",
-            emotion: "down",
+            emotion: "worried",
             text: "……ボク、なんでこんなミスをしてしまったんでしょう。\n.gitignore に入れ忘れただけなのに。",
           },
           {
@@ -292,7 +292,7 @@ export default function ApiKeyLeakPage() {
           },
           {
             speaker: "maji",
-            emotion: "tearful",
+            emotion: "worried",
             text: "……ありがとうございます。\n無効化 → 新キーに差し替え → BFG で履歴削除 → force push。\nこの順番を忘れないようにします。\nそして二度とこうならないように .env.local と .gitignore の設定を絶対に先にやります。",
           },
         ]}

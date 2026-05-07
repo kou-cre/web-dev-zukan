@@ -325,12 +325,12 @@ export default function LighthousePage() {
           },
           {
             speaker: "maji",
-            emotion: "confident",
+            emotion: "standard",
             text: "分かりました！ まず Accessibility と SEO を 90 以上に上げて、次に next/image などの分かりやすい改善をやっていく順番でいいですね。\nこれでボクのサイトがプロ品質の高いものになります！",
           },
           {
             speaker: "master",
-            emotion: "serious",
+            emotion: "thinking",
             text: "マジさん、一つ注意してください。\nLighthouse はあくまで自動チェックツールです。スコアが 100 でも、実際のユーザーにとって使いにくいサイトになることはあります。\n本物のユーザーテスト（実際に人に使ってもらう）の代替にはなりません。\nスコアは『最低基準をクリアしているか』の確認手段として使いましょう。",
           },
         ]}

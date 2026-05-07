@@ -314,17 +314,17 @@ export default function ReactHookFormPage() {
           },
           {
             speaker: "maji",
-            emotion: "confident",
+            emotion: "standard",
             text: "なるほど！ つまり制御コンポーネントは全部 React Hook Form に置き換えるべきですね！ ボク今日から全フォームを移行します！",
           },
           {
             speaker: "master",
-            emotion: "serious",
+            emotion: "thinking",
             text: "マジさん、少し待ってください。\nシンプルなフォームなら制御コンポーネントで十分です。\nReact Hook Formが本領を発揮するのは、フィールドが多い・動的に増減する・バリデーションが複雑、といった場合です。\nまず制御コンポーネントで作り、パフォーマンスが問題になったら移行するのが現実的な判断です。",
           },
           {
             speaker: "maji",
-            emotion: "down",
+            emotion: "worried",
             text: "……また大袈裟な結論を出してしまいました。\nでも register をスプレッドで渡すだけでinputを登録できるのは、確かに便利だと思います。",
           },
           {

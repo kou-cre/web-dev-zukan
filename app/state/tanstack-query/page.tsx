@@ -309,7 +309,7 @@ export default function TanstackQueryPage() {
           },
           {
             speaker: "maji",
-            emotion: "tearful",
+            emotion: "worried",
             text: "マスター……それはちょっと胸にきますね。ボク、これまでの苦労が報われた気がします。",
           },
         ]}

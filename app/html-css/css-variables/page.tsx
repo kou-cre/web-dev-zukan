@@ -257,7 +257,7 @@ export default function CssVariablesPage() {
           },
           {
             speaker: "maji",
-            emotion: "confident",
+            emotion: "standard",
             text: "つまり、CSS変数はデザインの『設定ファイル』みたいなものですね！ ボク、これを使えばプロのデザイナーみたいになれますね！",
           },
         ]}

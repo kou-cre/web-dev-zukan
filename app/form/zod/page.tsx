@@ -313,7 +313,7 @@ export default function ZodPage() {
           {
             speaker: "master",
             emotion: "thinking",
-            text: "Zodのスキーマは「型の情報」も持っています。\nz.infer{"<"}typeof schema{">"} はスキーマからTypeScriptの型を自動的に取り出すユーティリティです。\n従来はinterfaceを書いてバリデーション関数も別途書く、という二重管理が必要でした。\nZodなら一枚のスキーマを書くだけで両方が揃います。設計図から自動で部品リストを生成する機械、のような感覚です。",
+            text: "Zodのスキーマは「型の情報」も持っています。\nz.infer<typeof schema> はスキーマからTypeScriptの型を自動的に取り出すユーティリティです。\n従来はinterfaceを書いてバリデーション関数も別途書く、という二重管理が必要でした。\nZodなら一枚のスキーマを書くだけで両方が揃います。設計図から自動で部品リストを生成する機械、のような感覚です。",
           },
           {
             speaker: "maji",
@@ -337,7 +337,7 @@ export default function ZodPage() {
           },
           {
             speaker: "maji",
-            emotion: "tearful",
+            emotion: "worried",
             text: "……なんか、Zodがあると型を2回書かなくていいの、すごく助かりますね。\nボク今まで interface と if文バリデーションを両方書いてたので、ちょっとじーんとしました。",
           },
         ]}

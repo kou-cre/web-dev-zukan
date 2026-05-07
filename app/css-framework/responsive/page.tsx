@@ -308,7 +308,7 @@ export default function ResponsivePage() {
           },
           {
             speaker: "maji",
-            emotion: "rebel",
+            emotion: "doubt",
             text: "それは直感と逆ですよ！ `sm:` って書いたら「スモール（小さい）画面用」に見えるじゃないですか！\nボク、ずっとそう思ってました……",
           },
           {
@@ -411,19 +411,19 @@ export default function ResponsivePage() {
             <StackLayer
               Icon={Smartphone}
               title="モバイルだけに表示"
-              subtitle="className=\"block sm:hidden\" — モバイルで表示、sm以上で非表示"
+              subtitle={'className="block sm:hidden" — モバイルで表示、sm以上で非表示'}
               iconColor="text-cyan-400"
             />
             <StackLayer
               Icon={Monitor}
               title="PC以上だけに表示"
-              subtitle="className=\"hidden lg:block\" — モバイル・タブレットは非表示、lg以上で表示"
+              subtitle={'className="hidden lg:block" — モバイル・タブレットは非表示、lg以上で表示'}
               iconColor="text-cyan-400"
             />
             <StackLayer
               Icon={Tablet}
               title="タブレット以上だけに表示"
-              subtitle="className=\"hidden sm:block\" — モバイルは非表示、sm以上で表示"
+              subtitle={'className="hidden sm:block" — モバイルは非表示、sm以上で表示'}
               iconColor="text-cyan-400"
               showArrow={false}
             />

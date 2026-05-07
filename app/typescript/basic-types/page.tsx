@@ -395,7 +395,7 @@ export default function BasicTypesPage() {
           },
           {
             speaker: "maji",
-            emotion: "rebel",
+            emotion: "doubt",
             text: "でも全部に書く方が分かりやすくないですか！ 統一した方がルールが単純では？",
           },
           {
@@ -415,7 +415,7 @@ export default function BasicTypesPage() {
           },
           {
             speaker: "maji",
-            emotion: "confident",
+            emotion: "standard",
             text: "わかりました！ 「変数は推論に任せる・関数の引数と戻り値には書く・初期値なし変数には書く」が基本ルールですね！ これでボク、TypeScript書けます！",
           },
         ]}

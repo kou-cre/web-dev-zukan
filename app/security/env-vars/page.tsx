@@ -325,7 +325,7 @@ export default function EnvVarsPage() {
           },
           {
             speaker: "master",
-            emotion: "serious",
+            emotion: "thinking",
             text: "マジさん、それはやってはいけないことです。\nNEXT_PUBLIC_ をつけた変数はビルド時にJavaScriptファイルの中に書き込まれます。\nブラウザで『ソースを表示』すれば、誰でも値が見える状態になる。\nGoogle Maps の公開キーのように、もともと公開してよいものだけ NEXT_PUBLIC_ にします。",
           },
           {
@@ -340,7 +340,7 @@ export default function EnvVarsPage() {
           },
           {
             speaker: "maji",
-            emotion: "confident",
+            emotion: "standard",
             text: "完全に理解しました！\n・コードに直書き禁止\n・.env.local に書いて .gitignore に追加\n・シークレットは NEXT_PUBLIC_ なし\n・公開OKなものだけ NEXT_PUBLIC_ つき\nこれだけ守れば、ボクも安全なエンジニアですね！",
           },
           {

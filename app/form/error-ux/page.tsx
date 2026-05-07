@@ -337,7 +337,7 @@ export default function ErrorUxPage() {
           },
           {
             speaker: "maji",
-            emotion: "tearful",
+            emotion: "worried",
             text: "……エラー表示って奥が深いんですね。ボク今まで赤文字だけ出して終わりにしてました。\nでもariaの属性は本当にコストが低いのに効果が大きいんですね。",
           },
         ]}

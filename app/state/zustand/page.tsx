@@ -295,7 +295,7 @@ export default function ZustandPage() {
           },
           {
             speaker: "maji",
-            emotion: "down",
+            emotion: "worried",
             text: "最初から完璧に使い分けられないんですね……ボク、全部Zustandにしようとしてました。",
           },
           {

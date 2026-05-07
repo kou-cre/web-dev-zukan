@@ -292,7 +292,7 @@ export default function TailwindIntroPage() {
           },
           {
             speaker: "maji",
-            emotion: "rebel",
+            emotion: "doubt",
             text: "でも、className がずらずら長くなって読みにくくなりませんか？ ボク、長い className を見ただけでうんざりします……",
           },
           {
@@ -396,7 +396,7 @@ export default function TailwindIntroPage() {
             <FlowCard
               Icon={Code2}
               title="JSXを書く"
-              subtitle="className=\"bg-cyan-500 p-4\""
+              subtitle={'className="bg-cyan-500 p-4"'}
             />
             <FlowArrow label="ビルド時にスキャン" direction="right" />
             <FlowCard

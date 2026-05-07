@@ -291,7 +291,7 @@ export default function SitemapPage() {
           },
           {
             speaker: "maji",
-            emotion: "confident",
+            emotion: "standard",
             text: "なるほど！ つまり sitemap.xml は Google へのダイレクトメッセージで、robots.txt は「ここは立入禁止ですよ」のサインなんですね。\n両方設定しておけばクローラーとの関係がばっちりになる！",
           },
         ]}

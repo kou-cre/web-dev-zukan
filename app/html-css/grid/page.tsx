@@ -318,7 +318,7 @@ export default function GridPage() {
           },
           {
             speaker: "maji",
-            emotion: "confident",
+            emotion: "standard",
             text: "なるほど！ 大きい枠組みはGrid、細かいパーツはFlex……ボク、完全にマスターしましたね！",
           },
         ]}

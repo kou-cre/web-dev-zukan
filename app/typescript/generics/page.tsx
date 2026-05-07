@@ -306,7 +306,7 @@ export default function GenericsPage() {
           },
           {
             speaker: "maji",
-            emotion: "rebel",
+            emotion: "doubt",
             text: "でも毎回書くの面倒じゃないですか！ `useState(\"\")` って書いたら TypeScript が string だって分かってくれないんですか？",
           },
           {
@@ -316,7 +316,7 @@ export default function GenericsPage() {
           },
           {
             speaker: "maji",
-            emotion: "down",
+            emotion: "worried",
             text: "あ、そういうことだったんですね……。ボク、null を初期値にするとき毎回 any にしてました。",
           },
           {
@@ -326,7 +326,7 @@ export default function GenericsPage() {
           },
           {
             speaker: "maji",
-            emotion: "confident",
+            emotion: "standard",
             text: "分かりました！ <T> は「あとで型を決める注文システム」！ useState<User | null>(null) もこれからは迷わず書けます！ ボクもうジェネリクスマスターです！",
           },
         ]}

@@ -332,7 +332,7 @@ export default function InterfaceTypePage() {
           },
           {
             speaker: "maji",
-            emotion: "down",
+            emotion: "worried",
             text: "うーん……ボク、まだどっちを使うか決断できない気がします。",
           },
           {

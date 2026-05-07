@@ -298,7 +298,7 @@ export default function CorsPage() {
           },
           {
             speaker: "maji",
-            emotion: "confident",
+            emotion: "standard",
             text: "わかりました！\nCORSエラーが出たら、サーバー側に Access-Control-Allow-Origin ヘッダーを追加する。\nブラウザを騙そうとしてはいけない。\nそしてCORSはブラウザの話なので、curlなどには効かない。\nこれでCORSがスッキリしました！",
           },
         ]}

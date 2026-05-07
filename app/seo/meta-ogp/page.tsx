@@ -21,6 +21,7 @@ import { RelatedLinks } from "@/components/RelatedLinks";
 import { PageDrill } from "@/components/PageDrill";
 import { DetailSection, DetailBlock, KeyPoint, WarningPoint } from "@/components/DetailSection";
 import { SectionDivider } from "@/components/SectionDivider";
+import { TermNote } from "@/components/TermNote";
 import { UseCaseGrid } from "@/components/UseCaseGrid";
 import { CodeBlock } from "@/components/CodeBlock";
 import { metaOgpQuestions } from "@/content/questions/seo/meta-ogp";
@@ -322,12 +323,12 @@ export default function MetaOgpPage() {
           },
           {
             speaker: "maji",
-            emotion: "confident",
+            emotion: "standard",
             text: "なるほど！ つまりボクは metadata を一行書くだけで、検索結果と SNS カードを同時にデザインできるんですね。\nこれで SNS のカードをプロっぽくできます。ボク、SNS マーケターになれそうです！",
           },
           {
             speaker: "master",
-            emotion: "serious",
+            emotion: "thinking",
             text: "マジさん、og:image の画像サイズを 1200×630px にするのを忘れずに。\nここを間違えると、画像が切れたり縦横比がおかしくなったりして台無しになります。",
           },
         ]}
@@ -425,7 +426,7 @@ export default function MetaOgpPage() {
                 accentColor: "lime",
               },
               {
-                Icon: Image,
+                Icon: ImageIcon,
                 title: "og:image",
                 subtitle: "カードのサムネイル画像",
                 description: "必ず絶対 URL で指定。推奨サイズは 1200×630px。HTTPS で配信できる場所に置く。",
@@ -485,7 +486,7 @@ export default function MetaOgpPage() {
                 accentColor: "lime",
               },
               {
-                Icon: Image,
+                Icon: ImageIcon,
                 title: "HTTPS で配信",
                 subtitle: "絶対 URL を指定",
                 description: "相対パスは使えない。本番ドメインの絶対 URL で指定する。",

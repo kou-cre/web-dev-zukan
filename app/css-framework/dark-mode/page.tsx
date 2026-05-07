@@ -291,7 +291,7 @@ export default function DarkModePage() {
           },
           {
             speaker: "maji",
-            emotion: "down",
+            emotion: "worried",
             text: "……ボク、dark: を書けば自動でダークになると思い込んでたんです。\n仕組みを全然分かっていませんでした。",
           },
           {

@@ -398,7 +398,7 @@ export default function ReactTypesPage() {
           COMPARISON
         </h2>
         <ComparisonTable
-          headers={["型付け箇所", "書き方", "推論の可否"]}
+          headers={["書き方", "推論の可否"]}
           rows={[
             {
               label: "Props",

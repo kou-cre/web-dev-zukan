@@ -330,7 +330,7 @@ export default function GridPage() {
           COMPARISON
         </h2>
         <ComparisonTable
-          headers={["プロパティ", "役割", "使い方の例"]}
+          headers={["役割", "使い方の例"]}
           rows={[
             {
               label: "grid-template-columns",

@@ -257,7 +257,7 @@ export default function VscodePage() {
           COMPARISON — 必須拡張機能5選
         </h2>
         <ComparisonTable
-          headers={["拡張機能", "役割", "なぜ必要か"]}
+          headers={["役割", "なぜ必要か"]}
           rows={[
             {
               label: "ESLint",

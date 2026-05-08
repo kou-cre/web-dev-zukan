@@ -320,7 +320,7 @@ export default function TerminalPage() {
           COMPARISON — 基本5コマンドのまとめ
         </h2>
         <ComparisonTable
-          headers={["コマンド", "意味（省略元）", "やること"]}
+          headers={["意味（省略元）", "やること"]}
           rows={[
             {
               label: "pwd",

@@ -316,7 +316,7 @@ export default function ResponsivePage() {
           COMPARISON
         </h2>
         <ComparisonTable
-          headers={["アプローチ", "デフォルト対象", "上書き方向"]}
+          headers={["デフォルト対象", "上書き方向"]}
           rows={[
             {
               label: "モバイルファースト（推奨）",

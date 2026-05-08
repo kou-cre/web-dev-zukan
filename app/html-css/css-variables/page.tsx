@@ -269,7 +269,7 @@ export default function CssVariablesPage() {
           COMPARISON
         </h2>
         <ComparisonTable
-          headers={["方法", "メリット", "デメリット"]}
+          headers={["メリット", "デメリット"]}
           rows={[
             {
               label: "直書き（#hex直接）",

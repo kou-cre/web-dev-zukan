@@ -272,7 +272,7 @@ export default function StashPage() {
           COMPARISON
         </h2>
         <ComparisonTable
-          headers={["コマンド", "動き", "未追跡ファイルの扱い"]}
+          headers={["動き", "未追跡ファイルの扱い"]}
           rows={[
             {
               label: "git stash",

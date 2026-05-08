@@ -295,7 +295,7 @@ export default function SemanticPage() {
           COMPARISON
         </h2>
         <ComparisonTable
-          headers={["タグ", "使いどころ", "具体例"]}
+          headers={["使いどころ", "具体例"]}
           rows={[
             {
               label: "header",

@@ -288,7 +288,7 @@ export default function FlexboxPage() {
           COMPARISON
         </h2>
         <ComparisonTable
-          headers={["プロパティ", "役割（デフォルト向き）", "よく使う値"]}
+          headers={["役割（デフォルト向き）", "よく使う値"]}
           rows={[
             {
               label: "justify-content",

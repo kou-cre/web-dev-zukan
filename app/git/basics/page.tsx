@@ -335,7 +335,7 @@ export default function GitBasicsPage() {
           COMPARISON
         </h2>
         <ComparisonTable
-          headers={["コマンド", "動き", "方向"]}
+          headers={["動き", "方向"]}
           rows={[
             {
               label: "git add",
